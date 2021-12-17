@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String
+  Post Post[]
+}
+
+model Game {
+  id Int @id @default(autoincrement())
+  name String
+  description String
+  timeMainStory DateTime
+  timeMainExtras DateTime
+  timeCompletionists DateTime
+}
+
+model Post {
+  id          Int      @id @default(autoincrement())
+  title       String
+  content     String
+  published   Boolean  @default(false)
+  authorId    Int
+  categoryId  Int
+  createdAt   DateTime @default(now())
+  description String
+  updatedAt   DateTime
+  User        User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  Category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  Post_B      Post[]   @relation("relatedPosts")
+  Post_A      Post[]   @relation("relatedPosts")
+}
+
+model Token {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  type      TokenType
+  userId    Int
+  token     String?   @unique(map: "Token.token_unique")
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique(map: "User.email_unique")
+  name     String?
+  password String
+  role     Role    @default(USER)
+  active   Boolean @default(false)
+  Post     Post[]
+  Token    Token[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum TokenType {
+  EMAIL
+  API
+}

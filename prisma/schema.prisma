@@ -14,12 +14,15 @@ model Category {
 }
 
 model Game {
-  id Int @id @default(autoincrement())
-  name String
-  description String
-  timeMainStory DateTime
-  timeMainExtras DateTime
-  timeCompletionists DateTime
+  id                 Int    @id @default(autoincrement())
+  name               String
+  description        String
+  idHltb             Int    @unique
+  totalPoll          Int
+  timeMainStory      Int?
+  timeMainExtras     Int?
+  timeCompletionists Int?
+  timeAllStyles      Int?
 }
 
 model Post {

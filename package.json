@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "next dev -p 2811",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 2881",
     "type-check": "tsc",
     "lint": "eslint --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\"",
     "format": "prettier --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\" --write",
@@ -27,6 +27,8 @@
     ]
   },
   "dependencies": {
+    "@emotion/react": "11.7.1",
+    "@emotion/styled": "11.6.0",
     "@prisma/client": "3.6.0",
     "axios": "0.24.0",
     "next": "12.0.7",

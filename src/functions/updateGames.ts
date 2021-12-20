@@ -39,6 +39,10 @@ export async function updateGame(game: Game) {
     console.error(
       `UNE ERREUR EST SURVENUE Jeu non traduit ${game.id} - ${game.name}`,
     );
-    console.error(`ERREUR :`, error.response);
+    if (error.response) {
+      console.error(`ERREUR :`, error.response);
+    } else {
+      console.error(`ERREUR :`, error);
+    }
   }
 }

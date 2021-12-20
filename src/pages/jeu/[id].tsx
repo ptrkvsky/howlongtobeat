@@ -1,9 +1,6 @@
 import { PrismaClient, Game } from '@prisma/client';
-import axios from 'axios';
 
 const prisma = new PrismaClient();
-const clientId = process.env.CLIENT_ID;
-const clientSecret = process.env.CLIENT_SECRET;
 
 // This function gets called at build time
 export async function getStaticPaths() {
@@ -36,44 +33,10 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
     },
   });
 
-  const {
-    data: { access_token },
-  } = await axios.post(
-    `https://id.twitch.tv/oauth2/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`,
-  );
-
-  const configRequestGameIgdb = {
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-      'Client-ID': `xmif5hz58mgup7xlkh4fky3ih9qcda`,
-    },
-  };
-
-  const bodyRequestGameIgdb = `fields name, cover, first_release_date, artworks, screenshots, summary, rating, cover; search "${game?.name}";`;
-
-  const gamesIgdb = (await axios.post(
-    `https://api.igdb.com/v4/games/`,
-    bodyRequestGameIgdb,
-    configRequestGameIgdb,
-  )) as any;
-
-  const gameIgdb = gamesIgdb.data.find(
-    (gameIgdb: any) => gameIgdb.name === game?.name,
-  );
-
-  // COVER
-  const bodyRequestCoverIgdb = `fields url; where id = ${gameIgdb.cover};`;
-  const coverIgdb = (await axios.post(
-    `https://api.igdb.com/v4/covers/`,
-    bodyRequestCoverIgdb,
-    configRequestGameIgdb,
-  )) as any;
-
-  console.log(coverIgdb.data);
+  return { props: { game } };
 
   await prisma.$disconnect();
   // Pass game data to the page via props
-  return { props: { game } };
 }
 
 interface PropsGame {

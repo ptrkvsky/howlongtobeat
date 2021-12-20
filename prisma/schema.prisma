@@ -14,15 +14,21 @@ model Category {
 }
 
 model Game {
-  id                 Int    @id @default(autoincrement())
+  id                 Int     @id @default(autoincrement())
   name               String
   description        String
-  idHltb             Int    @unique
+  idHltb             Int     @unique
   totalPoll          Int
   timeMainStory      Int?
   timeMainExtras     Int?
   timeCompletionists Int?
   timeAllStyles      Int?
+  cover              String?
+  firstReleaseDate   String?
+  storyline          String?
+  summary            String?
+  rating             Int?
+  genres             Int[]
 }
 
 model Post {

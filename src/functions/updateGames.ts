@@ -8,20 +8,37 @@ const prisma = new PrismaClient();
 
 export async function updateGame(game: Game) {
   try {
-    const translation = await axios.get(
-      `https://api.deepl.com/v2/translate?auth_key=${deeplKey}&target_lang=fr&source_lang=en&text=${game.description}`,
-    );
-    console.log(translation.data.translations[0].text);
-    const gameUpdated = await prisma.game.update({
-      where: {
-        id: game.id,
-      },
-      data: {
-        description: translation.data.translations[0].text,
-      },
+    const headers = {
+      'content-type': `application/x-www-form-urlencoded`,
+    } as any;
+
+    const translationDeepl = await axios({
+      method: `get`,
+      url: `https://api.deepl.com/v2/translate?auth_key=${deeplKey}&text=${encodeURI(
+        game.description,
+      )}&target_lang=fr`,
+      headers,
     });
-    return gameUpdated;
-  } catch (error) {
-    console.error(error);
+
+    const translation = translationDeepl.data.translations[0].text;
+    if (translation && translation !== game.description) {
+      const gameUpdated = await prisma.game.update({
+        where: {
+          id: game.id,
+        },
+        data: {
+          description: translation,
+          isTranslated: true,
+        },
+      });
+      return gameUpdated;
+    } else {
+      console.error(`Jeu non traduit ${game.id} - ${game.name}`);
+    }
+  } catch (error: any) {
+    console.error(
+      `UNE ERREUR EST SURVENUE Jeu non traduit ${game.id} - ${game.name}`,
+    );
+    console.error(`ERREUR :`, error.response);
   }
 }

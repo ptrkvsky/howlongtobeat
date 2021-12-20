@@ -24,10 +24,10 @@ export default function handler(
       },
     });
 
-    return Promise.all(games.map((game) => updateGame(game)));
+    // return Promise.all(games.map((game) => updateGame(game)));
   }
 
-  updateGames();
+  // updateGames();
 
   res.status(200);
 }

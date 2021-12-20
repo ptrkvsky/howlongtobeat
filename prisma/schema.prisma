@@ -29,6 +29,7 @@ model Game {
   summary            String?
   rating             Int?
   genres             Int[]
+  isTranslated       Boolean @default(false)
 }
 
 model Post {

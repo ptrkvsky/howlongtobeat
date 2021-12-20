@@ -6,7 +6,8 @@ import { updateGame } from '@/functions/updateGames';
 const prisma = new PrismaClient();
 
 type Data = {
-  name: string;
+  games: any;
+  gamesUpdated: any;
 };
 
 export default function handler(
@@ -17,15 +18,19 @@ export default function handler(
     const games = await prisma.game.findMany({
       where: {
         id: {
-          lt: 100,
-          gt: 1,
+          gt: 201,
+          lt: 301,
         },
+        isTranslated: false,
       },
     });
-    console.log(games);
-    await Promise.all(games.map((game) => updateGame(game)));
+    const gamesUpdated = await Promise.all(
+      games.map((game) => updateGame(game)),
+    );
+
+    // console.log(games);
+    res.status(200).json({ games, gamesUpdated });
   }
-  console.log(`translation`);
+
   updateGames();
-  // res.status(200).json({ name: `games` });
 }

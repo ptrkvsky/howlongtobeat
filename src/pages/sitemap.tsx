@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { PrismaClient, Game } from '@prisma/client';
-import { HomeTitle } from '@/styles/components/titles/HomeTitle';
+import TemplateSitemap from '@/features/sitemap/components/TemplateSitemap';
 
 const prisma = new PrismaClient();
 
@@ -17,15 +17,7 @@ export default function Sitemap({ games }: Props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <HomeTitle>
-        Plan du site
-        <br /> {games.length} jeux
-      </HomeTitle>
-      <ul>
-        {games.map((game) => (
-          <li key={game.name}>{game.name}</li>
-        ))}
-      </ul>
+      <TemplateSitemap games={games} />
     </>
   );
 }

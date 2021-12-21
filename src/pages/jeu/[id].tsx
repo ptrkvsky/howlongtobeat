@@ -1,3 +1,4 @@
+import TemplateJeu from '@/features/jeu/components/TemplateJeu';
 import { PrismaClient, Game, Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -37,10 +38,9 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
       id: +params.id,
     },
   });
-
+  await prisma.$disconnect();
   return { props: { game } };
 
-  await prisma.$disconnect();
   // Pass game data to the page via props
 }
 
@@ -49,13 +49,7 @@ interface PropsGame {
 }
 
 function Game({ game }: PropsGame) {
-  return (
-    <>
-      <div>{game.name}</div>
-      <div>{game.description}</div>
-      <div>{game.totalPoll}</div>
-    </>
-  );
+  return <TemplateJeu game={game} />;
 }
 
 export default Game;

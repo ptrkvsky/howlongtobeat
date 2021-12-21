@@ -45,7 +45,6 @@ const GlobalStyles = () => {
         h5,
         h6 {
           font-family: ${theme.typography.fonts.heading};
-          color: ${theme.colors.primary[500]};
           letter-spacing: ${theme.typography.letterSpacings.tight};
         }
         p {
@@ -65,9 +64,14 @@ const GlobalStyles = () => {
           color: ${theme.colors.text};
         }
         .container {
+          width: 100%;
           max-width: ${theme.config.maxWidth.desktop};
           margin-left: auto;
           margin-right: auto;
+        }
+
+        .primary-color {
+          color: ${theme.colors.primary[500]};
         }
 
         @keyframes backgroundEffect {

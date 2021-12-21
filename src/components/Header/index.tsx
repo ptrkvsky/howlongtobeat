@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import DarkModeButton from './DarkModeButton';
+import DarkModeButton from '../DarkModeButton';
 
 const StyledHeader = styled(`header`)`
   display: flex;
@@ -12,8 +12,10 @@ const StyledHeader = styled(`header`)`
 const Header = () => {
   return (
     <StyledHeader>
-      Logo
-      <DarkModeButton />
+      <div className="container">
+        Logo
+        <DarkModeButton />
+      </div>
     </StyledHeader>
   );
 };

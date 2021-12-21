@@ -1,6 +1,7 @@
 import { findAllGames } from '@/functions/findAllGames';
 import { getGenresFromGames } from '@/functions/getGenresFromGames';
 import { PrismaClient, Game } from '@prisma/client';
+import Link from 'next/link';
 
 const prisma = new PrismaClient();
 
@@ -48,11 +49,15 @@ interface PropsGame {
 
 function Game({ games }: PropsGame) {
   return (
-    <div>
+    <ul>
       {games.map((game) => (
-        <div key={game.id}>{game.name}</div>
+        <li key={game.id}>
+          <Link href={`jeu/${game.id}`}>
+            <a>{game.name}</a>
+          </Link>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
 

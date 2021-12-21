@@ -23,7 +23,6 @@ const GlobalStyles = () => {
         }
         body {
           background: ${theme.colors.background};
-          background-color: #202020;
           color: ${theme.colors.text};
           min-height: 100vh;
           font-family: ${theme.typography.fonts.body};

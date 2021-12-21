@@ -5,7 +5,6 @@ import { getHeaders } from './getHeaders';
 
 export async function getCover(game: Game) {
   await setTimeout(5000);
-  console.log(`hello`);
   const headers = await getHeaders();
   const bodyRequestGameIgdb = `fields name, cover, first_release_date, summary, rating, cover; search "${game?.name}";`;
 

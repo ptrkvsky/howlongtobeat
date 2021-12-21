@@ -1,11 +1,16 @@
-import { PrismaClient, Game } from '@prisma/client';
+import { PrismaClient, Game, Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 // This function gets called at build time
 export async function getStaticPaths() {
-  // Call an external API endpoint to get posts
-  const games = await prisma.game.findMany();
+  const games = await prisma.game.findMany({
+    where: {
+      isTranslated: {
+        equals: true,
+      },
+    },
+  });
 
   // Get the paths we want to pre-render based on games
   const paths = games.map((game) => ({

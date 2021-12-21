@@ -28,35 +28,15 @@ const GlobalStyles = () => {
           font-family: ${theme.typography.fonts.body};
           transition-duration: 0.2s;
           transition-property: background-color, color;
-        }
-        /* @font-face {
-          font-family: 'Eiko';
-          src: url('/fonts/eiko/PPEiko-Variable.ttf') format('ttf');
-        } */
-        @font-face {
-          font-family: 'Monument';
-          src: url('/fonts/monument/PPMonumentExtended-Variable.ttf')
-            format('ttf');
+          font-size: ${theme.typography.fontSizes.xl};
         }
         @font-face {
-          font-family: 'Gilroy Semibold';
-          src: url('/fonts/gilroy/Gilroy-Semibold.woff2') format('woff2');
+          font-family: 'Cirka';
+          src: url('/fonts/PPCirka-Variable.woff2') format('woff2');
         }
         @font-face {
-          font-family: 'Gilroy Extrabold';
-          src: url('/fonts/gilroy/Gilroy-Extrabold.woff2') format('woff2');
-        }
-        @font-face {
-          font-family: 'Kokoro';
-          src: url('/fonts/kokoro/kokoro.woff') format('woff');
-        }
-        @font-face {
-          font-family: 'Adelle Regular';
-          src: url('/fonts/polysans/PolySans-Neutral.woff2') format('woff2');
-        }
-        @font-face {
-          font-family: 'Adelle Bold';
-          src: url('/fonts/adelle/AdelleSansBasic_Bold.woff') format('woff');
+          font-family: 'Bebas';
+          src: url('/fonts/BebasNeueBold.woff2') format('woff2');
         }
         h1,
         h2,

@@ -18,7 +18,10 @@ export default function handler(
     const games = await prisma.game.findMany({
       where: {
         id: {
-          lt: 401,
+          lt: 601,
+        },
+        isTranslated: {
+          equals: false,
         },
       },
     });

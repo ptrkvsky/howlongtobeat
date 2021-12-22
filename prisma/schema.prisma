@@ -14,10 +14,10 @@ model Category {
 }
 
 model Game {
-  id                 Int     @id @default(autoincrement())
+  id                 Int             @id @default(autoincrement())
   name               String
   description        String
-  idHltb             Int     @unique
+  idHltb             Int             @unique
   totalPoll          Int
   timeMainStory      Int?
   timeMainExtras     Int?
@@ -29,25 +29,24 @@ model Game {
   summary            String?
   rating             Int?
   genres             Int[]
+  isTranslated       Boolean         @default(false)
   genre              GenresOnGames[]
-  isTranslated       Boolean @default(false)
 }
 
-
 model Genre {
-  id          Int      @id @default(autoincrement())
-  idIgdb      Int
-  name        String
-  slug        String
-  url         String 
-  games       GenresOnGames[]
+  id     Int             @id @default(autoincrement())
+  name   String
+  slug   String
+  url    String
+  idIgdb Int
+  games  GenresOnGames[]
 }
 
 model GenresOnGames {
-  game       Game     @relation(fields: [gameId], references: [id])
-  gameId     Int // relation scalar field (used in the `@relation` attribute above)
-  genre     Genre @relation(fields: [genreId], references: [id])
-  genreId   Int // relation scalar field (used in the `@relation` attribute above)
+  gameId  Int
+  genreId Int
+  game    Game  @relation(fields: [gameId], references: [id])
+  genre   Genre @relation(fields: [genreId], references: [id])
 
   @@id([gameId, genreId])
 }

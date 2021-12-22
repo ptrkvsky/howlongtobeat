@@ -1,10 +1,10 @@
-import Head from 'next/head';
-import { PrismaClient, Game } from '@prisma/client';
+import { Game } from '@prisma/client';
 import TemplateSitemap from '@/features/sitemap/components/TemplateSitemap';
 import Seo from '@/components/Seo';
 import { SeoPage } from '@/types';
+import DBClient from '@/prisma/DBClient';
 
-const prisma = new PrismaClient();
+const prisma = DBClient.instance;
 
 interface Props {
   games: Game[];

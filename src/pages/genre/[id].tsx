@@ -1,9 +1,10 @@
 import { findAllGames } from '@/functions/findAllGames';
 import { getGenresFromGames } from '@/functions/getGenresFromGames';
+import DBClient from '@/prisma/DBClient';
 import { PrismaClient, Game } from '@prisma/client';
 import Link from 'next/link';
 
-const prisma = new PrismaClient();
+const prisma = DBClient.instance;
 
 // This function gets called at build time
 export async function getStaticPaths() {

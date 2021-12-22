@@ -1,8 +1,9 @@
 import Seo from '@/components/Seo';
 import TemplateJeu from '@/features/jeu/components/TemplateJeu';
-import { PrismaClient, Game, Prisma } from '@prisma/client';
+import DBClient from '@/prisma/DBClient';
+import { Game } from '@prisma/client';
 
-const prisma = new PrismaClient();
+const prisma = DBClient.instance;
 
 // This function gets called at build time
 export async function getStaticPaths() {
@@ -10,9 +11,6 @@ export async function getStaticPaths() {
     where: {
       isTranslated: {
         equals: true,
-      },
-      id: {
-        lt: 100,
       },
     },
   });

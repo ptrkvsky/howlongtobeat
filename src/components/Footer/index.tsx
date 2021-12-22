@@ -1,19 +1,18 @@
 import styled from '@emotion/styled';
-
-import { siteInformations } from '@/config/siteInformations';
+import { styleInformations } from '@/config/styleInformations';
+import Logo from '../Logo';
 
 const StyleFooter = styled(`footer`)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px dashed #fff6e6;
-  height: 67px;
+  height: ${styleInformations.headerHeight.dekstop};
 `;
 
 const Footer = () => {
   return (
-    <StyleFooter>
-      <div className="container">{siteInformations.title}</div>
+    <StyleFooter className="container">
+      <Logo />
     </StyleFooter>
   );
 };

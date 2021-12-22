@@ -1,3 +1,4 @@
+import Seo from '@/components/Seo';
 import TemplateJeu from '@/features/jeu/components/TemplateJeu';
 import { PrismaClient, Game, Prisma } from '@prisma/client';
 
@@ -52,7 +53,16 @@ interface PropsGame {
 }
 
 function Game({ game }: PropsGame) {
-  return <TemplateJeu game={game} />;
+  const pageSeo = {
+    metaTitle: `Combien de temps faut-il pour terminer ? ${game.name}`,
+    metaDescription: `Combien de temps faut-il pour terminer ? ${game.name}`,
+  };
+  return (
+    <>
+      <Seo pageSeo={pageSeo} />
+      <TemplateJeu game={game} />
+    </>
+  );
 }
 
 export default Game;

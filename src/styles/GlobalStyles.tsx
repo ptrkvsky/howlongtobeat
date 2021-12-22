@@ -63,6 +63,11 @@ const GlobalStyles = () => {
         button {
           color: ${theme.colors.text};
         }
+
+        .relative {
+          position: relative;
+        }
+
         .container {
           width: 100%;
           max-width: ${theme.config.maxWidth.desktop};

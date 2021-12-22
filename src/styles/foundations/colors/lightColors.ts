@@ -39,4 +39,5 @@ export const lightColors: ToggleColor = {
   },
   background: `#FFF`,
   text: `121212`,
+  border: `#282623`,
 };

@@ -39,6 +39,7 @@ export const darkColors: ToggleColor = {
   },
   text: `rgb(255 246 230)`,
   background: `rgb(39, 35, 37)`,
+  border: `#fff6e6`,
 };
 
 // nice blue bg #00089C

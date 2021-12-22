@@ -1,16 +1,15 @@
-import Head from 'next/head';
+import Seo from '@/components/Seo';
+import { SeoPage } from '@/types';
 
 export default function Home() {
+  const pageSeo: SeoPage = {
+    metaTitle: `Game Over`,
+    metaDescription: `Retrouvez toutes les informations sur la duree de vie de l'ensemble de vos jeux preferes.`,
+  };
+
   return (
     <>
-      <Head>
-        <title>TypeScript starter for Next.js</title>
-        <meta
-          name="description"
-          content="TypeScript starter for Next.js that includes all you need to build amazing apps"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <Seo pageSeo={pageSeo} />
       Home
     </>
   );

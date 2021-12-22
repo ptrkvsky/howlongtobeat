@@ -1,6 +1,8 @@
 import Head from 'next/head';
 import { PrismaClient, Game } from '@prisma/client';
 import TemplateSitemap from '@/features/sitemap/components/TemplateSitemap';
+import Seo from '@/components/Seo';
+import { SeoPage } from '@/types';
 
 const prisma = new PrismaClient();
 
@@ -9,14 +11,14 @@ interface Props {
 }
 
 export default function Sitemap({ games }: Props) {
+  const pageSeo: SeoPage = {
+    metaTitle: `Plan du site`,
+    metaDescription: `Decouvrez l'ensemble des pages du site internet`,
+  };
+
   return (
     <>
-      <Head>
-        <title>Pan du site</title>
-        <meta name="description" content="Plan du site" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
+      <Seo pageSeo={pageSeo} />
       <TemplateSitemap games={games} />
     </>
   );

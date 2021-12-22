@@ -1,21 +1,23 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Prisma, PrismaClient } from '@prisma/client';
-
-import { getGenre } from '@/functions/getGenre';
+import { getGenres } from '@/functions/getGenres';
+import { createGenre } from '@/functions/createGenre';
+import { PrismaClient } from '@prisma/client';
 
 type Data = {
-  result: any;
+  genres: any;
 };
 
 export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>,
 ) {
+  const prisma = new PrismaClient();
   async function updateGenres() {
-    getGenre(35);
+    const genres = await getGenres();
 
-    res.status(200).json({ result: `yes` });
+    Promise.all(genres.map((genre) => createGenre(genre, prisma)));
+    await prisma.$disconnect();
+    res.status(200).json({ genres });
   }
 
   updateGenres();

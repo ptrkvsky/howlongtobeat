@@ -11,7 +11,7 @@ const TemplateSitemap = ({ games }: Props) => {
     <>
       <HomeTitle>
         Plan du site
-        <br /> {games.length} jeux
+        <br /> <span className="primary-color">{games.length}</span> jeux
       </HomeTitle>
       <ul>
         {games.map((game) => (

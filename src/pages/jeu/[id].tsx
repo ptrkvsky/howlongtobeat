@@ -10,6 +10,9 @@ export async function getStaticPaths() {
       isTranslated: {
         equals: true,
       },
+      id: {
+        lt: 100,
+      },
     },
   });
 

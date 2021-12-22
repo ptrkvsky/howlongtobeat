@@ -29,7 +29,27 @@ model Game {
   summary            String?
   rating             Int?
   genres             Int[]
+  genre              GenresOnGames[]
   isTranslated       Boolean @default(false)
+}
+
+
+model Genre {
+  id          Int      @id @default(autoincrement())
+  idIgdb      Int
+  name        String
+  slug        String
+  url         String 
+  games       GenresOnGames[]
+}
+
+model GenresOnGames {
+  game       Game     @relation(fields: [gameId], references: [id])
+  gameId     Int // relation scalar field (used in the `@relation` attribute above)
+  genre     Genre @relation(fields: [genreId], references: [id])
+  genreId   Int // relation scalar field (used in the `@relation` attribute above)
+
+  @@id([gameId, genreId])
 }
 
 model Post {

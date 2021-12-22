@@ -1,7 +1,7 @@
 import { findAllGames } from '@/functions/findAllGames';
 import { getGenresFromGames } from '@/functions/getGenresFromGames';
 import DBClient from '@/prisma/DBClient';
-import { PrismaClient, Game } from '@prisma/client';
+import { Game } from '@prisma/client';
 import Link from 'next/link';
 
 const prisma = DBClient.instance;

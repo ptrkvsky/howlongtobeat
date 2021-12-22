@@ -2,7 +2,7 @@ import { IgdbGenre } from '@/types/IgdbGenre';
 import axios from 'axios';
 import { getHeaders } from './getHeaders';
 
-export async function getGenres() {
+export async function getGenresIgdb() {
   const headers = await getHeaders();
   const bodyRequestGameIgdb = `fields *; limit 50;`;
 

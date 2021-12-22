@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getGenres } from '@/functions/getGenres';
-import { createGenre } from '@/functions/createGenre';
+import { getGenresIgdb } from '@/functions/getGenresIgdb';
+// import { createGenre } from '@/functions/createGenreOnGames';
 import { PrismaClient } from '@prisma/client';
 
 type Data = {
@@ -13,9 +13,9 @@ export default function handler(
 ) {
   const prisma = new PrismaClient();
   async function updateGenres() {
-    const genres = await getGenres();
+    const genres = await getGenresIgdb();
 
-    Promise.all(genres.map((genre) => createGenre(genre, prisma)));
+    // Promise.all(genres.map((genre) => createGenre(genre, prisma)));
     await prisma.$disconnect();
     res.status(200).json({ genres });
   }

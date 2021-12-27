@@ -154,6 +154,7 @@ const GlobalStyles = () => {
           top: 50%;
           transform: translate3d(calc(-100% - 6vw), -30%, 0)
             translate3d(0, 20px, 0);
+          z-index: 10;
         }
 
         .menu__item-link:hover + .menu__item-img {

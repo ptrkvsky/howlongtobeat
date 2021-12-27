@@ -1,4 +1,4 @@
-import { Game } from '@prisma/client';
+import { Genre } from '@prisma/client';
 import TemplateSitemap from '@/features/sitemap/components/TemplateSitemap';
 import Seo from '@/components/Seo';
 import { SeoPage } from '@/types';
@@ -6,11 +6,22 @@ import DBClient from '@/prisma/DBClient';
 
 const prisma = DBClient.instance;
 
-interface Props {
-  games: Game[];
+// This function gets called at build time
+export async function getStaticProps() {
+  const genres = await prisma.genre.findMany();
+
+  return {
+    props: {
+      genres,
+    },
+  };
 }
 
-export default function Sitemap({ games }: Props) {
+interface Props {
+  genres: Genre[];
+}
+
+export default function Sitemap({ genres }: Props) {
   const pageSeo: SeoPage = {
     metaTitle: `Plan du site`,
     metaDescription: `Decouvrez l'ensemble des pages du site internet`,
@@ -19,26 +30,7 @@ export default function Sitemap({ games }: Props) {
   return (
     <>
       <Seo pageSeo={pageSeo} />
-      <TemplateSitemap games={games} />
+      <TemplateSitemap genres={genres} />
     </>
   );
-}
-
-// This function gets called at build time
-export async function getStaticProps() {
-  const games = await prisma.game.findMany({
-    where: {
-      isTranslated: {
-        equals: true,
-      },
-    },
-  });
-
-  // By returning { props: { posts } }, the Blog component
-  // will receive `posts` as a prop at build time
-  return {
-    props: {
-      games,
-    },
-  };
 }

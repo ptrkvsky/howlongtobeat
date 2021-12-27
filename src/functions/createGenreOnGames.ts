@@ -11,7 +11,7 @@ export async function createGenreOnGames(
 ) {
   try {
     // Test si l'élément est présent
-    const genreOnGame = prisma.genresOnGames.findFirst({
+    const genreOnGame = await prisma.genresOnGames.findFirst({
       where: {
         genreId: genreId,
         gameId: gameId,
@@ -19,15 +19,21 @@ export async function createGenreOnGames(
     });
 
     if (!genreOnGame) {
-      const genresOnGames = await prisma.genresOnGames.create({
+      const genresOnGames = prisma.genresOnGames.create({
         data: {
-          gameId: genreId,
-          genreId: gameId,
+          gameId: gameId,
+          genreId: genreId,
         },
       });
       return genresOnGames;
     } else {
+      console.log(genreId, gameId);
       console.error(`existe déjà`);
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve(`existe déjà`);
+        }, 100);
+      });
     }
   } catch (error: any) {
     console.error(

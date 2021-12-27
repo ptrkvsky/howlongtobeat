@@ -20,9 +20,10 @@ export async function getStaticPaths() {
     params: { id: game.id.toString() },
   }));
   await prisma.$disconnect();
-  // { fallback: false } means other routes should 404.
   // We'll pre-render only these paths at build time.
-  return { paths, fallback: false };
+  // { fallback: blocking } will server-render pages
+  // on-demand if the path doesn't exist.
+  return { paths, fallback: `blocking` };
 }
 
 interface PropsGetStaticProps {
@@ -40,25 +41,105 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
       id: +params.id,
     },
   });
-  await prisma.$disconnect();
-  return { props: { game } };
 
-  // Pass game data to the page via props
+  if (!game) {
+    return { notFound: true };
+  }
+
+  const genres = await prisma.genresOnGames.findMany({
+    where: {
+      gameId: {
+        equals: +params.id,
+      },
+    },
+  });
+
+  // const relatedGamesPromises =
+  //   genres &&
+  //   genres.map((genre) =>
+  //     prisma.game.findMany({
+  //       take: 20,
+  //       where: {
+  //         id: {
+  //           gte: game.id,
+  //           lte: game.id + 21,
+  //           notIn: game.id,
+  //         },
+  //         isTranslated: true,
+  //         genre: {
+  //           some: {
+  //             genreId: {
+  //               equals: genre.genreId,
+  //             },
+  //           },
+  //         },
+  //       },
+  //     }),
+  //   );
+
+  const relatedGames = await prisma.game.findMany({
+    take: 20,
+    where: {
+      OR: [
+        {
+          id: {
+            gte: game.id,
+          },
+        },
+        {
+          id: {
+            lte: game.id + 21,
+          },
+        },
+      ],
+      NOT: {
+        id: {
+          equals: game.id,
+        },
+      },
+
+      isTranslated: true,
+    },
+  });
+
+  if (relatedGames) {
+    await prisma.$disconnect();
+    const relatedGamesFiltered = relatedGames.filter(
+      (relatedGame) => relatedGame.id !== game?.id,
+    );
+    return { props: { game, relatedGames: relatedGamesFiltered } };
+  } else {
+    const relatedGames = await prisma.game.findMany({
+      take: 21,
+      where: {
+        isTranslated: true,
+        id: {
+          gte: game.id,
+          lte: game.id + 21,
+          notIn: game.id,
+        },
+      },
+    });
+    await prisma.$disconnect();
+    return { props: { game, relatedGames }, revalidate: 60 };
+  }
 }
 
 interface PropsGame {
   game: Game;
+  relatedGames: Game[];
 }
 
-function Game({ game }: PropsGame) {
+function Game({ game, relatedGames }: PropsGame) {
   const pageSeo = {
     metaTitle: `Combien de temps faut-il pour terminer ? ${game.name}`,
     metaDescription: `Combien de temps faut-il pour terminer ? ${game.name}`,
   };
+
   return (
     <>
       <Seo pageSeo={pageSeo} />
-      <TemplateJeu game={game} />
+      <TemplateJeu game={game} relatedGames={relatedGames} />
     </>
   );
 }

@@ -1,18 +1,17 @@
-import styled from '@emotion/styled';
-import { styleInformations } from '@/config/styleInformations';
+import { FC } from 'react';
+import { StyleFooter } from './style';
+import LinkSitemap from '../LinkSitemap';
 import Logo from '../Logo';
 
-const StyleFooter = styled(`footer`)`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: ${styleInformations.headerHeight.dekstop};
-`;
+interface Props {
+  cloakFooter?: boolean;
+}
 
-const Footer = () => {
+const Footer: FC<Props> = ({ cloakFooter }) => {
   return (
     <StyleFooter className="container">
       <Logo />
+      <LinkSitemap cloakFooter={cloakFooter} />
     </StyleFooter>
   );
 };

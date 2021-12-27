@@ -1,9 +1,11 @@
+import Layout from '@/styles/components/layout/Layout';
 import styled from '@emotion/styled';
 import { Game } from '@prisma/client';
 
 import { TitleMain, Description } from '../styles';
 import Banner from './Banner';
 import Cover from './Cover';
+import RelatedGames from './RelatedGames';
 import Time from './Time';
 
 const Content = styled(`div`)`
@@ -17,11 +19,12 @@ const Content = styled(`div`)`
 
 interface Props {
   game: Game;
+  relatedGames: Game[];
 }
 
-const TemplateJeu = ({ game }: Props) => {
+const TemplateJeu = ({ game, relatedGames }: Props) => {
   return (
-    <div>
+    <Layout>
       {game.cover && <Banner game={game} />}
 
       <Content className="container">
@@ -31,11 +34,12 @@ const TemplateJeu = ({ game }: Props) => {
             Combien de temps faut-il pour terminer <br />
             <span className="name">{game.name}</span> ?
           </TitleMain>
-          <Description>{game.description}</Description>
+          <Description>{game.description.replace(`..,`, `.`)}</Description>
           <Time game={game} />
         </div>
       </Content>
-    </div>
+      <RelatedGames relatedGames={relatedGames} />
+    </Layout>
   );
 };
 

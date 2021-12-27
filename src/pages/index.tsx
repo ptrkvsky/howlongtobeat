@@ -1,4 +1,5 @@
 import Seo from '@/components/Seo';
+import TemplateHome from '@/features/home/components/TemplateHome';
 import { SeoPage } from '@/types';
 
 export default function Home() {
@@ -10,7 +11,7 @@ export default function Home() {
   return (
     <>
       <Seo pageSeo={pageSeo} />
-      Home
+      <TemplateHome />
     </>
   );
 }

@@ -1,28 +1,26 @@
 import { HomeTitle } from '@/styles/components/titles/HomeTitle';
-import { Game } from '@prisma/client';
+import { Genre } from '@prisma/client';
 import Link from 'next/link';
+import Layout from '@/styles/components/layout/Layout';
 
 interface Props {
-  games: Game[];
+  genres: Genre[];
 }
 
-const TemplateSitemap = ({ games }: Props) => {
+const TemplateSitemap = ({ genres }: Props) => {
   return (
-    <>
-      <HomeTitle>
-        Plan du site
-        <br /> <span className="primary-color">{games.length}</span> jeux
-      </HomeTitle>
+    <Layout cloakFooter isCentered>
+      <HomeTitle>Plan du site</HomeTitle>
       <ul>
-        {games.map((game) => (
-          <li key={game.id}>
-            <Link href={`jeu/${game.id}`}>
-              <a>{game.name}</a>
+        {genres.map((genre) => (
+          <li key={genre.id}>
+            <Link href={`genre/${genre.id}`}>
+              <a>{genre.name}</a>
             </Link>
           </li>
         ))}
       </ul>
-    </>
+    </Layout>
   );
 };
 

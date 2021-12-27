@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import styled from '@emotion/styled';
 import { styleInformations } from '@/config/styleInformations';
+import { Genre } from '@prisma/client';
 
 const StyleLayout = styled(`div`)`
   display: grid;
@@ -24,11 +25,17 @@ const StyleLayout = styled(`div`)`
   }
 `;
 
-const Layout: FC = ({ children }) => (
-  <StyleLayout>
+interface Props {
+  children: React.ReactNode;
+  cloakFooter?: boolean;
+  isCentered?: boolean;
+}
+
+const Layout: FC<Props> = ({ children, cloakFooter, isCentered }: Props) => (
+  <StyleLayout className={`${isCentered ? `container` : ``}`}>
     <main>{children}</main>
     <Header />
-    <Footer />
+    <Footer cloakFooter={cloakFooter} />
   </StyleLayout>
 );
 

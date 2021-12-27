@@ -31,6 +31,7 @@
     "@emotion/styled": "11.6.0",
     "@prisma/client": "3.7.0",
     "axios": "0.24.0",
+    "emotion-reset": "3.0.1",
     "next": "12.0.7",
     "prisma": "3.6.0",
     "react": "17.0.2",

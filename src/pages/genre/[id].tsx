@@ -1,21 +1,19 @@
-import { findAllGames } from '@/functions/findAllGames';
-import { getGenresFromGames } from '@/functions/getGenresFromGames';
+import TemplateGenre from '@/features/genre/components/TemplateGenre';
+import { getAllGenresPrisma } from '@/functions/getAllGenresPrisma';
 import DBClient from '@/prisma/DBClient';
-import { Game } from '@prisma/client';
+import { Game, Genre } from '@prisma/client';
 import Link from 'next/link';
 
 const prisma = DBClient.instance;
 
 // This function gets called at build time
 export async function getStaticPaths() {
-  const games = await findAllGames();
+  const genres = await getAllGenresPrisma();
 
-  const genres = getGenresFromGames(games);
-
-  const paths = genres.map((genreId) => ({
-    params: { id: genreId.toString() },
+  const paths = genres?.map((genreId) => ({
+    params: { id: genreId.id.toString() },
   }));
-  await prisma.$disconnect();
+
   // { fallback: false } means other routes should 404.
   // We'll pre-render only these paths at build time.
   return { paths, fallback: false };
@@ -29,37 +27,39 @@ interface PropsGetStaticProps {
 
 // This also gets called at build time
 export async function getStaticProps({ params }: PropsGetStaticProps) {
-  // params contains the post `id`.
-  // If the route is like /posts/1, then params.id is 1
+  const genre = await prisma.genre.findUnique({
+    where: {
+      id: +params.id,
+    },
+  });
+
   const games = await prisma.game.findMany({
     where: {
-      genres: {
-        has: +params.id,
+      isTranslated: true,
+      genre: {
+        some: {
+          genreId: +params.id,
+        },
       },
     },
   });
   await prisma.$disconnect();
 
-  return { props: { games } };
+  return { props: { games, genre } };
   // Pass game data to the page via props
 }
 
 interface PropsGame {
   games: Game[];
+  genre: Genre;
 }
 
-function Game({ games }: PropsGame) {
+function Genre({ games, genre }: PropsGame) {
   return (
-    <ul>
-      {games.map((game) => (
-        <li key={game.id}>
-          <Link href={`jeu/${game.id}`}>
-            <a>{game.name}</a>
-          </Link>
-        </li>
-      ))}
-    </ul>
+    <>
+      <TemplateGenre genre={genre} games={games} />
+    </>
   );
 }
 
-export default Game;
+export default Genre;

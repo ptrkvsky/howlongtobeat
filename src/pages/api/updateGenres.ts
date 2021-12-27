@@ -6,7 +6,8 @@ type Data = {
   ok: any;
 };
 
-export default function handler(
+// Mise à jour des genres de jeu
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>,
 ) {
@@ -16,12 +17,14 @@ export default function handler(
     const games = await prisma.game.findMany({
       where: {
         id: {
-          lt: 20,
+          gt: 1000,
+          lt: 1100,
+        },
+        genres: {
+          isEmpty: false,
         },
       },
     });
-
-    console.log(games);
 
     const promises: any[] = [];
 
@@ -46,15 +49,18 @@ export default function handler(
       if (genresGamePrisma.length > 0) {
         // Pour chacun de ses genres
         genresGamePrisma.map((genreGamePrisma) => {
-          promises.push(createGenreOnGames(genreGamePrisma, gameId, prisma));
+          if (genreGamePrisma && gameId) {
+            promises.push(createGenreOnGames(genreGamePrisma, gameId, prisma));
+          }
         });
       }
     });
 
-    const miseajour = Promise.all(promises);
+    const miseajour = await Promise.all(promises);
     await prisma.$disconnect();
-    res.status(200).json({ ok: miseajour });
+    return miseajour;
   }
 
-  updateGenres();
+  const miseajour = await updateGenres();
+  res.status(200).json({ ok: miseajour });
 }

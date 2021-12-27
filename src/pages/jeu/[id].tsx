@@ -34,11 +34,12 @@ interface PropsGetStaticProps {
 
 // This also gets called at build time
 export async function getStaticProps({ params }: PropsGetStaticProps) {
+  const gameId = +params.id;
   // params contains the post `id`.
   // If the route is like /posts/1, then params.id is 1
   const game = await prisma.game.findUnique({
     where: {
-      id: +params.id,
+      id: gameId,
     },
   });
 
@@ -46,13 +47,13 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
     return { notFound: true };
   }
 
-  const genres = await prisma.genresOnGames.findMany({
-    where: {
-      gameId: {
-        equals: +params.id,
-      },
-    },
-  });
+  // const genres = await prisma.genresOnGames.findMany({
+  //   where: {
+  //     gameId: {
+  //       equals: +params.id,
+  //     },
+  //   },
+  // });
 
   // const relatedGamesPromises =
   //   genres &&
@@ -80,49 +81,15 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
   const relatedGames = await prisma.game.findMany({
     take: 20,
     where: {
-      OR: [
-        {
-          id: {
-            gte: game.id,
-          },
-        },
-        {
-          id: {
-            lte: game.id + 21,
-          },
-        },
-      ],
-      NOT: {
-        id: {
-          equals: game.id,
-        },
+      id: {
+        gt: game.id,
+        lt: game.id + 21,
       },
-
       isTranslated: true,
     },
   });
 
-  if (relatedGames) {
-    await prisma.$disconnect();
-    const relatedGamesFiltered = relatedGames.filter(
-      (relatedGame) => relatedGame.id !== game?.id,
-    );
-    return { props: { game, relatedGames: relatedGamesFiltered } };
-  } else {
-    const relatedGames = await prisma.game.findMany({
-      take: 21,
-      where: {
-        isTranslated: true,
-        id: {
-          gte: game.id,
-          lte: game.id + 21,
-          notIn: game.id,
-        },
-      },
-    });
-    await prisma.$disconnect();
-    return { props: { game, relatedGames }, revalidate: 60 };
-  }
+  return { props: { game, relatedGames }, revalidate: 60 };
 }
 
 interface PropsGame {

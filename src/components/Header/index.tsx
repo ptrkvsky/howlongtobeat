@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import DarkModeButton from '../DarkModeButton';
 import { styleInformations } from '@/config/styleInformations';
 import Logo from '../Logo';
+import { RefObject } from 'react';
 
 const StyledHeader = styled(`header`)`
   display: flex;
@@ -15,13 +16,16 @@ const StyledHeader = styled(`header`)`
   }
 `;
 
-const Header = () => {
+interface Props {
+  refOverlay: RefObject<SVGPathElement>;
+}
+
+const Header = ({ refOverlay }: Props) => {
   return (
     <StyledHeader>
       <div className="container">
         <Logo />
-
-        <DarkModeButton />
+        <DarkModeButton refOverlay={refOverlay} />
       </div>
     </StyledHeader>
   );

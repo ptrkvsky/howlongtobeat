@@ -2322,6 +2322,11 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.8.tgz#e412b8d33f5e006593cbd3cee6df9f2cebbe802a"
   integrity sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg==
 
+"gsap@npm:@gsap/shockingly":
+  version "3.9.1"
+  resolved "https://npm.greensock.com/@gsap%2fshockingly/-/shockingly-3.9.1.tgz#cae56c490469038bb4bfb628fa25014b6b3b0877"
+  integrity sha512-F/N8MDvXCFViyIeFiensvEdv/RzO32A3sM+xdLfSWL6dEHOuzTVIo6jthZzIJTFXrvOqwkyEU/TznhpZJwUZjQ==
+
 hard-rejection@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/hard-rejection/-/hard-rejection-2.1.0.tgz#1c6eda5c1685c63942766d79bb40ae773cecd883"

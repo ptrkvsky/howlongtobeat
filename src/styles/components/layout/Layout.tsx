@@ -1,7 +1,8 @@
-import { FC } from 'react';
+import { FC, useRef } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import styled from '@emotion/styled';
+import Overlay from '@/assets/Overlay';
 
 const StyleLayout = styled(`div`)`
   display: grid;
@@ -20,6 +21,16 @@ const StyleLayout = styled(`div`)`
   footer {
     grid-area: footer;
   }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 interface Props {
@@ -28,12 +39,17 @@ interface Props {
   isCentered?: boolean;
 }
 
-const Layout: FC<Props> = ({ children, cloakFooter, isCentered }: Props) => (
-  <StyleLayout className={`${isCentered ? `container` : ``}`}>
-    <main>{children}</main>
-    <Header />
-    <Footer cloakFooter={cloakFooter} />
-  </StyleLayout>
-);
+const Layout: FC<Props> = ({ children, cloakFooter, isCentered }: Props) => {
+  const refOverlay = useRef<SVGPathElement>(null);
+
+  return (
+    <StyleLayout className={`${isCentered ? `container` : ``}`}>
+      <main>{children}</main>
+      <Header refOverlay={refOverlay} />
+      <Footer cloakFooter={cloakFooter} />
+      <Overlay refOverlay={refOverlay} />
+    </StyleLayout>
+  );
+};
 
 export default Layout;

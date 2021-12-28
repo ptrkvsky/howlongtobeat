@@ -2,8 +2,6 @@ import { FC } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import styled from '@emotion/styled';
-import { styleInformations } from '@/config/styleInformations';
-import { Genre } from '@prisma/client';
 
 const StyleLayout = styled(`div`)`
   display: grid;

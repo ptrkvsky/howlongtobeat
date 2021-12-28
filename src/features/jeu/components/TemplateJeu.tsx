@@ -1,7 +1,7 @@
 import Layout from '@/styles/components/layout/Layout';
+import { breakpoints } from '@/styles/foundations';
 import styled from '@emotion/styled';
 import { Game } from '@prisma/client';
-
 import { TitleMain, Description } from '../styles';
 import Banner from './Banner';
 import Cover from './Cover';
@@ -15,6 +15,15 @@ const Content = styled(`div`)`
   display: grid;
   grid-template-columns: 352px auto;
   grid-gap: ${({ theme }) => theme.spacing[8]};
+
+  ${breakpoints.tabletPortrait} {
+    grid-template-columns: auto;
+
+    .cover {
+      display: flex;
+      justify-content: center;
+    }
+  }
 `;
 
 interface Props {
@@ -28,7 +37,7 @@ const TemplateJeu = ({ game, relatedGames }: Props) => {
       {game.cover && <Banner game={game} />}
 
       <Content className="container">
-        {game.cover && <Cover game={game} />}
+        <div className="cover">{game.cover && <Cover game={game} />}</div>
         <div>
           <TitleMain>
             Combien de temps faut-il pour terminer <br />

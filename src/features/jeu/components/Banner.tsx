@@ -1,3 +1,4 @@
+import { breakpoints } from '@/styles/foundations';
 import styled from '@emotion/styled';
 import { Game } from '@prisma/client';
 import Image from 'next/image';
@@ -29,6 +30,9 @@ const Hidden = styled(`div`)`
     height: 10px;
     width: 100%;
     background: ${({ theme }) => theme.colors.background};
+    ${breakpoints.tabletPortrait} {
+      top: 70vh;
+    }
   }
 `;
 
@@ -37,6 +41,10 @@ const Wrapper = styled(`div`)`
   height: 33vh;
   width: 100%;
   filter: blur(5px);
+
+  ${breakpoints.tabletPortrait} {
+    height: 70vh;
+  }
 
   &:before {
     content: '';

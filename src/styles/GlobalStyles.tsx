@@ -1,5 +1,6 @@
 import { Global, css, useTheme } from '@emotion/react';
 import emotionReset from 'emotion-reset';
+import { breakpoints } from './foundations';
 
 const GlobalStyles = () => {
   const theme = useTheme();
@@ -64,7 +65,7 @@ const GlobalStyles = () => {
         .bold,
         b,
         strong {
-          font-family: ${theme.typography.fontWeights.extrabold};
+          font-weight: ${theme.typography.fontWeights.bold};
         }
         button {
           color: ${theme.colors.text};
@@ -79,6 +80,9 @@ const GlobalStyles = () => {
           max-width: ${theme.config.maxWidth.desktop};
           margin-left: auto;
           margin-right: auto;
+          ${breakpoints.tabletLandscape} {
+            padding: 0 ${theme.spacing[2]};
+          }
         }
 
         .primary-color {
@@ -100,6 +104,10 @@ const GlobalStyles = () => {
           counter-reset: menu;
           max-width: calc(100vw - 15px);
           overflow: hidden;
+
+          ${breakpoints.tabletLandscape} {
+            padding: 0;
+          }
         }
 
         .menu__item {

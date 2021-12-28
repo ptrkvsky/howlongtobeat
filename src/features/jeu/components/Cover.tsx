@@ -1,3 +1,4 @@
+import { breakpoints } from '@/styles/foundations';
 import styled from '@emotion/styled';
 import { Game } from '@prisma/client';
 import Image from 'next/image';

@@ -1,10 +1,10 @@
 import { useTheme } from '@emotion/react';
-import Link from 'next/link';
+import CloakLink from '../Cloaklink';
 
 const Logo = () => {
   const theme = useTheme();
   return (
-    <Link href="/">
+    <CloakLink url="/">
       <svg
         width="210"
         height="62"
@@ -17,7 +17,7 @@ const Logo = () => {
           fill={theme.colors.primary[500]}
         />
       </svg>
-    </Link>
+    </CloakLink>
   );
 };
 

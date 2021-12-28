@@ -16,10 +16,10 @@ const CloakLink: FC<Props> = ({ url, children }: Props): JSX.Element => {
       onMouseLeave={() => setIsCloaked(true)}
     >
       {isCloaked ? (
-        <span className="daclok">{children}</span>
+        <span>{children}</span>
       ) : (
         <Link href={url}>
-          <a className="daclok">{children}</a>
+          <a>{children}</a>
         </Link>
       )}
     </div>

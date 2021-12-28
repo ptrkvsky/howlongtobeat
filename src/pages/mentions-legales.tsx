@@ -23,7 +23,7 @@ const Wrapper = styled(`div`)`
 `;
 
 const MentionsLegales = () => {
-  const [mail, setMail] = useState<string>(``);
+  const [mail, setMail] = useState<string>(`vincent.crtd@gmail.com`);
 
   useEffect(() => {
     setMail(`johan@developpeur-web.tech`);

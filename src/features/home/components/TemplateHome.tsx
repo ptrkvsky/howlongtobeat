@@ -1,5 +1,11 @@
 import Layout from '@/styles/components/layout/Layout';
 
-const TemplateHome = () => <Layout isCentered> Home </Layout>;
+import Banner from './Banner';
+
+const TemplateHome = () => (
+  <Layout>
+    <Banner />
+  </Layout>
+);
 
 export default TemplateHome;

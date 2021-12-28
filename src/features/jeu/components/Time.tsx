@@ -16,24 +16,22 @@ const Time = ({ game }: Props) => {
           <span className="primary-color bold">
             {game.timeMainStory} heures.
           </span>
-          .
         </Description>
       )}
       {game.timeAllStyles && (
         <Description>
-          En moyenne, pour voir la fin du jeu
+          En moyenne, pour voir la fin du jeu{` `}
           {game.name} les joueurs ont mis{` `}
           <span className="primary-color bold">
             {game.timeAllStyles} heures.
           </span>
-          ,
         </Description>
       )}
       {game.timeCompletionists && (
         <Description>
           Si vous êtes un acharné de la manette, pour terminer le jeu{` `}
           <span className="primary-color bold">100%</span> il vous faudra
-          environ
+          environ{` `}
           <span className="primary-color bold">
             {game.timeAllStyles} heures.
           </span>

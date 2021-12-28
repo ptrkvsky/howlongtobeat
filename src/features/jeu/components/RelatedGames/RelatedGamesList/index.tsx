@@ -1,6 +1,5 @@
 import { Game } from '@prisma/client';
 import RelatedGamesItem from '../RelatedGamesItem';
-import { Nav } from './style';
 
 interface Props {
   relatedGames: Game[];

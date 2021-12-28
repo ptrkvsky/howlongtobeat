@@ -56,6 +56,7 @@ const GlobalStyles = () => {
 
         a {
           text-decoration: none;
+          color: inherit;
         }
         a:visited {
           color: inherit;
@@ -90,7 +91,7 @@ const GlobalStyles = () => {
           -moz-user-select: none;
           -ms-user-select: none;
           user-select: none;
-          padding: 10vh 0 25vh;
+          padding: 0 0 25vh 0;
           --marquee-width: 100vw;
           --offset: 20vw;
           --move-initial: calc(-25% + var(--offset));
@@ -129,14 +130,14 @@ const GlobalStyles = () => {
 
         .menu__item-link::before {
           all: initial;
-          font-family: sofia-pro, sans-serif;
+          font-family: ${theme.typography.fonts.heading};
           counter-increment: menu;
           content: counter(menu);
           position: absolute;
-          bottom: 60%;
-          left: 0;
+          bottom: 55%;
+          left: -${theme.spacing[`2.5`]};
           pointer-events: none;
-          color: ${theme.colors.text};
+          color: ${theme.colors.primary[500]};
         }
 
         .menu__item-link:hover {

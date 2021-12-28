@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { StyleFooter } from './style';
-import LinkSitemap from '../LinkSitemap';
+import LinkSitemap from './Links';
 import Logo from '../Logo';
 
 interface Props {

@@ -14,7 +14,9 @@ const RelatedGames = ({ relatedGames }: Props) => {
   relatedGames.sort(compareGames);
   return (
     <>
-      <TitleSecondary>D&apos;autres jeux à terminer</TitleSecondary>
+      <div className="container">
+        <TitleSecondary>D&apos;autres jeux à terminer</TitleSecondary>
+      </div>
       <RelatedGamesList relatedGames={relatedGames} />
     </>
   );

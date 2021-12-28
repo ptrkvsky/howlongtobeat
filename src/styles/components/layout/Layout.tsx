@@ -18,7 +18,6 @@ const StyleLayout = styled(`div`)`
     grid-area: header;
   }
   footer {
-    margin-top: ${({ theme }) => theme.spacing[8]};
     grid-area: footer;
   }
 `;

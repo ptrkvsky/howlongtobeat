@@ -53,6 +53,12 @@ npx create-next-app -e https://github.com/jpedroschmitz/typescript-nextjs-starte
 
 ### Development
 
+First add your gsap token
+
+```bash
+export NPM_TOKEN=my_token_goes_here_foo_bar
+```
+
 To start the project locally, run:
 
 ```bash

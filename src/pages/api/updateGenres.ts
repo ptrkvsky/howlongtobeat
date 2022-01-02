@@ -17,8 +17,8 @@ export default async function handler(
     const games = await prisma.game.findMany({
       where: {
         id: {
-          gt: 1000,
-          lt: 1100,
+          gt: 1200,
+          lt: 1500,
         },
         genres: {
           isEmpty: false,

@@ -14,9 +14,9 @@ export async function updateGame(game: Game) {
 
     const translationDeepl = await axios({
       method: `get`,
-      url: `https://api.deepl.com/v2/translate?auth_key=${deeplKey}&text=${encodeURI(
+      url: `https://api.deepl.com/v2/translate?auth_key=${deeplKey}&target_lang=FR&text=${encodeURI(
         game.description,
-      )}&target_lang=fr`,
+      )}`,
       headers,
     });
 

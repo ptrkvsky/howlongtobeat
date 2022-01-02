@@ -15,7 +15,7 @@ const TemplateGenre = ({ genre, games }: Props) => {
   return (
     <Layout isCentered>
       <HomeTitle>
-        {genre.name}
+        {genre?.name}
         <br /> {games.length} jeux
       </HomeTitle>
       <ul>

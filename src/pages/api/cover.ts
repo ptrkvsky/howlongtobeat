@@ -4,12 +4,12 @@ import { PrismaClient, Game } from '@prisma/client';
 import { updateGame } from '@/functions/updateGames';
 
 type Data = {
-  games: Game[];
+  gamesUpdated: Promise<(Game | undefined)[]>;
 };
 
 const prisma = new PrismaClient();
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>,
 ) {
@@ -19,15 +19,17 @@ export default function handler(
     const games = await prisma.game.findMany({
       where: {
         id: {
-          lt: 1000,
+          lt: 1500,
+          gt: 1300,
         },
+        isTranslated: false,
       },
     });
 
-    // return Promise.all(games.map((game) => updateGame(game)));
+    const gamesUpdated = Promise.all(games.map((game) => updateGame(game)));
+    await prisma.$disconnect();
+    res.status(200).json({ gamesUpdated });
+    return gamesUpdated;
   }
-
-  // updateGames();
-
-  res.status(200);
+  updateGames();
 }

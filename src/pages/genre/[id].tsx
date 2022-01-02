@@ -2,7 +2,6 @@ import TemplateGenre from '@/features/genre/components/TemplateGenre';
 import { getAllGenresPrisma } from '@/functions/getAllGenresPrisma';
 import DBClient from '@/prisma/DBClient';
 import { Game, Genre } from '@prisma/client';
-import Link from 'next/link';
 
 const prisma = DBClient.instance;
 
@@ -10,7 +9,23 @@ const prisma = DBClient.instance;
 export async function getStaticPaths() {
   const genres = await getAllGenresPrisma();
 
-  const paths = genres?.map((genreId) => ({
+  if (!genres) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const genreNull: Genre = {
+    id: 999,
+    name: `Aucun`,
+    slug: `aucun`,
+    url: ``,
+    idIgdb: 0,
+  };
+
+  const genresEtNull = [...genres, genreNull];
+
+  const paths = genresEtNull?.map((genreId) => ({
     params: { id: genreId.id.toString() },
   }));
 
@@ -21,32 +36,60 @@ export async function getStaticPaths() {
 
 interface PropsGetStaticProps {
   params: {
-    id: number;
+    id: string;
   };
 }
 
 // This also gets called at build time
 export async function getStaticProps({ params }: PropsGetStaticProps) {
-  const genre = await prisma.genre.findUnique({
-    where: {
-      id: +params.id,
-    },
-  });
-
-  const games = await prisma.game.findMany({
-    where: {
-      isTranslated: true,
-      genre: {
-        some: {
-          genreId: +params.id,
+  if (params.id === `999`) {
+    // Games without relations
+    const gamesGenreNull = await prisma.game.findMany({
+      where: {
+        isTranslated: true,
+        genre: {
+          none: {},
         },
       },
-    },
-  });
-  await prisma.$disconnect();
+    });
 
-  return { props: { games, genre } };
-  // Pass game data to the page via props
+    console.log(gamesGenreNull);
+
+    const genreNull: Genre = {
+      id: 999,
+      name: `Aucun`,
+      slug: `aucun`,
+      url: ``,
+      idIgdb: 0,
+    };
+    console.log(genreNull);
+
+    await prisma.$disconnect();
+    console.log(genreNull);
+    return { props: { games: gamesGenreNull, genre: genreNull } };
+  } else {
+    const genre = await prisma.genre.findUnique({
+      where: {
+        id: +params.id,
+      },
+    });
+
+    const games = await prisma.game.findMany({
+      where: {
+        isTranslated: true,
+        genre: {
+          some: {
+            genreId: +params.id,
+          },
+        },
+      },
+    });
+
+    await prisma.$disconnect();
+
+    return { props: { games, genre } };
+    // Pass game data to the page via props
+  }
 }
 
 interface PropsGame {

@@ -19,6 +19,11 @@ const TemplateSitemap = ({ genres }: Props) => {
             </Link>
           </li>
         ))}
+        <li>
+          <Link href={`genre/999`}>
+            <a>Aucun</a>
+          </Link>
+        </li>
       </ul>
     </Layout>
   );

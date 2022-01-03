@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { Game } from '@prisma/client';
 import { TitleMain, Description } from '../styles';
 import Banner from './Banner';
+import CircularBar from './CircularBar';
 import Cover from './Cover';
 import RelatedGames from './RelatedGames';
 import Time from './Time';
@@ -16,7 +17,7 @@ const Content = styled(`div`)`
   grid-template-columns: 352px auto;
   grid-gap: ${({ theme }) => theme.spacing[8]};
 
-  ${breakpoints.tabletPortrait} {
+  ${breakpoints.tabletLandscape} {
     grid-template-columns: auto;
 
     .cover {
@@ -38,6 +39,7 @@ const TemplateJeu = ({ game, relatedGames }: Props) => {
 
       <Content className="container">
         <div className="cover">{game.cover && <Cover game={game} />}</div>
+        {game.rating && <CircularBar percentage={game.rating} />}
         <div>
           <TitleMain>
             Combien de temps faut-il pour terminer <br />
@@ -47,7 +49,9 @@ const TemplateJeu = ({ game, relatedGames }: Props) => {
           <Time game={game} />
         </div>
       </Content>
-      <RelatedGames relatedGames={relatedGames} />
+      <div className="container">
+        <RelatedGames relatedGames={relatedGames} />
+      </div>
     </Layout>
   );
 };

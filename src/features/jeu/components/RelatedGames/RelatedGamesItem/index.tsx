@@ -1,8 +1,6 @@
 import { Game } from '@prisma/client';
 import Link from 'next/link';
 import Cover from '../../Cover';
-import { Marquee, Wrapper, SpanLink } from './style';
-
 interface Props {
   relatedGame: Game;
 }

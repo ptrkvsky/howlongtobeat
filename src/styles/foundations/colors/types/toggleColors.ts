@@ -38,4 +38,5 @@ export type ToggleColor = {
   text: string;
   background: string;
   border: string;
+  shadow: string;
 };

@@ -42,10 +42,6 @@ const Wrapper = styled(`div`)`
   width: 100%;
   filter: blur(5px);
 
-  ${breakpoints.tabletPortrait} {
-    height: 70vh;
-  }
-
   &:before {
     content: '';
     position: absolute;

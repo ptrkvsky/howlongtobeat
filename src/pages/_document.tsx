@@ -21,7 +21,10 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <meta name="google-site-verification" content="JToiALKPVzracQqpHh9U1OEf0n1wkC9Z8VaRsUmSboo" />
+          <meta
+            name="google-site-verification"
+            content="JToiALKPVzracQqpHh9U1OEf0n1wkC9Z8VaRsUmSboo"
+          />
         </Head>
 
         <body>

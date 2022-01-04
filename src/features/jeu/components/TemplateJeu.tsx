@@ -29,12 +29,13 @@ const Content = styled(`div`)`
 
 interface Props {
   game: Game;
+  games: Game[];
   relatedGames: Game[];
 }
 
-const TemplateJeu = ({ game, relatedGames }: Props) => {
+const TemplateJeu = ({ game, relatedGames, games }: Props) => {
   return (
-    <Layout>
+    <Layout games={games}>
       {game.cover && <Banner game={game} />}
 
       <Content className="container">

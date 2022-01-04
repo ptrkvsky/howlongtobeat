@@ -3,6 +3,8 @@ import DarkModeButton from '../DarkModeButton';
 import { styleInformations } from '@/config/styleInformations';
 import Logo from '../Logo';
 import { RefObject } from 'react';
+import { Game } from '@prisma/client';
+import { SearchGames } from '@/components/searchGames';
 
 const StyledHeader = styled(`header`)`
   display: flex;
@@ -13,18 +15,21 @@ const StyledHeader = styled(`header`)`
   .container {
     display: flex;
     justify-content: space-between;
+    align-items: center;
   }
 `;
 
 interface Props {
   refOverlay: RefObject<SVGPathElement>;
+  games: Game[];
 }
 
-const Header = ({ refOverlay }: Props) => {
+const Header = ({ refOverlay, games }: Props) => {
   return (
     <StyledHeader>
       <div className="container">
         <Logo />
+        <SearchGames games={games} />
         <DarkModeButton refOverlay={refOverlay} />
       </div>
     </StyledHeader>

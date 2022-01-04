@@ -1,18 +1,19 @@
 import Seo from '@/components/Seo';
 import TemplateHome from '@/features/home/components/TemplateHome';
+import { findAllGames } from '@/functions/findAllGames';
 import DBClient from '@/prisma/DBClient';
 import { SeoPage } from '@/types';
+import { Game } from '@prisma/client';
 
 export async function getStaticProps() {
   const prisma = DBClient.instance;
-  const games = await prisma.game.findMany({
-    where: {
-      isTranslated: true,
-    },
-  });
+  const games = await findAllGames();
+
+  await prisma.$disconnect();
 
   return {
     props: {
+      games,
       countGames: games.length,
     },
   };
@@ -20,18 +21,19 @@ export async function getStaticProps() {
 
 interface PropsHome {
   countGames: number;
+  games: Game[];
 }
 
-export default function Home({ countGames }: PropsHome) {
+export default function Home({ countGames, games }: PropsHome) {
   const pageSeo: SeoPage = {
-    metaTitle: `Game Over`,
-    metaDescription: `Game Over repertorie la duree de vie de ${countGames} jeux. Retrouvez toutes les informations sur la duree de vie de l'ensemble de vos jeux preferes.`,
+    metaTitle: `Découvrez le temps de jeu necessaire pour terminer vous jeux favoris.`,
+    metaDescription: `Game Over repertorie la durée de vie de ${countGames} jeux. Retrouvez toutes les informations sur la duree de vie de l'ensemble de vos jeux preferes.`,
   };
 
   return (
     <>
       <Seo pageSeo={pageSeo} />
-      <TemplateHome />
+      <TemplateHome games={games} />
     </>
   );
 }

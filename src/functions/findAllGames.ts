@@ -5,11 +5,8 @@ const prisma = new PrismaClient();
 export async function findAllGames() {
   const games = await prisma.game.findMany({
     where: {
-      isTranslated: {
-        equals: true,
-      },
+      isTranslated: true,
     },
   });
-  await prisma.$disconnect();
   return games;
 }

@@ -20,7 +20,9 @@ class MyDocument extends Document {
   render() {
     return (
       <Html>
-        <Head />
+        <Head>
+          <meta name="google-site-verification" content="JToiALKPVzracQqpHh9U1OEf0n1wkC9Z8VaRsUmSboo" />
+        </Head>
 
         <body>
           <Main />

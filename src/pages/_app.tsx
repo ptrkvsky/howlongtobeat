@@ -4,6 +4,17 @@ import StyleContainer from '@/styles/containers/StyleContainer';
 import Script from 'next/script';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
+  const styles = [
+    `color: white`,
+    `background: hotpink`,
+    `font-size: 32px`,
+    `padding: 6px 8px`,
+  ].join(`;`);
+  const message = `GAME-OVER.IO`;
+
+  // eslint-disable-next-line no-console
+  console.info(`%c%s`, styles, message);
+
   return (
     <>
       {/* Global site tag (gtag.js) - Google Analytics */}

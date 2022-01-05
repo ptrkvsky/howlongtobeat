@@ -1,8 +1,8 @@
 import { Game } from '@prisma/client';
 import Fuse from 'fuse.js';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import InputSearch from './InputSearch';
-import ResultSearch from './ResultSearch';
+import ResultSearch from './ResultSearchList';
 
 interface Props {
   games: Game[];
@@ -10,6 +10,7 @@ interface Props {
 
 const SearchGames = ({ games }: Props) => {
   const [query, setQuery] = useState(``);
+  const [isResultsOpen, setIsResultsOpen] = useState(false);
 
   const fuse = new Fuse(games, {
     keys: [`name`],
@@ -21,7 +22,11 @@ const SearchGames = ({ games }: Props) => {
     <div>
       <InputSearch query={query} setQuery={setQuery} />
       {searchResults.length > 0 && (
-        <ResultSearch searchResults={searchResults} />
+        <ResultSearch
+          isResultsOpen={isResultsOpen}
+          setIsResultsOpen={setIsResultsOpen}
+          searchResults={searchResults}
+        />
       )}
     </div>
   );

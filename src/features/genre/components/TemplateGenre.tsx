@@ -17,7 +17,7 @@ const TemplateGenre = ({ genre, games, allGames }: Props) => {
     <Layout cloakFooter games={allGames} isCentered>
       <HomeTitle>
         {genre?.name}
-        <br /> {games.length} jeux
+        <br /> {games?.length} jeux
       </HomeTitle>
       <ul>
         {games.map((game) => (

@@ -136,6 +136,13 @@ const GlobalStyles = () => {
 
           ${breakpoints.tabletLandscape} {
             padding: 0;
+            --item-font-size: 10vw;
+            .menu__item-img {
+              display: none;
+            }
+            .menu__item-link:before {
+              display: none;
+            }
           }
         }
 
@@ -161,6 +168,19 @@ const GlobalStyles = () => {
             text-stroke: 1.5px ${theme.colors.text};
             -webkit-text-fill-color: transparent;
             text-fill-color: transparent;
+
+            ${breakpoints.tabletLandscape} {
+              -webkit-text-stroke: 0;
+              text-stroke: 0;
+              -webkit-text-fill-color: ${theme.colors.text};
+              text-fill-color: ${theme.colors.text};
+              color: ${theme.colors.text};
+              font-style: italic;
+            }
+
+            ${breakpoints.mobile} {
+              font-size: ${theme.typography.fontSizes.md};
+            }
           }
         }
 

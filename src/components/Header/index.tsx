@@ -16,6 +16,15 @@ const StyledHeader = styled(`header`)`
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    ${({ theme }) => theme.breakpoints.mobile} {
+      flex-direction: column;
+    }
+  }
+
+  ${({ theme }) => theme.breakpoints.mobile} {
+    flex-direction: column;
+    height: ${styleInformations.headerHeight.mobile};
   }
 `;
 

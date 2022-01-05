@@ -19,7 +19,13 @@ const Wrapper = styled(`div`)`
     font-size: ${({ theme }) => theme.typography.fontSizes[`9xl`]};
   }
 
-  box-shadow: var(--shadow-elevation-medium);
+  .theme-dark & {
+    box-shadow: var(--shadow-elevation-medium);
+  }
+
+  .theme-light & {
+    box-shadow: var(--shadow-elevation-low);
+  }
 `;
 
 interface Props {

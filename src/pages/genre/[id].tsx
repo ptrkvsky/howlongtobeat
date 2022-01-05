@@ -83,6 +83,8 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
       },
     });
 
+    console.log(`---------------------------`, games);
+
     const allGames = await findAllGames();
 
     await prisma.$disconnect();

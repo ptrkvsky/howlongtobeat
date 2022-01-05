@@ -8,6 +8,7 @@ const Wrapper = styled(`div`)`
   color: ${({ theme }) => theme.colors.gray[100]};
   padding: ${({ theme }) => theme.spacing[3]} 0;
   box-shadow: var(--shadow-elevation-low);
+  z-index: 900;
 
   &.close {
     display: none;

@@ -20,7 +20,11 @@ const SearchGames = ({ games }: Props) => {
 
   return (
     <div>
-      <InputSearch query={query} setQuery={setQuery} />
+      <InputSearch
+        query={query}
+        setQuery={setQuery}
+        setIsResultsOpen={setIsResultsOpen}
+      />
       {searchResults.length > 0 && (
         <ResultSearch
           isResultsOpen={isResultsOpen}

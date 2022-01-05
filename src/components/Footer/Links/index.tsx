@@ -37,7 +37,7 @@ interface Props {
   cloakFooter?: boolean;
 }
 
-const LinkSitemap: FC<Props> = ({ cloakFooter }: Props) => {
+const LinkSitemap: FC<Props> = ({ cloakFooter = true }: Props) => {
   if (!cloakFooter) {
     return (
       <WrapperLinks>

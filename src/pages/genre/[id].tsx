@@ -1,4 +1,5 @@
 import TemplateGenre from '@/features/genre/components/TemplateGenre';
+import { findAllGames } from '@/functions/findAllGames';
 import { getAllGenresPrisma } from '@/functions/getAllGenresPrisma';
 import DBClient from '@/prisma/DBClient';
 import { Game, Genre } from '@prisma/client';
@@ -28,7 +29,7 @@ export async function getStaticPaths() {
   const paths = genresEtNull?.map((genreId) => ({
     params: { id: genreId.id.toString() },
   }));
-
+  await prisma.$disconnect();
   // { fallback: false } means other routes should 404.
   // We'll pre-render only these paths at build time.
   return { paths, fallback: false };
@@ -53,8 +54,6 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
       },
     });
 
-    console.log(gamesGenreNull);
-
     const genreNull: Genre = {
       id: 999,
       name: `Aucun`,
@@ -62,10 +61,9 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
       url: ``,
       idIgdb: 0,
     };
-    console.log(genreNull);
 
     await prisma.$disconnect();
-    console.log(genreNull);
+
     return { props: { games: gamesGenreNull, genre: genreNull } };
   } else {
     const genre = await prisma.genre.findUnique({
@@ -85,9 +83,11 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
       },
     });
 
+    const allGames = await findAllGames();
+
     await prisma.$disconnect();
 
-    return { props: { games, genre } };
+    return { props: { games, genre, allGames } };
     // Pass game data to the page via props
   }
 }
@@ -95,12 +95,13 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
 interface PropsGame {
   games: Game[];
   genre: Genre;
+  allGames: Game[];
 }
 
-function Genre({ games, genre }: PropsGame) {
+function Genre({ games, genre, allGames }: PropsGame) {
   return (
     <>
-      <TemplateGenre genre={genre} games={games} />
+      <TemplateGenre genre={genre} games={games} allGames={allGames} />
     </>
   );
 }

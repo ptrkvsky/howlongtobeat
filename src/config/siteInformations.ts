@@ -3,6 +3,7 @@ export const siteInformations = {
   color: `#000`,
   twitter: `@gameoverio`,
   image: ``,
+  tagManager: `GTM-TQRKB2Q`,
 };
 
 export type TypeSiteInformations = typeof siteInformations;

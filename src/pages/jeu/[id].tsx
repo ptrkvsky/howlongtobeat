@@ -1,5 +1,6 @@
 import Seo from '@/components/Seo';
 import TemplateJeu from '@/features/jeu/components/TemplateJeu';
+import { findAllGames } from '@/functions/findAllGames';
 import DBClient from '@/prisma/DBClient';
 import { Game } from '@prisma/client';
 
@@ -7,16 +8,10 @@ const prisma = DBClient.instance;
 
 // This function gets called at build time
 export async function getStaticPaths() {
-  const games = await prisma.game.findMany({
-    where: {
-      isTranslated: {
-        equals: true,
-      },
-    },
-  });
+  const allGames = await findAllGames();
 
   // Get the paths we want to pre-render based on games
-  const paths = games.map((game) => ({
+  const paths = allGames.map((game) => ({
     params: { id: game.id.toString() },
   }));
   await prisma.$disconnect();
@@ -34,9 +29,9 @@ interface PropsGetStaticProps {
 
 // This also gets called at build time
 export async function getStaticProps({ params }: PropsGetStaticProps) {
+  const allGames = await findAllGames();
   const gameId = +params.id;
-  // params contains the post `id`.
-  // If the route is like /posts/1, then params.id is 1
+
   const game = await prisma.game.findUnique({
     where: {
       id: gameId,
@@ -46,37 +41,6 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
   if (!game) {
     return { notFound: true };
   }
-
-  // const genres = await prisma.genresOnGames.findMany({
-  //   where: {
-  //     gameId: {
-  //       equals: +params.id,
-  //     },
-  //   },
-  // });
-
-  // const relatedGamesPromises =
-  //   genres &&
-  //   genres.map((genre) =>
-  //     prisma.game.findMany({
-  //       take: 20,
-  //       where: {
-  //         id: {
-  //           gte: game.id,
-  //           lte: game.id + 21,
-  //           notIn: game.id,
-  //         },
-  //         isTranslated: true,
-  //         genre: {
-  //           some: {
-  //             genreId: {
-  //               equals: genre.genreId,
-  //             },
-  //           },
-  //         },
-  //       },
-  //     }),
-  //   );
 
   const relatedGames = await prisma.game.findMany({
     take: 20,
@@ -89,15 +53,21 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
     },
   });
 
-  return { props: { game, relatedGames }, revalidate: 60 };
+  await prisma.$disconnect();
+
+  return {
+    props: { game, relatedGames, allGames },
+    revalidate: 60,
+  };
 }
 
 interface PropsGame {
   game: Game;
   relatedGames: Game[];
+  allGames: Game[];
 }
 
-function Game({ game, relatedGames }: PropsGame) {
+function Game({ game, relatedGames, allGames }: PropsGame) {
   const pageSeo = {
     metaTitle: `Combien de temps faut-il pour terminer ? ${game.name}`,
     metaDescription: `Combien de temps faut-il pour terminer ? ${game.name}`,
@@ -106,7 +76,11 @@ function Game({ game, relatedGames }: PropsGame) {
   return (
     <>
       <Seo pageSeo={pageSeo} />
-      <TemplateJeu game={game} relatedGames={relatedGames} />
+      <TemplateJeu
+        game={game}
+        allGames={allGames}
+        relatedGames={relatedGames}
+      />
     </>
   );
 }

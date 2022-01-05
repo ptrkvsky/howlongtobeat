@@ -8,7 +8,7 @@ interface Props {
 }
 
 const TemplateHome = ({ games }: Props) => (
-  <Layout games={games}>
+  <Layout cloakFooter={false} games={games}>
     <Banner />
   </Layout>
 );

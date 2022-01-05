@@ -4,9 +4,10 @@ import { Input } from './style';
 interface Props {
   query: string;
   setQuery: Dispatch<SetStateAction<string>>;
+  setIsResultsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const InputSearch = ({ query, setQuery }: Props) => {
+const InputSearch = ({ query, setQuery, setIsResultsOpen }: Props) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
   };
@@ -15,6 +16,7 @@ const InputSearch = ({ query, setQuery }: Props) => {
     <Input
       type="text"
       value={query}
+      onClick={() => setIsResultsOpen(true)}
       onChange={handleChange}
       placeholder="Rechercher votre jeu favori..."
     />

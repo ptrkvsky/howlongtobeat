@@ -1,3 +1,4 @@
+import HeadPWA from '@/components/HeadPWA';
 import Document, {
   DocumentContext,
   Html,
@@ -25,6 +26,7 @@ class MyDocument extends Document {
             name="google-site-verification"
             content="JToiALKPVzracQqpHh9U1OEf0n1wkC9Z8VaRsUmSboo"
           />
+          <HeadPWA />
         </Head>
 
         <body>

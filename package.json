@@ -35,10 +35,12 @@
     "fuse.js": "6.5.3",
     "gsap": "./src/lib/gsap/gsap.tgz",
     "next": "12.0.7",
+    "next-pwa": "5.4.4",
     "prisma": "3.6.0",
     "react": "17.0.2",
     "react-circular-progressbar": "2.0.4",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "react-gtm-module": "2.0.11"
   },
   "devDependencies": {
     "@commitlint/cli": "15.0.0",
@@ -46,6 +48,7 @@
     "@types/node": "16.11.12",
     "@types/react": "17.0.37",
     "@types/react-dom": "17.0.11",
+    "@types/react-gtm-module": "2.0.1",
     "@typescript-eslint/eslint-plugin": "5.7.0",
     "@typescript-eslint/parser": "5.7.0",
     "commitizen": "4.2.4",

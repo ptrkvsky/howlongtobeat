@@ -1,13 +1,16 @@
+import { useEffect } from 'react';
 import { AppProps } from 'next/app';
+import TagManager from 'react-gtm-module';
 import DarkModeProvider from '@/context/DarkModeContext';
 import StyleContainer from '@/styles/containers/StyleContainer';
-import Script from 'next/script';
+import { siteInformations } from '@/config/siteInformations';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const styles = [
     `color: white`,
-    `background: hotpink`,
-    `font-size: 32px`,
+    `background: #1a1a1a`,
+    `font-size: 64px`,
+    `font-family: white`,
     `padding: 6px 8px`,
   ].join(`;`);
   const message = `GAME-OVER.IO`;
@@ -15,22 +18,12 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   // eslint-disable-next-line no-console
   console.info(`%c%s`, styles, message);
 
+  useEffect(() => {
+    TagManager.initialize({ gtmId: siteInformations.tagManager });
+  }, []);
+
   return (
     <>
-      {/* Global site tag (gtag.js) - Google Analytics */}
-      <Script
-        src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GA}`}
-        strategy="afterInteractive"
-      />
-      <Script id="google-analytics" strategy="afterInteractive">
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){window.dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', '${process.env.GA}');
-        `}
-      </Script>
       <DarkModeProvider>
         <StyleContainer>
           <Component {...pageProps} />

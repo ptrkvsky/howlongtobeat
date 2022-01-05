@@ -9,6 +9,10 @@ const Wrapper = styled(`div`)`
   padding: ${({ theme }) => theme.spacing[3]} 0;
   box-shadow: var(--shadow-elevation-low);
 
+  &.close {
+    display: none;
+  }
+
   /* width */
   ::-webkit-scrollbar {
     width: 8px;

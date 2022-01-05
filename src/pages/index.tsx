@@ -8,7 +8,6 @@ import { Game } from '@prisma/client';
 export async function getStaticProps() {
   const prisma = DBClient.instance;
   const games = await findAllGames();
-
   await prisma.$disconnect();
 
   return {

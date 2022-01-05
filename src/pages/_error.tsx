@@ -2,7 +2,7 @@ import Layout from '@/styles/components/layout/Layout';
 
 function Error({ statusCode }: any) {
   return (
-    <Layout isCentered>
+    <Layout games={[]} isCentered>
       {statusCode
         ? `Une erreur ${statusCode} occurred on server`
         : `An error occurred on client`}

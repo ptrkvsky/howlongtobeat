@@ -29,7 +29,7 @@ const Header = ({ refOverlay, games }: Props) => {
     <StyledHeader>
       <div className="container">
         <Logo />
-        <SearchGames games={games} />
+        {games.length > 0 && <SearchGames games={games} />}
         <DarkModeButton refOverlay={refOverlay} />
       </div>
     </StyledHeader>

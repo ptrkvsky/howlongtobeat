@@ -1,10 +1,11 @@
-import { PrismaClient, Game } from '@prisma/client';
+import DBClient from '@/prisma/DBClient';
+import { Game } from '@prisma/client';
 
 import axios from 'axios';
 
 const deeplKey = process.env.DEEPL_KEY;
 
-const prisma = new PrismaClient();
+const prisma = DBClient.instance;
 
 export async function updateGame(game: Game) {
   try {

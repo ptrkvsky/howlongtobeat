@@ -10,7 +10,7 @@ type Data = {
   gamesUpdated: any;
 };
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>,
 ) {
@@ -18,7 +18,7 @@ export default function handler(
     const games = await prisma.game.findMany({
       where: {
         id: {
-          lt: 601,
+          lt: 3000,
         },
         isTranslated: {
           equals: false,
@@ -26,12 +26,14 @@ export default function handler(
       },
     });
 
+    console.log(games);
+
     const gamesUpdated = await Promise.all(
       games.map((game) => updateGame(game)),
     );
 
     res.status(200).json({ games, gamesUpdated });
   }
-
-  updateGames();
+  console.log(`hello`);
+  await updateGames();
 }

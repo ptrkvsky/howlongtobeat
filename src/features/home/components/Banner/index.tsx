@@ -1,6 +1,7 @@
 import banner from '@/assets/banner_home.jpg';
 import { TitleMain } from '@/features/jeu/styles';
 import styled from '@emotion/styled';
+import { Game } from '@prisma/client';
 import Image from 'next/image';
 
 const Wrapper = styled(`div`)`
@@ -13,24 +14,36 @@ const Wrapper = styled(`div`)`
     z-index: 10;
     color: #fff;
     margin: 0;
+    margin-bottom: ${({ theme }) => theme.spacing[6]};
   }
   .description {
-    color: #fff;
     position: absolute;
     z-index: 10;
     top: calc(25vh + 3rem);
-    font-size: ${({ theme }) => theme.typography.fontSizes[`2xl`]};
+    p {
+      margin: ${({ theme }) => theme.spacing[3]} 0;
+      color: #fff;
+      font-size: ${({ theme }) => theme.typography.fontSizes[`2xl`]};
+    }
   }
 `;
 
-const Banner = () => {
+interface Props {
+  games: Game[];
+}
+
+const Banner = ({ games }: Props) => {
   return (
     <Wrapper>
       <div className="container">
         <TitleMain className="title">game-over.io</TitleMain>
-        <p className="description">
-          Découvrez la durée de vie de vos jeux-vidéos favoris.
-        </p>
+        <div className="description">
+          <p>Découvrez la durée de vie de vos jeux-vidéos favoris.</p>
+          <p>
+            Déja plus de <span className="bold">{games.length}</span> jeux dans
+            notre base de données
+          </p>
+        </div>
       </div>
       <Image
         priority

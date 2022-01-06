@@ -43,6 +43,8 @@ interface PropsGetStaticProps {
 
 // This also gets called at build time
 export async function getStaticProps({ params }: PropsGetStaticProps) {
+  const allGames = await findAllGames();
+
   if (params.id === `999`) {
     // Games without relations
     const gamesGenreNull = await prisma.game.findMany({
@@ -64,7 +66,7 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
 
     await prisma.$disconnect();
 
-    return { props: { games: gamesGenreNull, genre: genreNull } };
+    return { props: { games: gamesGenreNull, genre: genreNull, allGames } };
   } else {
     const genre = await prisma.genre.findUnique({
       where: {
@@ -82,10 +84,6 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
         },
       },
     });
-
-    console.log(`---------------------------`, games);
-
-    const allGames = await findAllGames();
 
     await prisma.$disconnect();
 

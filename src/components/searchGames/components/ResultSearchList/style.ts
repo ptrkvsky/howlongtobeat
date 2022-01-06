@@ -4,11 +4,22 @@ const Wrapper = styled(`div`)`
   position: absolute;
   max-height: 33vh;
   overflow-y: scroll;
-  background-color: ${({ theme }) => theme.colors.gray[600]};
-  color: ${({ theme }) => theme.colors.gray[100]};
+
   padding: ${({ theme }) => theme.spacing[3]} 0;
-  box-shadow: var(--shadow-elevation-low);
+
   z-index: 900;
+
+  .theme-dqrk & {
+    background-color: ${({ theme }) => theme.colors.gray[600]};
+    color: ${({ theme }) => theme.colors.gray[100]};
+    box-shadow: var(--shadow-elevation-low);
+  }
+
+  .theme-light & {
+    background-color: ${({ theme }) => theme.colors.gray[100]};
+    color: ${({ theme }) => theme.colors.gray[600]};
+    box-shadow: var(--shadow-elevation-low);
+  }
 
   &.close {
     display: none;

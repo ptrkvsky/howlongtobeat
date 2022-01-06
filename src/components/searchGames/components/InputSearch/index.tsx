@@ -9,6 +9,7 @@ interface Props {
 
 const InputSearch = ({ query, setQuery, setIsResultsOpen }: Props) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setIsResultsOpen(true);
     setQuery(event.target.value);
   };
 

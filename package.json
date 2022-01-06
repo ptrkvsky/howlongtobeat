@@ -1,9 +1,9 @@
 {
-  "name": "typescript-nextjs-starter",
-  "description": "A TypeScript starter for Next.js that includes all you need to build amazing projects",
+  "name": "game-over.io",
+  "description": "Le temps de jeu de vos jeux favoris",
   "version": "1.0.0",
   "private": true,
-  "author": "João Pedro Schmitz <hey@joaopedro.dev> (@jpedroschmitz)",
+  "author": "Johan Petrikovky",
   "license": "MIT",
   "keywords": [
     "nextjs",

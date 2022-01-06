@@ -16,7 +16,6 @@ export default async function handler(
   res: NextApiResponse<Data>,
 ) {
   async function updateGames() {
-    console.log(`hello`);
     const games = await prisma.game.findMany({
       where: {
         id: {
@@ -27,8 +26,6 @@ export default async function handler(
         },
       },
     });
-
-    console.log(games);
 
     const gamesUpdated = await Promise.all(
       games.map((game) => updateGame(game)),

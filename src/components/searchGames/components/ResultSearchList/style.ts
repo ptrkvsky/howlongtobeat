@@ -9,7 +9,7 @@ const Wrapper = styled(`div`)`
 
   z-index: 900;
 
-  .theme-dqrk & {
+  .theme-dark & {
     background-color: ${({ theme }) => theme.colors.gray[600]};
     color: ${({ theme }) => theme.colors.gray[100]};
     box-shadow: var(--shadow-elevation-low);

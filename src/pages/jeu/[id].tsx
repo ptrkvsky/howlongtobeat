@@ -15,9 +15,7 @@ export async function getStaticPaths() {
     params: { id: game.id.toString() },
   }));
   await prisma.$disconnect();
-  // We'll pre-render only these paths at build time.
-  // { fallback: blocking } will server-render pages
-  // on-demand if the path doesn't exist.
+  // fallback: blocking (preferred) – when a request is made to a page that hasn't been generated, Next.js will server-render the page on the first request. Future requests will serve the static file from the cache.
   return { paths, fallback: `blocking` };
 }
 

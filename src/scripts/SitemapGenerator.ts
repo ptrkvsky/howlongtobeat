@@ -17,6 +17,7 @@ class SitemapGenerator {
   setSitemapEntry(url: string) {
     return `
     <url>
+      <changefreq>monthly</changefreq>
       <loc>${`${url}`}</loc>
     </url>`;
   }

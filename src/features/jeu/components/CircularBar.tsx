@@ -26,6 +26,14 @@ const Wrapper = styled(`div`)`
   .theme-light & {
     box-shadow: var(--shadow-elevation-low);
   }
+  ${({ theme }) => theme.breakpoints.mobile} {
+    width: 100px;
+    height: 100px;
+    padding: ${({ theme }) => theme.spacing[2]};
+    right: initial;
+    left: ${({ theme }) => theme.spacing[4]};
+    top: ${({ theme }) => theme.spacing[4]};
+  }
 `;
 
 interface Props {

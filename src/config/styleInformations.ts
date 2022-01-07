@@ -1,7 +1,7 @@
 export const styleInformations = {
   headerHeight: {
     dekstop: `67px`,
-    mobile: `167px`,
+    mobile: `137px`,
   },
 };
 

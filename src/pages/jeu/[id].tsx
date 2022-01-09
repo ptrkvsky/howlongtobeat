@@ -12,7 +12,7 @@ export async function getStaticPaths() {
 
   // Get the paths we want to pre-render based on games
   const paths = allGames.map((game) => ({
-    params: { id: game.id.toString() },
+    params: { id: game.id.toString(), allGames: allGames || [] },
   }));
   await prisma.$disconnect();
   // fallback: blocking (preferred) – when a request is made to a page that hasn't been generated, Next.js will server-render the page on the first request. Future requests will serve the static file from the cache.
@@ -22,39 +22,29 @@ export async function getStaticPaths() {
 interface PropsGetStaticProps {
   params: {
     id: number;
+    allGames: Game[];
   };
 }
 
 // This also gets called at build time
 export async function getStaticProps({ params }: PropsGetStaticProps) {
-  const allGames = await findAllGames();
   const gameId = +params.id;
+  const allGames = params.allGames || [];
 
-  const game = await prisma.game.findUnique({
-    where: {
-      id: gameId,
-    },
-  });
+  const game = allGames.find((game) => game.id === gameId);
 
   if (!game) {
     return { notFound: true };
   }
 
-  const relatedGames = await prisma.game.findMany({
-    take: 20,
-    where: {
-      id: {
-        gt: game.id,
-        lt: game.id + 21,
-      },
-      isTranslated: true,
-    },
-  });
+  const relatedGames = allGames.filter(
+    (allGame) => allGame.id > game.id && allGame.id < game.id + 21,
+  );
 
   await prisma.$disconnect();
 
   return {
-    props: { game, relatedGames, allGames },
+    props: { game, relatedGames, allGames: params.allGames || [] },
     revalidate: 60,
   };
 }

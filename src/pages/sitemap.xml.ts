@@ -10,10 +10,10 @@ const prisma = DBClient.instance;
 const getUrls = async () => {
   // static pages
   const staticPages = [
-    `/`,
-    `/mentions-legales`,
-    `/plan-du-site`,
-    `/politique-de-confidentialite`,
+    `${siteInformations.url}/`,
+    `${siteInformations.url}/mentions-legales`,
+    `${siteInformations.url}/plan-du-site`,
+    `${siteInformations.url}/politique-de-confidentialite`,
   ];
 
   // games

@@ -12,7 +12,6 @@ export async function getStaticProps() {
 
   return {
     props: {
-      games,
       countGames: games.length,
     },
   };
@@ -23,7 +22,7 @@ interface PropsHome {
   games: Game[];
 }
 
-export default function Home({ countGames, games }: PropsHome) {
+export default function Home({ countGames }: PropsHome) {
   const pageSeo: SeoPage = {
     metaTitle: `Découvrez le temps de jeu necessaire pour terminer vous jeux favoris.`,
     metaDescription: `Game Over repertorie la durée de vie de ${countGames} jeux. Retrouvez toutes les informations sur la duree de vie de l'ensemble de vos jeux preferes.`,
@@ -32,7 +31,7 @@ export default function Home({ countGames, games }: PropsHome) {
   return (
     <>
       <Seo pageSeo={pageSeo} />
-      <TemplateHome games={games} />
+      <TemplateHome countGames={countGames} />
     </>
   );
 }

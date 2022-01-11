@@ -7,14 +7,13 @@ import compareGames from '@/functions/generic/compare';
 interface Props {
   genre: Genre;
   games: Game[];
-  allGames: Game[];
 }
 
-const TemplateGenre = ({ genre, games, allGames }: Props) => {
+const TemplateGenre = ({ genre, games }: Props) => {
   games.sort(compareGames);
 
   return (
-    <Layout cloakFooter games={allGames} isCentered>
+    <Layout cloakFooter isCentered>
       <HomeTitle>
         {genre?.name}
         <br /> {games?.length} jeux

@@ -41,10 +41,7 @@ interface PropsGetStaticProps {
   };
 }
 
-// This also gets called at build time
 export async function getStaticProps({ params }: PropsGetStaticProps) {
-  const allGames = await findAllGames();
-
   if (params.id === `999`) {
     // Games without relations
     const gamesGenreNull = await prisma.game.findMany({
@@ -66,7 +63,7 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
 
     await prisma.$disconnect();
 
-    return { props: { games: gamesGenreNull, genre: genreNull, allGames } };
+    return { props: { games: gamesGenreNull, genre: genreNull } };
   } else {
     const genre = await prisma.genre.findUnique({
       where: {
@@ -87,7 +84,7 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
 
     await prisma.$disconnect();
 
-    return { props: { games, genre, allGames } };
+    return { props: { games, genre } };
     // Pass game data to the page via props
   }
 }
@@ -95,13 +92,12 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
 interface PropsGame {
   games: Game[];
   genre: Genre;
-  allGames: Game[];
 }
 
-function Genre({ games, genre, allGames }: PropsGame) {
+function Genre({ games, genre }: PropsGame) {
   return (
     <>
-      <TemplateGenre genre={genre} games={games} allGames={allGames} />
+      <TemplateGenre genre={genre} games={games} />
     </>
   );
 }

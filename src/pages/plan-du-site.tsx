@@ -26,7 +26,7 @@ interface Props {
   allGames: Game[];
 }
 
-export default function Sitemap({ genres, allGames }: Props) {
+export default function Sitemap({ genres }: Props) {
   const pageSeo: SeoPage = {
     metaTitle: `Plan du site`,
     metaDescription: `Decouvrez l'ensemble des pages du site internet`,
@@ -35,7 +35,7 @@ export default function Sitemap({ genres, allGames }: Props) {
   return (
     <>
       <Seo pageSeo={pageSeo} />
-      <TemplateSitemap genres={genres} allGames={allGames} />
+      <TemplateSitemap genres={genres} />
     </>
   );
 }

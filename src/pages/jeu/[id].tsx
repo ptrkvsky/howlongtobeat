@@ -72,32 +72,11 @@ function Game({ game, relatedGames }: PropsGame) {
     metaDescription: `Combien de temps faut-il pour terminer ? ${game.name}`,
   };
 
-  const [allGames, setAllGames] = useState<Game[]>();
-
-  const fetchGames = async () => {
-    try {
-      const res = await fetch(`${url}/api/client/games`);
-      const allGames = await res.json();
-      setAllGames(allGames);
-    } catch {
-      setAllGames([]);
-    }
-  };
-
-  useEffect(() => {
-    fetchGames();
-  }, []);
-
   return (
     <>
       <Seo pageSeo={pageSeo} />
-      {allGames && (
-        <TemplateJeu
-          game={game}
-          allGames={allGames}
-          relatedGames={relatedGames}
-        />
-      )}
+
+      <TemplateJeu game={game} relatedGames={relatedGames} />
     </>
   );
 }

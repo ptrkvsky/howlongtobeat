@@ -1,16 +1,15 @@
 import { HomeTitle } from '@/styles/components/titles/HomeTitle';
-import { Game, Genre } from '@prisma/client';
+import { Genre } from '@prisma/client';
 import Link from 'next/link';
 import Layout from '@/styles/components/layout/Layout';
 
 interface Props {
   genres: Genre[];
-  allGames: Game[];
 }
 
-const TemplateSitemap = ({ genres, allGames }: Props) => {
+const TemplateSitemap = ({ genres }: Props) => {
   return (
-    <Layout games={allGames} isCentered>
+    <Layout isCentered>
       <HomeTitle>Plan du site</HomeTitle>
       <ul>
         {genres.map((genre) => (

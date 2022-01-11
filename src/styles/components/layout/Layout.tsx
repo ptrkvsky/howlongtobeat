@@ -38,21 +38,15 @@ interface Props {
   children: React.ReactNode;
   cloakFooter?: boolean;
   isCentered?: boolean;
-  games: Game[];
 }
 
-const Layout: FC<Props> = ({
-  children,
-  cloakFooter,
-  isCentered,
-  games,
-}: Props) => {
+const Layout: FC<Props> = ({ children, cloakFooter, isCentered }: Props) => {
   const refOverlay = useRef<SVGPathElement>(null);
 
   return (
     <StyleLayout className={`${isCentered ? `container` : ``}`}>
       <main>{children}</main>
-      <Header games={games} refOverlay={refOverlay} />
+      <Header refOverlay={refOverlay} />
       <Footer cloakFooter={cloakFooter} />
       <Overlay refOverlay={refOverlay} />
     </StyleLayout>

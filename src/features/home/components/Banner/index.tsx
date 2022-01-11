@@ -29,10 +29,10 @@ const Wrapper = styled(`div`)`
 `;
 
 interface Props {
-  games: Game[];
+  countGames: number;
 }
 
-const Banner = ({ games }: Props) => {
+const Banner = ({ countGames }: Props) => {
   return (
     <Wrapper>
       <div className="container">
@@ -40,7 +40,7 @@ const Banner = ({ games }: Props) => {
         <div className="description">
           <p>Découvrez la durée de vie de vos jeux-vidéos favoris.</p>
           <p>
-            Déja plus de <span className="bold">{games.length}</span> jeux dans
+            Déja plus de <span className="bold">{countGames}</span> jeux dans
             notre base de données
           </p>
         </div>

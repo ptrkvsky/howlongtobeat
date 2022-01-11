@@ -4,12 +4,12 @@ import { Game } from '@prisma/client';
 import Banner from './Banner';
 
 interface Props {
-  games: Game[];
+  countGames: number;
 }
 
-const TemplateHome = ({ games }: Props) => (
-  <Layout cloakFooter={false} games={games}>
-    <Banner games={games} />
+const TemplateHome = ({ countGames }: Props) => (
+  <Layout cloakFooter={false}>
+    <Banner countGames={countGames} />
   </Layout>
 );
 

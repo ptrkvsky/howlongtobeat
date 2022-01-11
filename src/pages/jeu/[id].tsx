@@ -3,6 +3,7 @@ import TemplateJeu from '@/features/jeu/components/TemplateJeu';
 import { findAllGames } from '@/functions/findAllGames';
 import DBClient from '@/prisma/DBClient';
 import { Game } from '@prisma/client';
+import { useEffect, useState } from 'react';
 
 const prisma = DBClient.instance;
 
@@ -28,23 +29,35 @@ interface PropsGetStaticProps {
 // This also gets called at build time
 export async function getStaticProps({ params }: PropsGetStaticProps) {
   const gameId = +params.id;
-  const allGames = await findAllGames();
 
-  console.log(allGames);
-  const game = allGames.find((game) => game.id === gameId);
+  const game = await prisma.game.findUnique({
+    where: {
+      id: +params.id,
+    },
+  });
 
   if (!game) {
     return { notFound: true };
   }
 
-  const relatedGames = allGames.filter(
-    (allGame) => allGame.id > game.id && allGame.id < game.id + 21,
-  );
+  // const relatedGames = allGames.filter(
+  //   (allGame) => allGame.id > game.id && allGame.id < game.id + 21,
+  // );
+
+  const relatedGames = await prisma.game.findMany({
+    take: 20,
+    where: {
+      id: {
+        gt: gameId + 20,
+      },
+      isTranslated: true,
+    },
+  });
 
   await prisma.$disconnect();
 
   return {
-    props: { game, relatedGames, allGames: allGames || [] },
+    props: { game, relatedGames },
     revalidate: 60,
   };
 }
@@ -52,23 +65,36 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
 interface PropsGame {
   game: Game;
   relatedGames: Game[];
-  allGames: Game[];
 }
 
-function Game({ game, relatedGames, allGames }: PropsGame) {
+function Game({ game, relatedGames }: PropsGame) {
   const pageSeo = {
     metaTitle: `Combien de temps faut-il pour terminer ? ${game.name}`,
     metaDescription: `Combien de temps faut-il pour terminer ? ${game.name}`,
   };
 
+  const [allGames, setAllGames] = useState<Game[]>();
+
+  const fetchGames = async () => {
+    const res = await fetch(`http://localhost:2811/api/client/games`);
+    const allGames = await res.json();
+    setAllGames(allGames);
+  };
+
+  useEffect(() => {
+    fetchGames();
+  }, []);
+
   return (
     <>
       <Seo pageSeo={pageSeo} />
-      <TemplateJeu
-        game={game}
-        allGames={allGames}
-        relatedGames={relatedGames}
-      />
+      {allGames && (
+        <TemplateJeu
+          game={game}
+          allGames={allGames}
+          relatedGames={relatedGames}
+        />
+      )}
     </>
   );
 }

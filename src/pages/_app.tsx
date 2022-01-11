@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { AppProps } from 'next/app';
+import { SessionProvider } from 'next-auth/react';
 import TagManager from 'react-gtm-module';
 import DarkModeProvider from '@/context/DarkModeContext';
 import StyleContainer from '@/styles/containers/StyleContainer';
@@ -23,12 +24,12 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <>
+    <SessionProvider session={pageProps.session}>
       <DarkModeProvider>
         <StyleContainer>
           <Component {...pageProps} />
         </StyleContainer>
       </DarkModeProvider>
-    </>
+    </SessionProvider>
   );
 }

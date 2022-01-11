@@ -1,5 +1,8 @@
 import NextAuth from 'next-auth';
 import EmailProvider from 'next-auth/providers/email';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+
+import DBClient from '@/prisma/DBClient';
 // import GoogleProvider from 'next-auth/providers/google';
 // import FacebookProvider from 'next-auth/providers/facebook';
 // import GithubProvider from 'next-auth/providers/github';
@@ -10,6 +13,8 @@ import EmailProvider from 'next-auth/providers/email';
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
+const prisma = DBClient.instance;
+
 export default NextAuth({
   // https://next-auth.js.org/configuration/providers
   providers: [
@@ -117,6 +122,6 @@ export default NextAuth({
     colorScheme: `light`,
   },
 
-  // Enable debug messages in the console if you are having problems
-  debug: false,
+  debug: true,
+  adapter: PrismaAdapter(prisma),
 });

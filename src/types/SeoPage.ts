@@ -1,4 +1,4 @@
 export interface SeoPage {
   metaTitle: string;
-  metaDescription: string;
+  metaDescription?: string;
 }

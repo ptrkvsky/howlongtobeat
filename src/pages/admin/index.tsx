@@ -13,6 +13,8 @@ export default function Admin() {
     return <h1>Loading...</h1>;
   }
 
+  console.log(session, status);
+
   if (session) {
     return (
       <>

@@ -1,4 +1,4 @@
-import Layout from '@/styles/components/layout/Layout';
+import Layout from '@/components/layouts/front/LayoutFront';
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 

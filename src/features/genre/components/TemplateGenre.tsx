@@ -1,7 +1,7 @@
 import { HomeTitle } from '@/styles/components/titles/HomeTitle';
 import { Game, Genre } from '@prisma/client';
 import Link from 'next/link';
-import Layout from '@/styles/components/layout/Layout';
+import Layout from '@/components/layouts/front/LayoutFront';
 import compareGames from '@/functions/generic/compare';
 
 interface Props {

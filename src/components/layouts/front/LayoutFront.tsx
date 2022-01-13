@@ -41,7 +41,7 @@ interface Props {
   games: Game[];
 }
 
-const Layout: FC<Props> = ({
+const LayoutFront: FC<Props> = ({
   children,
   cloakFooter,
   isCentered,
@@ -59,4 +59,4 @@ const Layout: FC<Props> = ({
   );
 };
 
-export default Layout;
+export default LayoutFront;

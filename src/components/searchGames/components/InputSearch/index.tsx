@@ -10,8 +10,6 @@ interface Props {
   setGames: Dispatch<SetStateAction<Game[]>>;
 }
 
-const url = process.env.url;
-
 const InputSearch = ({
   query,
   setQuery,
@@ -20,7 +18,7 @@ const InputSearch = ({
 }: Props) => {
   const fetchGames = async () => {
     try {
-      const res = await fetch(`${url}/api/client/games`);
+      const res = await fetch(`/api/client/games`);
       const allGames = await res.json();
       setGames(allGames);
     } catch {

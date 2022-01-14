@@ -10,12 +10,14 @@ interface Props {
   searchResults: Fuse.FuseResult<Game>[];
   isResultsOpen: boolean;
   setIsResultsOpen: Dispatch<SetStateAction<boolean>>;
+  isAdmin?: boolean;
 }
 
 const ResultSearch = ({
   searchResults,
   isResultsOpen,
   setIsResultsOpen,
+  isAdmin = false,
 }: Props) => {
   const slicedResults = searchResults.slice(0, 33);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -33,7 +35,11 @@ const ResultSearch = ({
     >
       <ul>
         {slicedResults.map((game) => (
-          <ResultSearchItem game={game.item} key={game.item.id} />
+          <ResultSearchItem
+            isAdmin={isAdmin}
+            game={game.item}
+            key={game.item.id}
+          />
         ))}
       </ul>
     </Wrapper>

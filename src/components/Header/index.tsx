@@ -3,7 +3,6 @@ import DarkModeButton from '../DarkModeButton';
 import { styleInformations } from '@/config/styleInformations';
 import Logo from '../Logo';
 import { RefObject } from 'react';
-import { Game } from '@prisma/client';
 import { SearchGames } from '@/components/searchGames';
 
 const StyledHeader = styled(`header`)`
@@ -29,17 +28,17 @@ const StyledHeader = styled(`header`)`
 `;
 
 interface Props {
-  refOverlay: RefObject<SVGPathElement>;
-  games: Game[];
+  refOverlay?: RefObject<SVGPathElement>;
+  isAdmin?: boolean;
 }
 
-const Header = ({ refOverlay, games }: Props) => {
+const Header = ({ refOverlay, isAdmin = false }: Props) => {
   return (
     <StyledHeader>
       <div className="container">
         <Logo />
-        {games.length > 0 && <SearchGames games={games} />}
-        <DarkModeButton refOverlay={refOverlay} />
+        <SearchGames isAdmin={isAdmin} />
+        {refOverlay && <DarkModeButton refOverlay={refOverlay} />}
       </div>
     </StyledHeader>
   );

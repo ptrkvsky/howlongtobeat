@@ -1,4 +1,5 @@
 import Seo from '@/components/Seo';
+import { siteInformations } from '@/config/siteInformations';
 import TemplateJeu from '@/features/jeu/components/TemplateJeu';
 import { findAllGames } from '@/functions/findAllGames';
 import DBClient from '@/prisma/DBClient';
@@ -6,6 +7,8 @@ import { Game } from '@prisma/client';
 import { useEffect, useState } from 'react';
 
 const prisma = DBClient.instance;
+
+const url = process.env.SITE_URL || siteInformations.url;
 
 // This function gets called at build time
 export async function getStaticPaths() {
@@ -40,10 +43,6 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
     return { notFound: true };
   }
 
-  // const relatedGames = allGames.filter(
-  //   (allGame) => allGame.id > game.id && allGame.id < game.id + 21,
-  // );
-
   const relatedGames = await prisma.game.findMany({
     take: 20,
     where: {
@@ -73,28 +72,11 @@ function Game({ game, relatedGames }: PropsGame) {
     metaDescription: `Combien de temps faut-il pour terminer ? ${game.name}`,
   };
 
-  const [allGames, setAllGames] = useState<Game[]>();
-
-  const fetchGames = async () => {
-    const res = await fetch(`http://localhost:2811/api/client/games`);
-    const allGames = await res.json();
-    setAllGames(allGames);
-  };
-
-  useEffect(() => {
-    fetchGames();
-  }, []);
-
   return (
     <>
       <Seo pageSeo={pageSeo} />
-      {allGames && (
-        <TemplateJeu
-          game={game}
-          allGames={allGames}
-          relatedGames={relatedGames}
-        />
-      )}
+
+      <TemplateJeu game={game} relatedGames={relatedGames} />
     </>
   );
 }

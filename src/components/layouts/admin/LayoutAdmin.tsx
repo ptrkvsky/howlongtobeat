@@ -1,22 +1,31 @@
-import { FC, useRef } from 'react';
+import { FC } from 'react';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import styled from '@emotion/styled';
-import Overlay from '@/assets/Overlay';
-import { Game } from '@prisma/client';
-
-const StyleLayout = styled(`div`)``;
+import { useSession, signIn } from 'next-auth/react';
 
 interface Props {
   children: React.ReactNode;
 }
 
 const LayoutAdmin: FC<Props> = ({ children }: Props) => {
+  const { data: session, status } = useSession();
+  console.log(session, !!session);
+
+  if (session) {
+    return (
+      <div className="container">
+        <Header isAdmin={!!session} />
+        <main>{children}</main>
+      </div>
+    );
+  }
+
   return (
-    <StyleLayout className="container">
-      <Header />
-      <main>{children}</main>
-    </StyleLayout>
+    <div>
+      Not signed in <br />
+      <button type="button" onClick={() => signIn()}>
+        Sign in
+      </button>
+    </div>
   );
 };
 

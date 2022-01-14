@@ -30,7 +30,7 @@ const MentionsLegales = () => {
   }, []);
 
   return (
-    <Layout games={[]} isCentered>
+    <Layout isCentered>
       <Wrapper>
         <div className="ff-el-group" data-name="custom_html-4_12">
           <h2>

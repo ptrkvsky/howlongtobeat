@@ -31,7 +31,7 @@ const Politique = () => {
   }, []);
 
   return (
-    <Layout games={[]} isCentered>
+    <Layout isCentered>
       <Wrapper>
         <HomeTitle>Politique de confidentialité</HomeTitle>
         <p>

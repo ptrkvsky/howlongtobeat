@@ -2,11 +2,8 @@ import styled from '@emotion/styled';
 import DarkModeButton from '../DarkModeButton';
 import { styleInformations } from '@/config/styleInformations';
 import Logo from '../Logo';
-import { RefObject, useEffect, useState } from 'react';
-import { Game } from '@prisma/client';
+import { RefObject } from 'react';
 import { SearchGames } from '@/components/searchGames';
-import games from '@/pages/api/client/games';
-import { url } from 'inspector';
 
 const StyledHeader = styled(`header`)`
   display: flex;
@@ -31,16 +28,17 @@ const StyledHeader = styled(`header`)`
 `;
 
 interface Props {
-  refOverlay: RefObject<SVGPathElement>;
+  refOverlay?: RefObject<SVGPathElement>;
+  isAdmin?: boolean;
 }
 
-const Header = ({ refOverlay }: Props) => {
+const Header = ({ refOverlay, isAdmin = false }: Props) => {
   return (
     <StyledHeader>
       <div className="container">
         <Logo />
-        <SearchGames />
-        <DarkModeButton refOverlay={refOverlay} />
+        <SearchGames isAdmin={isAdmin} />
+        {refOverlay && <DarkModeButton refOverlay={refOverlay} />}
       </div>
     </StyledHeader>
   );

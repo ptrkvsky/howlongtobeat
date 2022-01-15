@@ -1,7 +1,7 @@
-import { HomeTitle } from '@/styles/components/titles/HomeTitle';
+import { HomeTitle } from '@/styles/components/titles';
 import { Genre } from '@prisma/client';
 import Link from 'next/link';
-import Layout from '@/styles/components/layout/Layout';
+import Layout from '@/components/layouts/front/LayoutFront';
 
 interface Props {
   genres: Genre[];

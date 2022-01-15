@@ -1,4 +1,4 @@
-import { HomeTitle } from '@/styles/components/titles/HomeTitle';
+import { HomeTitle } from '@/styles/components/titles';
 import { Genre } from '@prisma/client';
 import Link from 'next/link';
 import Layout from '@/components/layouts/front/LayoutFront';

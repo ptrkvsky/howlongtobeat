@@ -14,7 +14,7 @@ const SunEditor = dynamic(() => import(`suneditor-react`), {
 });
 
 const ButtonCustomList = [
-  [`undo`, `redo`],
+  [`undo`, `redo`, `link`],
   [`font`, `fontSize`],
   [`bold`, `underline`, `italic`, `strike`, `subscript`, `superscript`],
   [`removeFormat`],
@@ -56,6 +56,8 @@ function Editor<FormValues>({
       lang="fr"
       setOptions={{
         height: `400`,
+        buttonList: ButtonCustomList,
+        mode: `balloon`,
       }}
     />
     // <SunEditor

@@ -5,7 +5,7 @@ import {
   RefetchOptions,
   RefetchQueryFilters,
 } from 'react-query';
-import { Input } from './style';
+import { InputSearch as InputSearchStyle } from './style';
 
 interface Props {
   query: string;
@@ -28,7 +28,7 @@ const InputSearch = ({ query, refetch, setQuery, setIsResultsOpen }: Props) => {
   };
 
   return (
-    <Input
+    <InputSearchStyle
       type="text"
       value={query}
       onClick={handleClick}

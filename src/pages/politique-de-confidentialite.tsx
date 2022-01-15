@@ -1,5 +1,5 @@
 import Layout from '@/components/layouts/front/LayoutFront';
-import { HomeTitle } from '@/styles/components/titles/HomeTitle';
+import { HomeTitle } from '@/styles/components/titles';
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 

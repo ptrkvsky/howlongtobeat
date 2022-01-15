@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
@@ -26,6 +26,8 @@ model Game {
   genres             Int[]
   isTranslated       Boolean         @default(false)
   genre              GenresOnGames[]
+  related            Game[]          @relation("related", references: [id])
+  relating           Game[]          @relation("related", references: [id])
 }
 
 model Genre {
@@ -46,19 +48,18 @@ model GenresOnGames {
   @@id([gameId, genreId])
 }
 
-
 model Account {
   id                 String  @id @default(cuid())
   userId             String
   type               String
   provider           String
   providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
   expires_at         Int?
   token_type         String?
   scope              String?
-  id_token           String?  @db.Text
+  id_token           String? @db.Text
   session_state      String?
   oauth_token_secret String?
   oauth_token        String?
@@ -94,5 +95,3 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
-
-

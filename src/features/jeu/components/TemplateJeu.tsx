@@ -33,6 +33,8 @@ interface Props {
 }
 
 const TemplateJeu = ({ game, relatedGames }: Props) => {
+  console.log(game.title);
+
   return (
     <Layout>
       {game.cover && <Banner game={game} />}
@@ -45,7 +47,11 @@ const TemplateJeu = ({ game, relatedGames }: Props) => {
             Combien de temps faut-il pour terminer <br />
             <span className="name">{game.name}</span> ?
           </TitleMain>
-          <Description>{game.description.replace(`..,`, `.`)}</Description>
+          <Description
+            dangerouslySetInnerHTML={{
+              __html: game.description,
+            }}
+          />
           <Time game={game} />
         </div>
       </Content>

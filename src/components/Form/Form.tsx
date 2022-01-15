@@ -15,4 +15,4 @@ const Form = <TFormValues extends Record<string, any> = Record<string, any>>({
   );
 };
 
-export default Form;
+export { Form };

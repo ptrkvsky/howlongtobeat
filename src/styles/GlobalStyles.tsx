@@ -79,10 +79,6 @@ const GlobalStyles = () => {
           font-family: ${theme.typography.fonts.heading};
           letter-spacing: ${theme.typography.letterSpacings.tight};
         }
-        p {
-          line-height: ${theme.typography.lineHeights[5]};
-          font-size: ${theme.typography.fontSizes.lg};
-        }
 
         a {
           text-decoration: none;

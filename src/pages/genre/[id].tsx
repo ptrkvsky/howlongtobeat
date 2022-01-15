@@ -1,5 +1,4 @@
 import TemplateGenre from '@/features/genre/components/TemplateGenre';
-import { findAllGames } from '@/functions/findAllGames';
 import { getAllGenresPrisma } from '@/functions/getAllGenresPrisma';
 import DBClient from '@/prisma/DBClient';
 import { Game, Genre } from '@prisma/client';

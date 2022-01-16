@@ -10,7 +10,7 @@ export async function getRelatedGames(gameId: number, debug = false) {
   // Load genres from Sanity
   const query = `*[_type == "game" && isTranslated == true  && rating >= 80 && idHltb >= ${
     gameId + 20
-  }][0...99]`;
+  }] | order(rating desc) [0..9] [0...99]`;
   const params = {};
 
   // Get games from Sanity

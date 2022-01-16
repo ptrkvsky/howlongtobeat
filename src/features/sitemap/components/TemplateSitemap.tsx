@@ -1,10 +1,10 @@
 import { HomeTitle } from '@/styles/components/titles';
-import { Genre } from '@prisma/client';
 import Link from 'next/link';
 import Layout from '@/components/layouts/front/LayoutFront';
+import { SanityGenre } from '@/types/sanity/SanityGenre';
 
 interface Props {
-  genres: Genre[];
+  genres: SanityGenre[];
 }
 
 const TemplateSitemap = ({ genres }: Props) => {
@@ -13,8 +13,8 @@ const TemplateSitemap = ({ genres }: Props) => {
       <HomeTitle>Plan du site</HomeTitle>
       <ul>
         {genres.map((genre) => (
-          <li key={genre.id}>
-            <Link href={`genre/${genre.id}`}>
+          <li key={genre._id}>
+            <Link href={`genre/${genre.slug.current}`}>
               <a>{genre.name}</a>
             </Link>
           </li>

@@ -1,5 +1,7 @@
+import PortableText from '@/components/Sanity/PortableText';
 import Layout from '@/styles/components/layout/Layout';
 import { breakpoints } from '@/styles/foundations';
+import { SanityGame } from '@/types/sanity/SanityGame';
 import styled from '@emotion/styled';
 import { Game } from '@prisma/client';
 import { TitleMain, Description } from '../styles';
@@ -28,25 +30,33 @@ const Content = styled(`div`)`
 `;
 
 interface Props {
-  game: Game;
+  game: SanityGame;
   relatedGames: Game[];
 }
 
 const TemplateJeu = ({ game, relatedGames }: Props) => {
+  console.log(game);
+
+  if (!game) {
+    return <></>;
+  }
+
   return (
     <Layout>
-      {game.cover && <Banner game={game} />}
+      {/* {game.cover && <Banner game={game} />} */}
 
       <Content className="container">
-        <div className="cover">{game.cover && <Cover game={game} />}</div>
+        {/* <div className="cover">{game.cover && <Cover game={game} />}</div> */}
         {game.rating && <CircularBar percentage={game.rating} />}
         <div>
           <TitleMain>
             Combien de temps faut-il pour terminer <br />
             <span className="name">{game.name}</span> ?
           </TitleMain>
-          <Description>{game.description.replace(`..,`, `.`)}</Description>
-          <Time game={game} />
+          <Description>
+            <PortableText blocks={game.description} />
+          </Description>
+          {/* <Time game={game} /> */}
         </div>
       </Content>
       <div className="container">

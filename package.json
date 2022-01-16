@@ -30,12 +30,14 @@
     "@emotion/react": "11.7.1",
     "@emotion/styled": "11.6.0",
     "@prisma/client": "3.7.0",
+    "@sanity/block-content-to-react": "3.0.0",
     "@sanity/block-tools": "2.24.0",
     "@sanity/client": "2.23.2",
     "@sanity/schema": "2.24.0",
     "axios": "0.24.0",
     "emotion-reset": "3.0.1",
     "fuse.js": "6.5.3",
+    "get-youtube-id": "1.0.1",
     "gsap": "./src/lib/gsap/gsap.tgz",
     "next": "12.0.7",
     "next-pwa": "5.4.4",
@@ -43,7 +45,8 @@
     "react": "17.0.2",
     "react-circular-progressbar": "2.0.4",
     "react-dom": "17.0.2",
-    "react-gtm-module": "2.0.11"
+    "react-gtm-module": "2.0.11",
+    "react-youtube": "7.14.0"
   },
   "devDependencies": {
     "@commitlint/cli": "15.0.0",

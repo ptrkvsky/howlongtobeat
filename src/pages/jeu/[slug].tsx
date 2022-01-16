@@ -3,7 +3,7 @@ import Seo from '@/components/Seo';
 import TemplateJeu from '@/features/jeu/components/TemplateJeu';
 import { findAllGames } from '@/functions/findAllGames';
 import { getGame } from '@/functions/getGame';
-import DBClient from '@/lib/prisma/DBClient';
+import { getRelatedGames } from '@/functions/getRelatedGames';
 import { SanityGame } from '@/types/sanity/SanityGame';
 import { Game } from '@prisma/client';
 
@@ -29,27 +29,28 @@ interface PropsGetStaticProps {
 export async function getStaticProps({ params }: PropsGetStaticProps) {
   const slug = params.slug;
 
-  const game = await getGame(slug, true);
+  const game = await getGame(slug);
+  const relatedGames = await getRelatedGames(game.idHltb);
 
   if (!game) {
     return { notFound: true };
   }
 
   return {
-    props: { game },
+    props: { game, relatedGames },
     revalidate: 60,
   };
 }
 
 interface PropsGame {
   game: SanityGame;
-  relatedGames: Game[];
+  relatedGames: SanityGame[];
 }
 
 function Game({ game, relatedGames = [] }: PropsGame) {
   const pageSeo = {
-    metaTitle: `Combien de temps faut-il pour terminer ? ${game.name}`,
-    metaDescription: `Combien de temps faut-il pour terminer ? ${game.name}`,
+    metaTitle: `Combien de temps faut-il pour terminer ${game.name} ?`,
+    metaDescription: `Découvrez la durée de vie de ${game.name}. Quel temps vous faudra t-il pour voir la fin.`,
   };
 
   return (

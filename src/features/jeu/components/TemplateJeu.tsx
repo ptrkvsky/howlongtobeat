@@ -1,9 +1,8 @@
 import PortableText from '@/components/Sanity/PortableText';
-import Layout from '@/styles/components/layout/Layout';
+import Layout from '@/components/layouts/front/LayoutFront';
 import { breakpoints } from '@/styles/foundations';
 import { SanityGame } from '@/types/sanity/SanityGame';
 import styled from '@emotion/styled';
-import { Game } from '@prisma/client';
 import { TitleMain, Description } from '../styles';
 import Banner from './Banner';
 import CircularBar from './CircularBar';
@@ -31,22 +30,16 @@ const Content = styled(`div`)`
 
 interface Props {
   game: SanityGame;
-  relatedGames: Game[];
+  relatedGames: SanityGame[];
 }
 
 const TemplateJeu = ({ game, relatedGames }: Props) => {
-  console.log(game);
-
-  if (!game) {
-    return <></>;
-  }
-
   return (
     <Layout>
-      {/* {game.cover && <Banner game={game} />} */}
+      {game.cover && <Banner game={game} />}
 
       <Content className="container">
-        {/* <div className="cover">{game.cover && <Cover game={game} />}</div> */}
+        <div className="cover">{game.cover && <Cover game={game} />}</div>
         {game.rating && <CircularBar percentage={game.rating} />}
         <div>
           <TitleMain>
@@ -56,7 +49,7 @@ const TemplateJeu = ({ game, relatedGames }: Props) => {
           <Description>
             <PortableText blocks={game.description} />
           </Description>
-          {/* <Time game={game} /> */}
+          <Time game={game} />
         </div>
       </Content>
       <div className="container">

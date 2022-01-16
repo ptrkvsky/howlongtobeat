@@ -1,9 +1,9 @@
+import { SanityGame } from '@/types/sanity/SanityGame';
 import styled from '@emotion/styled';
-import { Game } from '@prisma/client';
 import Image from 'next/image';
 
 interface Props {
-  game: Game;
+  game: SanityGame;
 }
 
 const Wrapper = styled(`div`)`

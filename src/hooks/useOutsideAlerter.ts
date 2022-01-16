@@ -23,7 +23,7 @@ const useOutsideAlerter = (
       // Unbind the event listener on clean up
       document.removeEventListener(`mousedown`, handleClickOutside);
     };
-  }, [ref]);
+  }, [ref, action]);
 };
 
 export default useOutsideAlerter;

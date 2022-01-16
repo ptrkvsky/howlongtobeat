@@ -1,9 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import sanityClient, { MultipleMutationResult } from '@sanity/client';
+import { MultipleMutationResult } from '@sanity/client';
 import DBClient from '@/lib/prisma/DBClient';
 import { slugify } from '@/utils/slugify';
 import generateId from '@/utils/generateIds';
-// import { createGenre } from '@/functions/createGenreOnGames';
 
 import sanity from '@/lib/sanity/sanityClient';
 

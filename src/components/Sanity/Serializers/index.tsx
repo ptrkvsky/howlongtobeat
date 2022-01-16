@@ -52,11 +52,10 @@ const Serializers = () => {
 
     marks: {
       internalLink: ({ mark, children }: any) => {
-        console.log(mark);
-        // const { slug } = mark.reference;
-        const link = `toto`;
+        const slug = mark.slug.current;
+
         return (
-          <Link href={link}>
+          <Link href={slug}>
             <a>{children}</a>
           </Link>
         );

@@ -1,36 +1,25 @@
 import { Game } from '@prisma/client';
 import { ChangeEvent, Dispatch, SetStateAction } from 'react';
-import { Input } from './style';
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+} from 'react-query';
+import { InputSearch as InputSearchStyle } from './style';
 
 interface Props {
   query: string;
   setQuery: Dispatch<SetStateAction<string>>;
   setIsResultsOpen: Dispatch<SetStateAction<boolean>>;
-  games: Game[];
-  setGames: Dispatch<SetStateAction<Game[]>>;
+  refetch: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined,
+  ) => Promise<QueryObserverResult<Game[], Error>>;
 }
 
-const url = process.env.url;
-
-const InputSearch = ({
-  query,
-  setQuery,
-  setIsResultsOpen,
-  setGames,
-}: Props) => {
-  const fetchGames = async () => {
-    try {
-      const res = await fetch(`${url}/api/client/games`);
-      const allGames = await res.json();
-      setGames(allGames);
-    } catch {
-      setGames([]);
-    }
-  };
-
+const InputSearch = ({ query, refetch, setQuery, setIsResultsOpen }: Props) => {
   const handleClick = () => {
     setIsResultsOpen(true);
-    fetchGames();
+    refetch();
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +28,7 @@ const InputSearch = ({
   };
 
   return (
-    <Input
+    <InputSearchStyle
       type="text"
       value={query}
       onClick={handleClick}

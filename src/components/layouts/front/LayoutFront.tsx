@@ -40,7 +40,11 @@ interface Props {
   isCentered?: boolean;
 }
 
-const Layout: FC<Props> = ({ children, cloakFooter, isCentered }: Props) => {
+const LayoutFront: FC<Props> = ({
+  children,
+  cloakFooter,
+  isCentered,
+}: Props) => {
   const refOverlay = useRef<SVGPathElement>(null);
 
   return (
@@ -53,4 +57,4 @@ const Layout: FC<Props> = ({ children, cloakFooter, isCentered }: Props) => {
   );
 };
 
-export default Layout;
+export default LayoutFront;

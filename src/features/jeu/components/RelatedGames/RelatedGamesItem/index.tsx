@@ -1,15 +1,15 @@
-import { Game } from '@prisma/client';
+import { SanityGame } from '@/types/sanity/SanityGame';
 import Link from 'next/link';
 import Cover from '../../Cover';
 interface Props {
-  relatedGame: Game;
+  relatedGame: SanityGame;
 }
 
 const RelatedGamesItem = ({ relatedGame }: Props) => {
   return (
     <div className="menu__item">
       <div className="menu__item-link">
-        <Link href={`/jeu/${relatedGame.id}`}>
+        <Link href={`/jeu/${relatedGame.slug.current}`}>
           <a>{relatedGame.name}</a>
         </Link>
       </div>

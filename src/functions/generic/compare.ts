@@ -1,6 +1,6 @@
-import { Game } from '@prisma/client';
+import { SanityGame } from '@/types/sanity/SanityGame';
 
-const compareGames = (gameA: Game, gameB: Game) => {
+const compareGames = (gameA: SanityGame, gameB: SanityGame) => {
   if (gameA.name < gameB.name) {
     return -1;
   }

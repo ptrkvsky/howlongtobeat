@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-const Input = styled(`input`)`
+const InputSearch = styled(`input`)`
   min-height: 45px;
   padding: 0 ${({ theme }) => theme.spacing[3]};
   border-radius: 3px;
@@ -41,4 +41,4 @@ const Input = styled(`input`)`
   }
 `;
 
-export { Input };
+export { InputSearch };

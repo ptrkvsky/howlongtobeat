@@ -1,12 +1,13 @@
-import { HomeTitle } from '@/styles/components/titles/HomeTitle';
-import { Game, Genre } from '@prisma/client';
+import { HomeTitle } from '@/styles/components/titles';
+import { Genre } from '@prisma/client';
 import Link from 'next/link';
-import Layout from '@/styles/components/layout/Layout';
+import Layout from '@/components/layouts/front/LayoutFront';
 import compareGames from '@/functions/generic/compare';
+import { SanityGame } from '@/types/sanity/SanityGame';
 
 interface Props {
   genre: Genre;
-  games: Game[];
+  games: SanityGame[];
 }
 
 const TemplateGenre = ({ genre, games }: Props) => {
@@ -20,8 +21,8 @@ const TemplateGenre = ({ genre, games }: Props) => {
       </HomeTitle>
       <ul>
         {games.map((game) => (
-          <li key={game.id}>
-            <Link href={`/jeu/${game.id}`}>
+          <li key={game._id}>
+            <Link href={`/jeu/${game.slug.current}`}>
               <a>{game.name}</a>
             </Link>
           </li>

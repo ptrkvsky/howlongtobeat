@@ -22,9 +22,9 @@ export default async function handler(
 
   // Loop games prisma
   sanityGames.forEach((game: any) => {
-    // sanity.delete(game._id).then((res) => {
-    //   console.log(`game deleted`);
-    // });
+    sanity.delete(game._id).then((res) => {
+      console.log(`game deleted`);
+    });
   });
 
   res.status(200).json({ result: `ok` });

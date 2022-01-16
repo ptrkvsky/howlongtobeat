@@ -1,10 +1,10 @@
 import compareGames from '@/functions/generic/compare';
-import { Game } from '@prisma/client';
+import { SanityGame } from '@/types/sanity/SanityGame';
 import { TitleSecondary } from '../../styles/TitleSecondary';
 import RelatedGamesList from './RelatedGamesList';
 
 interface Props {
-  relatedGames: Game[];
+  relatedGames: SanityGame[];
 }
 
 const RelatedGames = ({ relatedGames }: Props) => {

@@ -29,7 +29,7 @@ export async function createGenreOnGames(
     } else {
       console.log(genreId, gameId);
       console.error(`existe déjà`);
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           resolve(`existe déjà`);
         }, 100);

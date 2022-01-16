@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createGenreOnGames } from '@/functions/createGenreOnGames';
-import DBClient from '@/prisma/DBClient';
+import DBClient from '@/lib/prisma/DBClient';
 
 type Data = {
   ok: any;

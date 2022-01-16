@@ -1,7 +1,7 @@
 import Seo from '@/components/Seo';
 import TemplateHome from '@/features/home/components/TemplateHome';
 import { findAllGames } from '@/functions/findAllGames';
-import DBClient from '@/prisma/DBClient';
+import DBClient from '@/lib/prisma/DBClient';
 import { SeoPage } from '@/types';
 import { Game } from '@prisma/client';
 

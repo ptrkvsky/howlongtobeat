@@ -2,7 +2,7 @@ import { Game, Genre } from '@prisma/client';
 import TemplateSitemap from '@/features/sitemap/components/TemplateSitemap';
 import Seo from '@/components/Seo';
 import { SeoPage } from '@/types';
-import DBClient from '@/prisma/DBClient';
+import DBClient from '@/lib/prisma/DBClient';
 import { findAllGames } from '@/functions/findAllGames';
 
 const prisma = DBClient.instance;

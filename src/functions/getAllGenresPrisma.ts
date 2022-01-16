@@ -1,4 +1,4 @@
-import DBClient from '@/prisma/DBClient';
+import DBClient from '@/lib/prisma/DBClient';
 
 export async function getAllGenresPrisma() {
   const prisma = DBClient.instance;

@@ -2,7 +2,7 @@ import Seo from '@/components/Seo';
 import { siteInformations } from '@/config/siteInformations';
 import TemplateJeu from '@/features/jeu/components/TemplateJeu';
 import { findAllGames } from '@/functions/findAllGames';
-import DBClient from '@/prisma/DBClient';
+import DBClient from '@/lib/prisma/DBClient';
 import { Game } from '@prisma/client';
 import { useEffect, useState } from 'react';
 

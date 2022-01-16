@@ -2,7 +2,7 @@ import React from 'react';
 import { findAllGames } from '@/functions/findAllGames';
 import { siteInformations } from '@/config/siteInformations';
 import SitemapGenerator from '@/scripts/SitemapGenerator';
-import DBClient from '@/prisma/DBClient';
+import DBClient from '@/lib/prisma/DBClient';
 import { NextPageContext } from 'next';
 
 const prisma = DBClient.instance;

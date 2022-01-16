@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { updateGame } from '@/functions/updateGames';
-import DBClient from '@/prisma/DBClient';
+import DBClient from '@/lib/prisma/DBClient';
 
 type Data = {
   games: any;

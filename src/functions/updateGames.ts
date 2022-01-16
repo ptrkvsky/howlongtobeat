@@ -1,4 +1,4 @@
-import DBClient from '@/prisma/DBClient';
+import DBClient from '@/lib/prisma/DBClient';
 import { Game } from '@prisma/client';
 
 import axios from 'axios';

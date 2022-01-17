@@ -2,11 +2,10 @@ import TemplateGenre from '@/features/genre/components/TemplateGenre';
 import { getAllGenres } from '@/functions/getAllGenres';
 import { getGamesByGenre } from '@/functions/getGamesByGenre';
 import { getGenre } from '@/functions/getGenre';
-import DBClient from '@/lib/prisma/DBClient';
-import { SanityGame } from '@/types/sanity/SanityGame';
-import { Genre } from '@prisma/client';
 
-const prisma = DBClient.instance;
+import { SanityGame } from '@/types/sanity/SanityGame';
+
+import { Genre } from '@prisma/client';
 
 // This function gets called at build time
 export async function getStaticPaths() {
@@ -35,10 +34,7 @@ interface PropsGetStaticProps {
 
 export async function getStaticProps({ params }: PropsGetStaticProps) {
   const genre = await getGenre(params.slug);
-
-  const games = await getGamesByGenre(genre);
-
-  await prisma.$disconnect();
+  const games = await getGamesByGenre(genre._id);
 
   return { props: { games, genre } };
   // Pass game data to the page via props

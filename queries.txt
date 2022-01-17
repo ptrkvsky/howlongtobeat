@@ -1,0 +1,32 @@
+query GenreBySlug ($genreSlug: String!) {
+  allGenre(where:{slug: {current: {eq:$genreSlug }} }){
+    _id,
+    slug {
+      current
+    }
+  }
+}
+
+query AllGamesByGenre ($genreId: ID!) {
+    allGame(
+        where: {
+          isTranslated: { eq: true }
+          _: { references: $genreId }
+        }
+      ) {
+        _id
+        name
+        isTranslated
+      }
+}
+
+query GetAllGenres {
+  allGenre {
+    _id,
+    name,
+    slug {
+      current
+    }
+  }
+}
+      

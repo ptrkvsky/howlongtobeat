@@ -11,8 +11,6 @@ interface Props {
 }
 
 const TemplateGenre = ({ genre, games }: Props) => {
-  games.sort(compareGames);
-
   return (
     <Layout cloakFooter isCentered>
       <HomeTitle>

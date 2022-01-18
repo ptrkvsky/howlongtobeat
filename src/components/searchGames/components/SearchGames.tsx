@@ -26,7 +26,7 @@ const SearchGames = ({ isAdmin = false }: Props) => {
     keys: [`name`],
   });
 
-  const searchResults = query ? fuse.search<SanityGame[]>(query) : [];
+  const searchResults = query ? fuse.search<SanityGame>(query) : [];
 
   if (error) {
     console.error(error.message);
@@ -45,7 +45,7 @@ const SearchGames = ({ isAdmin = false }: Props) => {
           isAdmin={isAdmin}
           isResultsOpen={isResultsOpen}
           setIsResultsOpen={setIsResultsOpen}
-          searchResults={searchResults || []}
+          searchResults={searchResults}
         />
       )}
     </div>

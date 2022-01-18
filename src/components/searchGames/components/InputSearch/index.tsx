@@ -13,7 +13,7 @@ interface Props {
   // ) => Promise<ApolloQueryResult<any>>;
 }
 
-const InputSearch = ({ query, setQuery, setIsResultsOpen, refetch }: Props) => {
+const InputSearch = ({ query, setQuery, setIsResultsOpen }: Props) => {
   const handleClick = () => {
     // refetch();
     setIsResultsOpen(true);

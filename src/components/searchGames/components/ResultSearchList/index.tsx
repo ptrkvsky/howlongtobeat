@@ -17,7 +17,6 @@ const ResultSearch = ({
   searchResults,
   isResultsOpen,
   setIsResultsOpen,
-  isAdmin = false,
 }: Props) => {
   const slicedResults = searchResults.slice(0, 33);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -35,11 +34,7 @@ const ResultSearch = ({
     >
       <ul>
         {slicedResults.map((game) => (
-          <ResultSearchItem
-            isAdmin={isAdmin}
-            game={game.item}
-            key={game.item.id}
-          />
+          <ResultSearchItem game={game.item} key={game.item._id} />
         ))}
       </ul>
     </Wrapper>

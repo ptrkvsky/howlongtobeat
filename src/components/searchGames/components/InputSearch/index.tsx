@@ -1,25 +1,22 @@
-import { Game } from '@prisma/client';
+import { ApolloQueryResult, OperationVariables } from '@apollo/client';
+
 import { ChangeEvent, Dispatch, SetStateAction } from 'react';
-import {
-  QueryObserverResult,
-  RefetchOptions,
-  RefetchQueryFilters,
-} from 'react-query';
+
 import { InputSearch as InputSearchStyle } from './style';
 
 interface Props {
   query: string;
   setQuery: Dispatch<SetStateAction<string>>;
   setIsResultsOpen: Dispatch<SetStateAction<boolean>>;
-  refetch: <TPageData>(
-    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined,
-  ) => Promise<QueryObserverResult<Game[], Error>>;
+  refetch: (
+    variables?: Partial<OperationVariables> | undefined,
+  ) => Promise<ApolloQueryResult<any>>;
 }
 
-const InputSearch = ({ query, refetch, setQuery, setIsResultsOpen }: Props) => {
+const InputSearch = ({ query, setQuery, setIsResultsOpen, refetch }: Props) => {
   const handleClick = () => {
-    setIsResultsOpen(true);
     refetch();
+    setIsResultsOpen(true);
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {

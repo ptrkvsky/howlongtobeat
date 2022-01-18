@@ -1,5 +1,5 @@
 import React from 'react';
-import { findAllGames } from '@/functions/findAllGames';
+import { getGames } from '@/features/jeu/api';
 import { siteInformations } from '@/config/siteInformations';
 import SitemapGenerator from '@/scripts/SitemapGenerator';
 import { NextPageContext } from 'next';
@@ -15,8 +15,8 @@ const getUrls = async () => {
   ];
 
   // games
-  const games = await findAllGames();
-  const gamesUrl = games.map(
+  const games = await getGames();
+  const gamesUrl = games?.map(
     (game) => `${siteInformations.url}/jeu/${game.slug.current}`,
   );
 
@@ -27,7 +27,8 @@ const getUrls = async () => {
     (genre) => `${siteInformations.url}/genre/${genre.slug.current}`,
   );
 
-  const urls = genresUrl && [...staticPages, ...gamesUrl, ...genresUrl];
+  const urls = genresUrl &&
+    gamesUrl && [...staticPages, ...gamesUrl, ...genresUrl];
 
   return urls;
 };

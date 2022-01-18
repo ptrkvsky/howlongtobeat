@@ -1,17 +1,15 @@
 import Seo from '@/components/Seo';
 
 import TemplateJeu from '@/features/jeu/components/TemplateJeu';
-import { findAllGames } from '@/functions/findAllGames';
-import { getGame } from '@/functions/getGame';
-import { getRelatedGames } from '@/functions/getRelatedGames';
+import { getGames, getGame, getRelatedGames } from '@/features/jeu/api';
 import { SanityGame } from '@/types/sanity/SanityGame';
 import { Game } from '@prisma/client';
 
 // This function gets called at build time
 export async function getStaticPaths() {
-  const allGames = await findAllGames();
+  const allGames = await getGames();
   // Get the paths we want to pre-render based on games
-  const paths = allGames.map((game) => ({
+  const paths = allGames?.map((game) => ({
     params: { slug: game.slug.current },
   }));
 
@@ -28,9 +26,9 @@ interface PropsGetStaticProps {
 // This also gets called at build time
 export async function getStaticProps({ params }: PropsGetStaticProps) {
   const slug = params.slug;
-
   const game = await getGame(slug);
-  const relatedGames = await getRelatedGames(game.idHltb);
+
+  const relatedGames = await getRelatedGames(game.idHltb + 20);
 
   if (!game) {
     return { notFound: true };

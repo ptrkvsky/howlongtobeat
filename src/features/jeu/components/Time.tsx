@@ -8,7 +8,7 @@ interface Props {
 const Time = ({ game }: Props) => {
   return (
     <>
-      {game.timeMainStory && (
+      {game.timeMainStory > 0 && (
         <Description>
           Pour terminer{` `}
           <span className="primary-color bold">l&apos;histoire principale</span>
@@ -19,7 +19,7 @@ const Time = ({ game }: Props) => {
         </Description>
       )}
 
-      {game.timeMainExtras && (
+      {game.timeMainExtras > 0 && (
         <Description>
           Pour terminer{` `}
           <span className="primary-color bold">
@@ -28,14 +28,14 @@ const Time = ({ game }: Props) => {
           {` `}
           c&apos;est environ {` `}
           <span className="primary-color bold">
-            {game.timeMainStory} heures.
+            {game.timeMainStory} heures
           </span>
           {` `}
           qu&apos;il faudra compter
         </Description>
       )}
 
-      {game.timeCompletionists && (
+      {game.timeCompletionists > 0 && (
         <Description>
           Si vous êtes un acharné de la manette, pour terminer le jeu{` `}
           <span className="primary-color bold">100%</span> il vous faudra

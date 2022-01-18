@@ -6,7 +6,7 @@ const sanityConfig = {
   projectId: sanityId,
   dataset: sanityDataset,
   // token: sanityToken,
-  useCdn: true,
+  useCdn: false,
 };
 
 export { sanityConfig };

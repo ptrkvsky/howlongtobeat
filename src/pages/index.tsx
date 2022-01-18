@@ -1,18 +1,15 @@
 import Seo from '@/components/Seo';
 import TemplateHome from '@/features/home/components/TemplateHome';
-import { findAllGames } from '@/functions/findAllGames';
-import DBClient from '@/lib/prisma/DBClient';
+import { getGames } from '@/features/jeu/api';
 import { SeoPage } from '@/types';
 import { Game } from '@prisma/client';
 
 export async function getStaticProps() {
-  const prisma = DBClient.instance;
-  const games = await findAllGames();
-  await prisma.$disconnect();
+  const games = await getGames();
 
   return {
     props: {
-      countGames: games.length,
+      countGames: games?.length,
     },
   };
 }

@@ -1,8 +1,7 @@
-import { Game } from '@prisma/client';
+import { ALL_GAMES } from '@/features/jeu/gql';
 import Fuse from 'fuse.js';
 import { useState } from 'react';
-import { useQuery, UseQueryResult } from 'react-query';
-import fetchGames from '../api/fetchGames';
+import { useQuery } from '@apollo/client';
 import InputSearch from './InputSearch';
 import ResultSearch from './ResultSearchList';
 
@@ -14,19 +13,7 @@ const SearchGames = ({ isAdmin = false }: Props) => {
   const [query, setQuery] = useState(``);
   const [isResultsOpen, setIsResultsOpen] = useState(false);
 
-  const {
-    isLoading,
-    isError,
-    data: games,
-    refetch,
-  }: UseQueryResult<Game[], Error> = useQuery<Game[], Error>(
-    `games`,
-    fetchGames,
-    {
-      enabled: false, // turned off by default, manual refetch is needed
-      staleTime: 50000,
-    },
-  );
+  const { data: games, loading, error, refetch } = useQuery(ALL_GAMES);
 
   const fuse = new Fuse(games || [], {
     keys: [`name`],
@@ -34,8 +21,8 @@ const SearchGames = ({ isAdmin = false }: Props) => {
 
   const searchResults = query ? fuse.search(query) : [];
 
-  if (isError) {
-    return <p>error</p>;
+  if (error) {
+    return <p>{error.message}</p>;
   }
 
   return (
@@ -43,10 +30,10 @@ const SearchGames = ({ isAdmin = false }: Props) => {
       <InputSearch
         query={query}
         setQuery={setQuery}
-        refetch={refetch}
         setIsResultsOpen={setIsResultsOpen}
+        refetch
       />
-      {isLoading && <p>loading</p>}
+      {loading && <p>loading</p>}
       {searchResults.length > 0 && (
         <ResultSearch
           isAdmin={isAdmin}

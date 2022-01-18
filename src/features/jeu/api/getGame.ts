@@ -27,3 +27,27 @@ export async function getGame(slug: string, debug = false) {
 
   return game;
 }
+
+// GraphQL Version
+//import apolloClient from '@/lib/apollo/apolloClient';
+// import { SanityGame } from '@/types/sanity/SanityGame';
+// import { GAME_BY_SLUG } from '../gql';
+
+// export async function getGame(slug: string, debug = false) {
+//   const {
+//     data: { allGame },
+//   } = await apolloClient.instance.query({
+//     query: GAME_BY_SLUG,
+//     variables: {
+//       gameSlug: slug,
+//     },
+//   });
+
+//   const game: SanityGame = allGame[0];
+
+//   if (debug) {
+//     console.log(game);
+//   }
+
+//   return game;
+// }

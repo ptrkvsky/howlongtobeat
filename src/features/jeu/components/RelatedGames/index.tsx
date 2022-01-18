@@ -1,4 +1,3 @@
-import compareGames from '@/functions/generic/compare';
 import { SanityGame } from '@/types/sanity/SanityGame';
 import { TitleSecondary } from '../../styles/TitleSecondary';
 import RelatedGamesList from './RelatedGamesList';
@@ -8,7 +7,6 @@ interface Props {
 }
 
 const RelatedGames = ({ relatedGames }: Props) => {
-  relatedGames.sort(compareGames);
   return (
     <>
       <div className="container">

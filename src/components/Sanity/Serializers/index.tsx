@@ -52,7 +52,6 @@ const Serializers = () => {
 
     marks: {
       internalLink: ({ mark, children }: any) => {
-        console.log(`🌛`, mark);
         const slug = mark.slug.current;
 
         return (

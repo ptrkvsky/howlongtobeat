@@ -4,25 +4,32 @@ import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import InputSearch from './InputSearch';
 import ResultSearch from './ResultSearchList';
+import { SanityGame } from '@/types/sanity/SanityGame';
 
 interface Props {
   isAdmin?: boolean;
 }
 
+type Result = {
+  data: {
+    allGame: SanityGame[];
+  };
+};
+
 const SearchGames = ({ isAdmin = false }: Props) => {
   const [query, setQuery] = useState(``);
   const [isResultsOpen, setIsResultsOpen] = useState(false);
 
-  const { data: games, loading, error, refetch } = useQuery(ALL_GAMES);
+  const { data, loading, error } = useQuery(ALL_GAMES);
 
-  const fuse = new Fuse(games || [], {
+  const fuse = new Fuse(data?.allGame || [], {
     keys: [`name`],
   });
 
-  const searchResults = query ? fuse.search(query) : [];
+  const searchResults = query ? fuse.search<SanityGame[]>(query) : [];
 
   if (error) {
-    return <p>{error.message}</p>;
+    console.error(error.message);
   }
 
   return (
@@ -31,7 +38,6 @@ const SearchGames = ({ isAdmin = false }: Props) => {
         query={query}
         setQuery={setQuery}
         setIsResultsOpen={setIsResultsOpen}
-        refetch
       />
       {loading && <p>loading</p>}
       {searchResults.length > 0 && (
@@ -39,7 +45,7 @@ const SearchGames = ({ isAdmin = false }: Props) => {
           isAdmin={isAdmin}
           isResultsOpen={isResultsOpen}
           setIsResultsOpen={setIsResultsOpen}
-          searchResults={searchResults}
+          searchResults={searchResults || []}
         />
       )}
     </div>

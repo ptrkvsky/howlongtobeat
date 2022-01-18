@@ -1,21 +1,17 @@
-import { Game } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
 
 import { Wrapper, Placeholder } from './style';
+import { SanityGame } from '@/types/sanity/SanityGame';
 
 interface Props {
-  game: Game;
-  isAdmin?: boolean;
+  game: SanityGame;
 }
 
-const ResultSearchItem = ({ game, isAdmin = false }: Props) => {
-  const link = isAdmin ? `/admin/jeu/${game.id}` : `/jeu/${game.id}`;
-
+const ResultSearchItem = ({ game }: Props) => {
   return (
-    <Wrapper key={game.id}>
-      <Link href={link}>
+    <Wrapper key={game._id}>
+      <Link href={`/jeu/${game.slug.current}`}>
         <a>
           {game.cover ? (
             <Image

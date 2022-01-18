@@ -1,5 +1,5 @@
 import useOutsideAlerter from '@/hooks/useOutsideAlerter';
-import { Game } from '@prisma/client';
+import { SanityGame } from '@/types/sanity/SanityGame';
 import Fuse from 'fuse.js';
 import { Dispatch, SetStateAction, useRef } from 'react';
 import ResultSearchItem from '../ResultSearchItem';
@@ -7,7 +7,7 @@ import ResultSearchItem from '../ResultSearchItem';
 import { Wrapper } from './style';
 
 interface Props {
-  searchResults: Fuse.FuseResult<Game>[];
+  searchResults: Fuse.FuseResult<SanityGame>[];
   isResultsOpen: boolean;
   setIsResultsOpen: Dispatch<SetStateAction<boolean>>;
   isAdmin?: boolean;

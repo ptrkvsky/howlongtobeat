@@ -37,7 +37,6 @@
     "@sanity/schema": "2.24.0",
     "@types/bcryptjs": "2.4.2",
     "axios": "0.24.0",
-    "bcryptjs": "2.4.3",
     "emotion-reset": "3.0.1",
     "fuse.js": "6.5.3",
     "get-youtube-id": "1.0.1",
@@ -54,9 +53,7 @@
     "react-hook-form": "7.23.0",
     "react-query": "3.34.8",
     "react-youtube": "7.14.0",
-    "sharp": "0.29.3",
-    "suneditor": "2.41.3",
-    "suneditor-react": "3.3.1"
+    "sharp": "0.29.3"
   },
   "devDependencies": {
     "@commitlint/cli": "15.0.0",

@@ -1,32 +1,7 @@
-import banner from '@/assets/banner_home.jpg';
-import { TitleMain } from '@/features/jeu/styles';
-import styled from '@emotion/styled';
-import { Game } from '@prisma/client';
-import Image from 'next/image';
+import banner from '@/assets/bg.jpg';
 
-const Wrapper = styled(`div`)`
-  display: block;
-  position: relative;
-  height: 80vh;
-  .title {
-    position: absolute;
-    top: 25vh;
-    z-index: 10;
-    color: #fff;
-    margin: 0;
-    margin-bottom: ${({ theme }) => theme.spacing[6]};
-  }
-  .description {
-    position: absolute;
-    z-index: 10;
-    top: calc(25vh + 3rem);
-    p {
-      margin: ${({ theme }) => theme.spacing[3]} 0;
-      color: #fff;
-      font-size: ${({ theme }) => theme.typography.fontSizes[`2xl`]};
-    }
-  }
-`;
+import Image from 'next/image';
+import { WrapperImage, Title, Wrapper } from './style';
 
 interface Props {
   countGames: number;
@@ -36,22 +11,28 @@ const Banner = ({ countGames }: Props) => {
   return (
     <Wrapper>
       <div className="container">
-        <TitleMain className="title">game-over.io</TitleMain>
+        <Title className="title">
+          Quelle est la durée de vie de mes{` `}
+          <span className="highlight">jeux favoris</span> ?
+        </Title>
         <div className="description">
-          <p>Découvrez la durée de vie de vos jeux-vidéos favoris.</p>
-          <p>
-            Déja plus de <span className="bold">{countGames}</span> jeux dans
-            notre base de données
-          </p>
+          Vous souhaitez savoir le temps nécessaire pour arriver au boutde votre
+          dernier jeu ? Game-over recense aujourd’hui plus de{` `}
+          <span className="highlight">{countGames} jeux</span>.<br /> Action,
+          aventure, RPG, tous les genres sont représentés. Votre jeu ne se
+          trouve pas dans la liste ? Enregistrez-vous et ajouter le facilement à
+          notre base de données.
         </div>
       </div>
-      <Image
-        priority
-        alt="Illustration jeux video"
-        src={banner}
-        layout="fill"
-        objectFit="cover"
-      />
+      <WrapperImage className="wrapper-image">
+        <Image
+          priority
+          alt="Illustration jeux video"
+          src={banner}
+          layout="fill"
+          objectFit="cover"
+        />
+      </WrapperImage>
     </Wrapper>
   );
 };

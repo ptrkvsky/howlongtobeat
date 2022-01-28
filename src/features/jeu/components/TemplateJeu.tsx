@@ -4,7 +4,7 @@ import { breakpoints } from '@/styles/foundations';
 import { SanityGame } from '@/types/sanity/SanityGame';
 import styled from '@emotion/styled';
 import { TitleMain, Description } from '../styles';
-import Banner from './Banner';
+import Banner from './Banner/Banner';
 import CircularBar from './CircularBar';
 import Cover from './Cover';
 import RelatedGames from './RelatedGames';

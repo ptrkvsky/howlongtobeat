@@ -2,16 +2,16 @@ import { ToggleColor } from './types/toggleColors';
 
 export const darkColors: ToggleColor = {
   primary: {
-    '50': `#FFFBE5`,
-    '100': `#FFF3B8`,
-    '200': `#FFEB8A`,
-    '300': `#FFE35C`,
-    '400': `#FFDB2E`,
-    '500': `#FFD400`,
-    '600': `#CCA900`,
-    '700': `#997F00`,
-    '800': `#665500`,
-    '900': `#332A00`,
+    '50': `#FFE5F3`,
+    '100': `#FFB8DE`,
+    '200': `#FF8AC9`,
+    '300': `#FF5CB4`,
+    '400': `#FF2E9F`,
+    '500': `#FF008A`,
+    '600': `#CC006E`,
+    '700': `#990053`,
+    '800': `#660037`,
+    '900': `#33001C`,
   },
   secondary: {
     '50': `#FFE6F0`,
@@ -38,9 +38,10 @@ export const darkColors: ToggleColor = {
     '900': `#000333`,
   },
   text: `rgb(255 246 230)`,
-  background: `rgb(39, 35, 37)`,
+  background: `#010103`,
   border: `#fff6e6`,
   shadow: `0deg 0% 4%`,
+  contrast: `#FFF`,
 };
 
 // nice blue bg #00089C

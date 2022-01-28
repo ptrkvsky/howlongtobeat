@@ -1,14 +1,6 @@
-import { breakpoints } from '@/styles/foundations';
-import { SanityGame } from '@/types/sanity/SanityGame';
 import styled from '@emotion/styled';
 
-import Image from 'next/image';
-
-interface Props {
-  game: SanityGame;
-}
-
-const Hidden = styled(`div`)`
+export const Hidden = styled(`div`)`
   position: relative;
 
   &:before {
@@ -37,7 +29,7 @@ const Hidden = styled(`div`)`
   }
 `;
 
-const Wrapper = styled(`div`)`
+export const Wrapper = styled(`div`)`
   position: absolute;
   height: 33vh;
   width: 100%;
@@ -54,23 +46,3 @@ const Wrapper = styled(`div`)`
     opacity: 0.5;
   }
 `;
-
-const Banner = ({ game }: Props) => {
-  return (
-    <>
-      <Hidden>
-        <Wrapper>
-          <Image
-            priority
-            alt={game.name}
-            src={`https:${game.cover}`}
-            layout="fill"
-            objectFit="cover"
-          />
-        </Wrapper>
-      </Hidden>
-    </>
-  );
-};
-
-export default Banner;

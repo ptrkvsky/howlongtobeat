@@ -8,14 +8,14 @@ interface Props {
   query: string;
   setQuery: Dispatch<SetStateAction<string>>;
   setIsResultsOpen: Dispatch<SetStateAction<boolean>>;
-  // refetch: (
-  //   variables?: Partial<OperationVariables> | undefined,
-  // ) => Promise<ApolloQueryResult<any>>;
+  refetch: (
+    variables?: Partial<OperationVariables> | undefined,
+  ) => Promise<ApolloQueryResult<any>>;
 }
 
-const InputSearch = ({ query, setQuery, setIsResultsOpen }: Props) => {
+const InputSearch = ({ query, setQuery, setIsResultsOpen, refetch }: Props) => {
   const handleClick = () => {
-    // refetch();
+    refetch();
     setIsResultsOpen(true);
   };
 

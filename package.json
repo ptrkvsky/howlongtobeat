@@ -46,6 +46,7 @@
     "gsap": "./src/lib/gsap/gsap.tgz",
     "next": "12.0.7",
     "next-auth": "4.1.0",
+    "next-auth-sanity": "1.3.0",
     "next-pwa": "5.4.4",
     "nodemailer": "6.7.2",
     "prisma": "3.8.0",

@@ -2,7 +2,8 @@ import { breakpoints } from './../../../styles/foundations/breakpoints';
 import styled from '@emotion/styled';
 
 export const TitleMain = styled(`h1`)`
-  font-size: ${({ theme }) => theme.typography.fontSizes[`5xl`]};
+  font-size: 36px;
+  line-height: 40px;
   margin-top: 24.3vh;
   margin-bottom: ${({ theme }) => theme.spacing[8]};
 

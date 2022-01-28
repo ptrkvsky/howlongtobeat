@@ -28,7 +28,6 @@ class MyDocument extends Document {
           />
           <HeadPWA />
         </Head>
-
         <body>
           <Main />
           <NextScript />

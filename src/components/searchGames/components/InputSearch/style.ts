@@ -4,13 +4,12 @@ const InputSearch = styled(`input`)`
   min-height: 45px;
   padding: 0 ${({ theme }) => theme.spacing[3]};
   border-radius: 3px;
-  font-family: ${({ theme }) => theme.typography.fonts.heading};
-  font-size: ${({ theme }) => theme.typography.fontSizes.xl};
+  font-size: ${({ theme }) => theme.typography.fontSizes.lg};
   border: none;
   transition: all 0.2s;
 
   .theme-dark & {
-    background-color: ${({ theme }) => theme.colors.gray[600]};
+    background-color: ${({ theme }) => theme.colors.gray[700]};
     color: ${({ theme }) => theme.colors.gray[100]};
     box-shadow: var(--shadow-elevation-medium);
   }
@@ -37,7 +36,6 @@ const InputSearch = styled(`input`)`
     }
 
     opacity: 1; /* Firefox */
-    font-family: ${({ theme }) => theme.typography.fonts.heading};
   }
 `;
 

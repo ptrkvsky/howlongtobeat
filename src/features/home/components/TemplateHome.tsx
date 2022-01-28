@@ -1,5 +1,4 @@
 import Layout from '@/components/layouts/front/LayoutFront';
-import { Game } from '@prisma/client';
 
 import Banner from './Banner';
 

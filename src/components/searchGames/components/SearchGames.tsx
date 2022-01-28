@@ -20,7 +20,7 @@ const SearchGames = ({ isAdmin = false }: Props) => {
   const [query, setQuery] = useState(``);
   const [isResultsOpen, setIsResultsOpen] = useState(false);
 
-  const { data, loading, error } = useQuery(ALL_GAMES);
+  const { data, loading, error, refetch } = useQuery(ALL_GAMES, { skip: true });
 
   const fuse = new Fuse(data?.allGame || [], {
     keys: [`name`],
@@ -38,6 +38,7 @@ const SearchGames = ({ isAdmin = false }: Props) => {
         query={query}
         setQuery={setQuery}
         setIsResultsOpen={setIsResultsOpen}
+        refetch={refetch}
       />
       {loading && <p>loading</p>}
       {searchResults.length > 0 && (

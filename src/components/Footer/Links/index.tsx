@@ -10,8 +10,6 @@ const WrapperLinks = styled(`div`)`
   flex-direction: row;
   gap: ${({ theme }) => theme.spacing[2]};
   * {
-    font-family: ${({ theme }) => theme.typography.fonts.heading};
-
     .theme-light & {
       color: ${({ theme }) => theme.colors.gray[700]};
     }

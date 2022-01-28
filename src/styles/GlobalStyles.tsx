@@ -53,6 +53,12 @@ const GlobalStyles = () => {
           background: ${theme.colors.secondary[500]};
           transition: all 0.1s linear;
         }
+
+        @font-face {
+          font-family: 'Monument Black';
+          src: url('/fonts/MonumentExtended-Black.woff2') format('woff2');
+        }
+
         body {
           background: ${theme.colors.background};
           color: ${theme.colors.text};
@@ -62,14 +68,20 @@ const GlobalStyles = () => {
           transition-property: background-color, color;
           font-size: ${theme.typography.fontSizes.xl};
         }
+
         @font-face {
-          font-family: 'Cirka';
-          src: url('/fonts/PPCirka-Variable.woff2') format('woff2');
+          font-family: 'Monument Black';
+          src: url('/fonts/MonumentExtended-Black.woff2') format('woff2');
         }
         @font-face {
-          font-family: 'Bebas';
-          src: url('/fonts/BebasNeueBold.woff2') format('woff2');
+          font-family: 'PolySans Neutral';
+          src: url('/fonts/PolySans-Neutral.woff2') format('woff2');
         }
+        @font-face {
+          font-family: 'PolySans Slim';
+          src: url('/fonts/PolySans-Slim.woff2') format('woff2');
+        }
+
         h1,
         h2,
         h3,
@@ -84,6 +96,7 @@ const GlobalStyles = () => {
           text-decoration: none;
           color: inherit;
         }
+
         a:visited {
           color: inherit;
         }

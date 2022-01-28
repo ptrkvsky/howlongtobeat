@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { AppProps } from 'next/app';
 import { ApolloProvider } from '@apollo/client';
 import apolloClient from '@/lib/apollo/apolloClient';
-import { SessionProvider } from 'next-auth/react';
 import TagManager from 'react-gtm-module';
 import DarkModeProvider from '@/context/DarkModeContext';
 import StyleContainer from '@/styles/containers/StyleContainer';
@@ -28,13 +27,11 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <ApolloProvider client={apolloClient.instance}>
-      <SessionProvider session={pageProps.session}>
-        <DarkModeProvider>
-          <StyleContainer>
-            <Component {...pageProps} />
-          </StyleContainer>
-        </DarkModeProvider>
-      </SessionProvider>
+      <DarkModeProvider>
+        <StyleContainer>
+          <Component {...pageProps} />
+        </StyleContainer>
+      </DarkModeProvider>
     </ApolloProvider>
   );
 }

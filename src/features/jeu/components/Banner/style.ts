@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { breakpoints } from '@/styles/foundations';
 
 export const Hidden = styled(`div`)`
   position: relative;

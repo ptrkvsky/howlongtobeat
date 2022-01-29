@@ -1,12 +1,15 @@
 import { useTheme } from '@emotion/react';
 import CloakLink from '../Cloaklink';
 import { Wrapper } from './style';
+import useAnimation from './useOpacity';
 
 const Logo = () => {
   const theme = useTheme();
+  const isNotVisible = useAnimation();
+
   return (
     <CloakLink url="/">
-      <Wrapper className="wrapper-logo">
+      <Wrapper className={`wrapper-logo ${!isNotVisible && `is-visible`}`}>
         <div className="wrapper-joystick">
           <svg
             viewBox="0 0 48 48"

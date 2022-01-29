@@ -60,7 +60,8 @@ const GlobalStyles = () => {
         }
 
         body {
-          background: ${theme.colors.background};
+          overflow: hidden; //banner
+          /* background: ${theme.colors.background}; */
           color: ${theme.colors.text};
           min-height: 100vh;
           font-family: ${theme.typography.fonts.body};

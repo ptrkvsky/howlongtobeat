@@ -1,21 +1,46 @@
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import Image from 'next/image';
+import { SplitText } from 'gsap/dist/SplitText';
+import { enterText, removeFilter, revealDescription } from './animations';
+import { WrapperImage, Title, Wrapper } from './style';
+import useFilter from '../../hooks/useFilter';
 import banner from '@/assets/bg.jpg';
 
-import Image from 'next/image';
-import { WrapperImage, Title, Wrapper } from './style';
+gsap.registerPlugin(SplitText);
 
 interface Props {
   countGames: number;
 }
 
 const Banner = ({ countGames }: Props) => {
+  const isFiltered = useFilter();
+  const refTitle = useRef<HTMLHeadingElement>(null);
+  const refDescription = useRef<HTMLDivElement>(null);
+  const refWrapperImage = useRef<HTMLDivElement>(null);
+
+  // Enter animation
+  useEffect(() => {
+    const splitTextTitle = new SplitText(refTitle.current, {
+      type: `words,chars`,
+    });
+    const splitDescription = new SplitText(refDescription.current, {
+      type: `lines, words`,
+    });
+
+    removeFilter(refWrapperImage, 3);
+    enterText(refTitle, splitTextTitle, 4.0);
+    revealDescription(refDescription, splitDescription, 3.5);
+  }, []);
+
   return (
     <Wrapper>
       <div className="container">
-        <Title className="title">
+        <Title ref={refTitle} className="title">
           Quelle est la durée de vie de mes{` `}
           <span className="highlight">jeux favoris</span> ?
         </Title>
-        <div className="description">
+        <div ref={refDescription} className="description">
           Vous souhaitez savoir le temps nécessaire pour arriver au boutde votre
           dernier jeu ? Game-over recense aujourd’hui plus de{` `}
           <span className="highlight">{countGames} jeux</span>.<br /> Action,
@@ -24,7 +49,7 @@ const Banner = ({ countGames }: Props) => {
           notre base de données.
         </div>
       </div>
-      <WrapperImage className="wrapper-image">
+      <WrapperImage ref={refWrapperImage} className={`wrapper-image`}>
         <Image
           priority
           alt="Illustration jeux video"

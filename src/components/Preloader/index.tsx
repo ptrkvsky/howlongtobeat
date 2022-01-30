@@ -1,7 +1,7 @@
 import { useAppDispatch } from '@/redux/hooks';
 import { setIsLoaded } from '@/features/app/slices/appSlice';
 import { useEffect, useRef } from 'react';
-import { animatePanels, animateTitles } from './animation';
+import { animatePanels, enterTitles, exitTitles } from './animation';
 import { Wrapper, Title } from './style';
 import React from 'react';
 
@@ -28,9 +28,9 @@ const Preloader = React.forwardRef<HTMLDivElement>((_props, ref) => {
 
     // const callBack = () => dispatch(setIsLoaded());
     const callBack = () => null;
-
-    animatePanels(panels);
-    animateTitles(refGame, refOver, callBack);
+    enterTitles(refGame, refOver);
+    animatePanels(panels, 0.5);
+    exitTitles(refGame, refOver, callBack);
   }, []);
 
   return (
@@ -44,6 +44,7 @@ const Preloader = React.forwardRef<HTMLDivElement>((_props, ref) => {
             OVER
           </span>
         </Title>
+
         <div ref={panelRefOne} className="panel one"></div>
         <div ref={panelRefTwo} className="panel two"></div>
         <div ref={panelRefThree} className="panel three"></div>

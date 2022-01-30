@@ -38,7 +38,7 @@ export const Title = styled.div`
   position: fixed;
   left: 0;
   z-index: 120;
-  color: #fff;
+  color: #09112c;
   font-size: 24.8vw;
   font-family: ${typography.fonts.heading};
   letter-spacing: ${typography.letterSpacings.tighter};

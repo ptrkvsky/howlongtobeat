@@ -15,16 +15,17 @@ const PreloaderContainer: FC<PreloaderContainerProps> = ({ Template }) => {
   const refTemplate = useRef<HTMLDivElement>(null);
   const refPreloader = useRef<HTMLDivElement>(null);
 
-  console.log(isLoaded);
+  //const callBackTransition = () => null;
+  const callBackTransition = () => dispatch(setIsLoaded());
 
   useEffect(() => {
     if (!isLoaded) {
       gsap.set(refTemplate.current, {
         display: `none`,
       });
-      transition(refPreloader, refTemplate, () => dispatch(setIsLoaded()));
+
+      transition(refPreloader, refTemplate, callBackTransition);
     }
-    console.log(isLoaded);
   }, []);
 
   return (

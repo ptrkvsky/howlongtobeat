@@ -28,7 +28,7 @@ class MyDocument extends Document {
           />
           <HeadPWA />
         </Head>
-        <body>
+        <body style={{ backgroundColor: `#000` }}>
           <Main />
           <NextScript />
         </body>

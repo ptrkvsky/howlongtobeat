@@ -1,13 +1,10 @@
-import { useAppDispatch } from '@/redux/hooks';
-import { setIsLoaded } from '@/features/app/slices/appSlice';
+import React from 'react';
+import gsap from 'gsap';
 import { useEffect, useRef } from 'react';
 import { animatePanels, enterTitles, exitTitles } from './animation';
 import { Wrapper, Title } from './style';
-import React from 'react';
 
 const Preloader = React.forwardRef<HTMLDivElement>((_props, ref) => {
-  // const dispatch = useAppDispatch();
-
   // Ref panels
   const panelRefOne = useRef<HTMLDivElement>(null);
   const panelRefTwo = useRef<HTMLDivElement>(null);
@@ -15,6 +12,7 @@ const Preloader = React.forwardRef<HTMLDivElement>((_props, ref) => {
   const panelRefFour = useRef<HTMLDivElement>(null);
 
   // Ref titles
+  const refTitle = useRef<HTMLDivElement>(null);
   const refGame = useRef<HTMLSpanElement>(null);
   const refOver = useRef<HTMLSpanElement>(null);
 
@@ -26,8 +24,10 @@ const Preloader = React.forwardRef<HTMLDivElement>((_props, ref) => {
       panelRefFour.current,
     ];
 
-    // const callBack = () => dispatch(setIsLoaded());
     const callBack = () => null;
+    gsap.set(refTitle.current, {
+      opacity: 1,
+    });
     enterTitles(refGame, refOver);
     animatePanels(panels, 0.5);
     exitTitles(refGame, refOver, callBack);
@@ -36,7 +36,7 @@ const Preloader = React.forwardRef<HTMLDivElement>((_props, ref) => {
   return (
     <>
       <Wrapper ref={ref} className="wrapper-preloader">
-        <Title className="title">
+        <Title ref={refTitle} className="title">
           <span ref={refGame} className="item game">
             GAME
           </span>

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, useRef } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import Preloader from '.';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -23,20 +23,13 @@ const PreloaderContainer: FC<PreloaderContainerProps> = ({ Template }) => {
       gsap.set(refTemplate.current, {
         display: `none`,
       });
-
       transition(refPreloader, refTemplate, callBackTransition);
     }
   }, []);
 
   return (
     <>
-      {!isLoaded && (
-        <Preloader
-          // shouldExit={isImagesLoaded}
-          ref={refPreloader}
-          // countImagesLoaded={countImagesLoaded}
-        />
-      )}
+      {!isLoaded && <Preloader ref={refPreloader} />}
 
       <div className="wrapper-template" ref={refTemplate}>
         <Template />

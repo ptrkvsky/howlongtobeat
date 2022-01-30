@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
-import DarkModeButton from '../DarkModeButton';
 import { styleInformations } from '@/config/styleInformations';
 import Logo from '../Logo';
 import { RefObject } from 'react';
+import DarkModeButton from '../DarkModeButton';
 import { SearchGames } from '@/components/searchGames';
 
 const StyledHeader = styled(`header`)`

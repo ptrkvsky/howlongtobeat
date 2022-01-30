@@ -45,6 +45,7 @@ export const Title = styled.div`
   line-height: 0.8;
   mix-blend-mode: exclusion;
   max-width: 100vw;
+  opacity: 0;
 
   .item {
     position: relative;

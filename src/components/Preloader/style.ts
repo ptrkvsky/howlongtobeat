@@ -34,6 +34,19 @@ export const Wrapper = styled.div`
   }
 `;
 
+export const WrapperSVG = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 500px;
+  height: 500px;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
 export const Title = styled.div`
   position: fixed;
   left: 0;

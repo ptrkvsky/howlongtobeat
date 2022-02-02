@@ -4,6 +4,7 @@ import Preloader from '.';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setIsLoaded } from '@/features/app/slices/appSlice';
 import { transition } from './animation';
+import PreloaderSvg from './PreloaderSvg';
 
 interface PreloaderContainerProps {
   Template: () => JSX.Element;
@@ -15,7 +16,6 @@ const PreloaderContainer: FC<PreloaderContainerProps> = ({ Template }) => {
   const refTemplate = useRef<HTMLDivElement>(null);
   const refPreloader = useRef<HTMLDivElement>(null);
 
-  //const callBackTransition = () => null;
   const callBackTransition = () => dispatch(setIsLoaded());
 
   useEffect(() => {
@@ -23,13 +23,14 @@ const PreloaderContainer: FC<PreloaderContainerProps> = ({ Template }) => {
       gsap.set(refTemplate.current, {
         display: `none`,
       });
-      transition(refPreloader, refTemplate, callBackTransition);
+      // transition(refPreloader, refTemplate, callBackTransition);
     }
   }, []);
 
   return (
     <>
-      {!isLoaded && <Preloader ref={refPreloader} />}
+      {/* {!isLoaded && <Preloader ref={refPreloader} />} */}
+      {!isLoaded && <PreloaderSvg ref={refPreloader} />}
 
       <div className="wrapper-template" ref={refTemplate}>
         <Template />

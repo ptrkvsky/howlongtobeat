@@ -8,26 +8,24 @@ export const transition = (
 ) => {
   gsap
     .timeline()
-    .set(`body`, {
-      backgroundColor: `#010103`,
-    })
+
     // Hide preloader
     .to(preloader.current, {
       y: 0,
       opacity: 0,
       ease: `power3.inOut`,
       duration: 0.5,
-      delay: 2.75,
+      delay: 2.5,
     })
+
     // display none preloader
     .set(template.current, {
       display: `inherit`,
     })
-    // DIsplay inherit template
+    // Display inherit template
     .set(template.current, {
       display: `inherit`,
     })
-
     // Show template
     .from(template.current, {
       y: 0,
@@ -39,6 +37,7 @@ export const transition = (
     .set(preloader.current, {
       display: `none`,
     })
+
     .eventCallback(`onComplete`, callback);
 };
 

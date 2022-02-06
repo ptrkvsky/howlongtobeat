@@ -35,15 +35,22 @@ export const Wrapper = styled.div`
 `;
 
 export const WrapperSVG = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 500px;
-  height: 500px;
+  width: clamp(100px, 10vw, 200px);
 
   svg {
     width: 100%;
     height: 100%;
+  }
+  .white-cross {
+    opacity: 0;
+  }
+  .black-cross {
+    position: absolute;
+    opacity: 0;
   }
 `;
 

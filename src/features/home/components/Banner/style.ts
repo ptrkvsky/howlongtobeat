@@ -12,6 +12,7 @@ export const Wrapper = styled(`div`)`
     font-family: ${({ theme }) => theme.typography.fonts.bodySlim};
     line-height: 1.28;
     letter-spacing: ${({ theme }) => theme.typography.letterSpacings.wide};
+    color: ${({ theme }) => theme.colors.whiteAlpha[800]};
 
     > div {
       overflow: hidden;
@@ -51,6 +52,7 @@ export const Title = styled(`h1`)`
   font-size: 36px;
   line-height: 40px;
   margin-top: 24.3vh;
+  color: ${({ theme }) => theme.colors.whiteAlpha[800]};
   margin-bottom: ${({ theme }) => theme.spacing[8]};
 
   .highlight {

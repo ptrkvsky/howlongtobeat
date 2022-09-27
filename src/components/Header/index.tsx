@@ -38,7 +38,7 @@ const Header = ({ refOverlay, isAdmin = false }: Props) => {
   return (
     <StyledHeader>
       <div className="container">
-        <Logo />
+        {/* <Logo /> */}
         {/* <SearchGames isAdmin={isAdmin} /> */}
         {/* {refOverlay && <DarkModeButton refOverlay={refOverlay} />} */}
       </div>

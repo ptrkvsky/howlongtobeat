@@ -38,7 +38,7 @@ export const lightColors: ToggleColor = {
     '900': `#130033`,
   },
   background: `#FFF`,
-  text: `#2D3748`,
+  text: `rgba(255, 255, 255, 0.80)`,
   border: `#282623`,
   shadow: `0deg 0% 63%`,
   contrast: `#000`,

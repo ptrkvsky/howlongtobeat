@@ -17,11 +17,12 @@ const DarkModeProvider: FC = ({ children }) => {
   const [mode, setMode] = useState<Mode>(initialState);
 
   useEffect(() => {
-    setMode(
-      window.matchMedia(`(prefers-color-scheme: dark)`).matches
-        ? `DARK`
-        : `LIGHT`,
-    );
+    // setMode(
+    //   window.matchMedia(`(prefers-color-scheme: dark)`).matches
+    //     ? `DARK`
+    //     : `LIGHT`,
+    // );
+    setMode(`DARK`);
   }, []);
 
   const toggleMode = () => {

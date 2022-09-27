@@ -3,7 +3,6 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import styled from '@emotion/styled';
 import Overlay from '@/assets/Overlay';
-import { Game } from '@prisma/client';
 
 const StyleLayout = styled(`div`)`
   display: grid;

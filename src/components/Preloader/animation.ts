@@ -9,6 +9,7 @@ export const transition = (
   gsap
     .timeline()
     .set(`body`, {
+      delay: 2.5,
       backgroundColor: `#010103`,
     })
     // Hide preloader
@@ -17,7 +18,6 @@ export const transition = (
       opacity: 0,
       ease: `power3.inOut`,
       duration: 0.5,
-      delay: 2.75,
     })
     // display none preloader
     .set(template.current, {

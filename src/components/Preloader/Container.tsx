@@ -20,16 +20,12 @@ const PreloaderContainer: FC<PreloaderContainerProps> = ({ Template }) => {
 
   useEffect(() => {
     if (!isLoaded) {
-      gsap.set(refTemplate.current, {
-        display: `none`,
-      });
-      // transition(refPreloader, refTemplate, callBackTransition);
+      transition(refPreloader, refTemplate, callBackTransition);
     }
-  }, []);
+  }, [isLoaded]);
 
   return (
     <>
-      {/* {!isLoaded && <Preloader ref={refPreloader} />} */}
       {!isLoaded && <PreloaderSvg ref={refPreloader} />}
 
       <div className="wrapper-template" ref={refTemplate}>

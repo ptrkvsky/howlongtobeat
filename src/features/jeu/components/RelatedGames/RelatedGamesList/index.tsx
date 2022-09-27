@@ -1,5 +1,5 @@
 import { SanityGame } from '@/types/sanity/SanityGame';
-import { Game } from '@prisma/client';
+
 import RelatedGamesItem from '../RelatedGamesItem';
 
 interface Props {

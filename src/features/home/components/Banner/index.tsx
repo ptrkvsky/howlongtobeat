@@ -6,6 +6,7 @@ import { enterText, removeFilter, revealDescription } from './animations';
 import { WrapperImage, Title, Wrapper } from './style';
 import useFilter from '../../hooks/useFilter';
 import banner from '@/assets/bg.jpg';
+import Link from 'next/link';
 
 gsap.registerPlugin(SplitText);
 
@@ -43,10 +44,12 @@ const Banner = ({ countGames }: Props) => {
         <div ref={refDescription} className="description">
           Vous souhaitez savoir le temps nécessaire pour arriver au boutde votre
           dernier jeu ? Game-over recense aujourd’hui plus de{` `}
-          <span className="highlight">{countGames} jeux</span>.<br /> Action,
-          aventure, RPG, tous les genres sont représentés. Votre jeu ne se
-          trouve pas dans la liste ? Enregistrez-vous et ajouter le facilement à
-          notre base de données.
+          <Link href="/plan-du-site">
+            <a className="highlight"> {countGames} jeux</a>
+          </Link>
+          .<br /> Action, aventure, RPG, tous les genres sont représentés. Votre
+          jeu ne se trouve pas dans la liste ? Enregistrez-vous et ajouter le
+          facilement à notre base de données.
         </div>
       </div>
       <WrapperImage ref={refWrapperImage} className={`wrapper-image`}>

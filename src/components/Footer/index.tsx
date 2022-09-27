@@ -10,7 +10,7 @@ interface Props {
 const Footer: FC<Props> = ({ cloakFooter }) => {
   return (
     <StyleFooter className="container">
-      <Logo />
+      {/* <Logo /> */}
       <LinkSitemap cloakFooter={cloakFooter} />
     </StyleFooter>
   );

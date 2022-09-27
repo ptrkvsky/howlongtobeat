@@ -101,6 +101,21 @@ const SVGJoystick = () => {
           ease: `linear`,
           duration: durationStagger,
         },
+      )
+      // sens inverse
+      .fromTo(
+        `.line-joystick`,
+        {
+          opacity: 0,
+          drawSVG: false,
+          ease: `linear`,
+        },
+        {
+          opacity: 1,
+          drawSVG: true,
+          ease: `linear`,
+          duration: durationStagger,
+        },
       );
   }, []);
 
@@ -192,10 +207,38 @@ const SVGJoystick = () => {
           y2="33"
           stroke="black"
         />
-        <line x1="77" y1="48.5" x2="90" y2="48.5" stroke="black" />
-        <line x1="8" y1="48.5" x2="21" y2="48.5" stroke="black" />
-        <line x1="49.5" y1="8" x2="49.5" y2="21" stroke="black" />
-        <line x1="49.5" y1="78" x2="49.5" y2="91" stroke="black" />
+        <line
+          className="line-joystick"
+          x1="77"
+          y1="48.5"
+          x2="90"
+          y2="48.5"
+          stroke="black"
+        />
+        <line
+          className="line-joystick"
+          x1="8"
+          y1="48.5"
+          x2="21"
+          y2="48.5"
+          stroke="black"
+        />
+        <line
+          className="line-joystick"
+          x1="49.5"
+          y1="8"
+          x2="49.5"
+          y2="21"
+          stroke="black"
+        />
+        <line
+          className="line-joystick"
+          x1="49.5"
+          y1="78"
+          x2="49.5"
+          y2="91"
+          stroke="black"
+        />
       </svg>
       {/* <svg
         width="98"

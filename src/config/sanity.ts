@@ -5,7 +5,7 @@ const sanityDataset = process.env.SANITY_DATASET;
 const sanityConfig = {
   projectId: sanityId,
   dataset: sanityDataset,
-  apiVersion: `1`,
+  apiVersion: `2024-01-01`,
   // token: sanityToken,
   useCdn: true,
 };

@@ -42,6 +42,10 @@ class Sitemap extends React.Component {
       const siteMap = siteMapGenerator.getSitemap();
 
       res?.setHeader(`Content-Type`, `text/xml`);
+      res?.setHeader(
+        `Cache-Control`,
+        `public, s-maxage=86400, stale-while-revalidate=3600`,
+      );
 
       res?.write(siteMap);
       res?.end();

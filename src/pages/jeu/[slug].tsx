@@ -28,15 +28,16 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
   const slug = params.slug;
   const game = await getGame(slug);
 
-  const relatedGames = await getRelatedGames(game.idHltb + 20);
-
   if (!game) {
     return { notFound: true };
   }
 
+  const relatedGames = await getRelatedGames(game.idHltb + 20);
+
   return {
     props: { game, relatedGames },
-    revalidate: 60,
+    // 24h: limits Sanity API usage, content rarely changes
+    revalidate: 86400,
   };
 }
 

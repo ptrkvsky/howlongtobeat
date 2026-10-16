@@ -1,4 +1,3 @@
-import Preloader from '@/components/Preloader/Container';
 import Seo from '@/components/Seo';
 import TemplateHome from '@/features/home/components/TemplateHome';
 import { getGames } from '@/features/jeu/api';
@@ -27,8 +26,7 @@ export default function Home({ countGames }: PropsHome) {
   return (
     <>
       <Seo pageSeo={pageSeo} />
-      <Preloader Template={() => <TemplateHome countGames={countGames} />} />
-      {/* <TemplateHome countGames={countGames} /> */}
+      <TemplateHome countGames={countGames} />
     </>
   );
 }

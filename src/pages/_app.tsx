@@ -4,8 +4,6 @@ import TagManager from 'react-gtm-module';
 import DarkModeProvider from '@/context/DarkModeContext';
 import StyleContainer from '@/styles/containers/StyleContainer';
 import { siteInformations } from '@/config/siteInformations';
-import { Provider } from 'react-redux';
-import { store } from '@/redux/store';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   if (typeof window !== `undefined`) {
@@ -27,11 +25,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <DarkModeProvider>
-      <Provider store={store}>
-        <StyleContainer>
-          <Component {...pageProps} />
-        </StyleContainer>
-      </Provider>
+      <StyleContainer>
+        <Component {...pageProps} />
+      </StyleContainer>
     </DarkModeProvider>
   );
 }

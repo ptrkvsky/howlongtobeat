@@ -34,7 +34,6 @@
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.1",
     "@portabletext/react": "8.0.1",
-    "@reduxjs/toolkit": "2.13.0",
     "@sanity/client": "8.9.0",
     "emotion-reset": "3.0.1",
     "fuse.js": "7.5.0",
@@ -45,7 +44,6 @@
     "react-circular-progressbar": "2.2.0",
     "react-dom": "19.3.1",
     "react-gtm-module": "2.0.11",
-    "react-redux": "9.3.0",
     "react-youtube": "10.1.0"
   },
   "devDependencies": {

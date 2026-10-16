@@ -5,7 +5,6 @@ export const Wrapper = styled(`div`)`
   display: block;
   height: 80vh;
   .description {
-    opacity: 0;
     position: relative;
     z-index: 20;
     max-width: 450px;
@@ -39,13 +38,9 @@ export const WrapperImage = styled(`div`)`
   height: 100vh;
   top: 0;
   left: 0;
-  filter: blur(255px);
-  transform: scale(0.85);
-  transition: all 1s linear;
 `;
 
 export const Title = styled(`h1`)`
-  opacity: 0;
   position: relative;
   z-index: 20;
   max-width: 450px;

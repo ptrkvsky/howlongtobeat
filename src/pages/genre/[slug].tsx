@@ -5,7 +5,7 @@ import { getGenre } from '@/functions/getGenre';
 
 import { SanityGame } from '@/types/sanity/SanityGame';
 
-import { Genre } from '@prisma/client';
+import { SanityGenre } from '@/types/sanity/SanityGenre';
 
 // This function gets called at build time
 export async function getStaticPaths() {
@@ -42,7 +42,7 @@ export async function getStaticProps({ params }: PropsGetStaticProps) {
 
 interface PropsGame {
   games: SanityGame[];
-  genre: Genre;
+  genre: SanityGenre;
 }
 
 function Genre({ games, genre }: PropsGame) {

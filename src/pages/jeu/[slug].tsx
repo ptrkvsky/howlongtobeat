@@ -3,7 +3,6 @@ import Seo from '@/components/Seo';
 import TemplateJeu from '@/features/jeu/components/TemplateJeu';
 import { getGames, getGame, getRelatedGames } from '@/features/jeu/api';
 import { SanityGame } from '@/types/sanity/SanityGame';
-import { Game } from '@prisma/client';
 
 // This function gets called at build time
 export async function getStaticPaths() {

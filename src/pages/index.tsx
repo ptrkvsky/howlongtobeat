@@ -3,7 +3,6 @@ import Seo from '@/components/Seo';
 import TemplateHome from '@/features/home/components/TemplateHome';
 import { getGames } from '@/features/jeu/api';
 import { SeoPage } from '@/types';
-import { Game } from '@prisma/client';
 
 export async function getStaticProps() {
   const games = await getGames();
@@ -17,7 +16,6 @@ export async function getStaticProps() {
 
 interface PropsHome {
   countGames: number;
-  games: Game[];
 }
 
 export default function Home({ countGames }: PropsHome) {

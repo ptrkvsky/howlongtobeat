@@ -1,12 +1,12 @@
 import { HomeTitle } from '@/styles/components/titles';
-import { Genre } from '@prisma/client';
+import { SanityGenre } from '@/types/sanity/SanityGenre';
 import Link from 'next/link';
 import Layout from '@/components/layouts/front/LayoutFront';
 import compareGames from '@/functions/generic/compare';
 import { SanityGame } from '@/types/sanity/SanityGame';
 
 interface Props {
-  genre: Genre;
+  genre: SanityGenre;
   games: SanityGame[];
 }
 

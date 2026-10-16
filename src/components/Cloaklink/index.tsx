@@ -6,7 +6,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const CloakLink: FC<Props> = ({ url, children }: Props): JSX.Element => {
+const CloakLink: FC<Props> = ({ url, children }: Props): React.JSX.Element => {
   const [isCloaked, setIsCloaked] = useState(true);
 
   return (
@@ -15,13 +15,7 @@ const CloakLink: FC<Props> = ({ url, children }: Props): JSX.Element => {
       onMouseEnter={() => setIsCloaked(false)}
       onMouseLeave={() => setIsCloaked(true)}
     >
-      {isCloaked ? (
-        <span>{children}</span>
-      ) : (
-        <Link href={url}>
-          <a>{children}</a>
-        </Link>
-      )}
+      {isCloaked ? <span>{children}</span> : <Link href={url}>{children}</Link>}
     </div>
   );
 };

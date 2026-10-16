@@ -1,29 +1,14 @@
-import apolloClient from '@/lib/apollo/apolloClient';
-import { SanityGenre } from '@/types/sanity/SanityGenre';
-import { gql } from '@apollo/client';
+import { getGames, toGameSummary } from '@/features/jeu/api';
+import { SanityGameSummary } from '@/types/sanity/SanityGame';
 
-export async function getGamesByGenre(genreId: string, debug = true) {
-  const {
-    data: { allGame },
-  } = await apolloClient.instance.query({
-    query: gql`
-      query AllGamesByGenre($genreId: ID!) {
-        allGame(
-          where: { isTranslated: { eq: true }, _: { references: $genreId } }
-        ) {
-          _id
-          name
-          isTranslated
-          slug {
-            current
-          }
-        }
-      }
-    `,
-    variables: {
-      genreId: genreId,
-    },
-  });
+export async function getGamesByGenre(
+  genreId: string,
+): Promise<SanityGameSummary[]> {
+  const games = await getGames();
 
-  return allGame as SanityGenre[];
+  return games
+    .filter((game) =>
+      game.genres?.some((genre: { _ref: string }) => genre._ref === genreId),
+    )
+    .map(toGameSummary);
 }

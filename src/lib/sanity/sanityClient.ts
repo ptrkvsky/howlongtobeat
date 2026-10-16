@@ -1,8 +1,8 @@
 import { sanityConfig } from '@/config/sanity';
-import sanityClient from '@sanity/client';
+import { createClient } from '@sanity/client';
 
 const sanity = {
-  instance: sanityClient(sanityConfig),
+  instance: createClient(sanityConfig),
 };
 
 Object.freeze(sanity);

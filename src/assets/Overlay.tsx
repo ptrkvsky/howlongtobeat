@@ -1,7 +1,7 @@
 import { RefObject } from 'react';
 
 interface Props {
-  refOverlay: RefObject<SVGPathElement>;
+  refOverlay: RefObject<SVGPathElement | null>;
 }
 
 const Overlay = ({ refOverlay }: Props) => {

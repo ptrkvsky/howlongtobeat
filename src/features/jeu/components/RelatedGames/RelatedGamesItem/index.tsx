@@ -1,8 +1,8 @@
-import { SanityGame } from '@/types/sanity/SanityGame';
+import { SanityGameSummary } from '@/types/sanity/SanityGame';
 import Link from 'next/link';
 import Cover from '../../Cover';
 interface Props {
-  relatedGame: SanityGame;
+  relatedGame: SanityGameSummary;
 }
 
 const RelatedGamesItem = ({ relatedGame }: Props) => {
@@ -10,7 +10,7 @@ const RelatedGamesItem = ({ relatedGame }: Props) => {
     <div className="menu__item">
       <div className="menu__item-link">
         <Link href={`/jeu/${relatedGame.slug.current}`}>
-          <a>{relatedGame.name}</a>
+          {relatedGame.name}
         </Link>
       </div>
       <div className="menu__item-img">

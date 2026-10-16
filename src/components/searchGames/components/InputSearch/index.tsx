@@ -1,5 +1,3 @@
-import { ApolloQueryResult, OperationVariables } from '@apollo/client';
-
 import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 
 import { InputSearch as InputSearchStyle } from './style';
@@ -8,18 +6,17 @@ interface Props {
   query: string;
   setQuery: Dispatch<SetStateAction<string>>;
   setIsResultsOpen: Dispatch<SetStateAction<boolean>>;
-  refetch: (
-    variables?: Partial<OperationVariables> | undefined,
-  ) => Promise<ApolloQueryResult<any>>;
+  onOpen: () => void;
 }
 
-const InputSearch = ({ query, setQuery, setIsResultsOpen, refetch }: Props) => {
+const InputSearch = ({ query, setQuery, setIsResultsOpen, onOpen }: Props) => {
   const handleClick = () => {
-    refetch();
+    onOpen();
     setIsResultsOpen(true);
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onOpen();
     setIsResultsOpen(true);
     setQuery(event.target.value);
   };

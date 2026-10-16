@@ -1,7 +1,5 @@
 import { useEffect } from 'react';
 import { AppProps } from 'next/app';
-import { ApolloProvider } from '@apollo/client';
-import apolloClient from '@/lib/apollo/apolloClient';
 import TagManager from 'react-gtm-module';
 import DarkModeProvider from '@/context/DarkModeContext';
 import StyleContainer from '@/styles/containers/StyleContainer';
@@ -19,7 +17,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       `padding: 6px 8px`,
     ].join(`;`);
     const message = `GAME-OVER.IO`;
-    // eslint-disable-next-line no-console
+
     console.info(`%c%s`, styles, message);
   }
 
@@ -28,14 +26,12 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <ApolloProvider client={apolloClient.instance}>
-      <DarkModeProvider>
-        <Provider store={store}>
-          <StyleContainer>
-            <Component {...pageProps} />
-          </StyleContainer>
-        </Provider>
-      </DarkModeProvider>
-    </ApolloProvider>
+    <DarkModeProvider>
+      <Provider store={store}>
+        <StyleContainer>
+          <Component {...pageProps} />
+        </StyleContainer>
+      </Provider>
+    </DarkModeProvider>
   );
 }

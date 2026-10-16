@@ -6,7 +6,7 @@ export interface SanityGame {
   _rev: string;
   _type: string;
   _updatedAt: string;
-  cover: string;
+  cover?: string | null;
   description: any;
   genres: any;
   idHltb: number;
@@ -17,5 +17,9 @@ export interface SanityGame {
   timeCompletionists: number;
   timeMainExtras: number;
   timeMainStory: number;
-  totalPoll: 61;
+  totalPoll: number;
 }
+
+export type SanityGameSummary = Pick<SanityGame, '_id' | 'name' | 'cover'> & {
+  slug: Pick<SanitySlug, 'current'>;
+};

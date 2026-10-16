@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import Image from 'next/image';
-import { SplitText } from 'gsap/dist/SplitText';
+import { SplitText } from 'gsap/SplitText';
 import { enterText, removeFilter, revealDescription } from './animations';
 import { WrapperImage, Title, Wrapper } from './style';
 import useFilter from '../../hooks/useFilter';
@@ -44,8 +44,9 @@ const Banner = ({ countGames }: Props) => {
         <div ref={refDescription} className="description">
           Vous souhaitez savoir le temps nécessaire pour arriver au boutde votre
           dernier jeu ? Game-over recense aujourd’hui plus de{` `}
-          <Link href="/plan-du-site">
-            <a className="highlight"> {countGames} jeux</a>
+          <Link href="/plan-du-site" className="highlight">
+            {' '}
+            {countGames} jeux
           </Link>
           .<br /> Action, aventure, RPG, tous les genres sont représentés. Votre
           jeu ne se trouve pas dans la liste ? Enregistrez-vous et ajouter le
@@ -57,8 +58,10 @@ const Banner = ({ countGames }: Props) => {
           priority
           alt="Illustration jeux video"
           src={banner}
-          layout="fill"
-          objectFit="cover"
+          fill
+          sizes="100vw"
+          placeholder="blur"
+          style={{ objectFit: `cover` }}
         />
       </WrapperImage>
     </Wrapper>

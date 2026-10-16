@@ -4,31 +4,31 @@ on: [pull_request]
 
 jobs:
   run-ci:
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     name: Run Type Check & Linters
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
+      - uses: pnpm/action-setup@v4
 
-      - name: Install dependencies (with cache)
-        uses: bahmutov/npm-install@HEAD
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Check types
-        run: yarn type-check
+        run: pnpm type-check
 
       - name: Check linting
-        run: yarn lint
+        run: pnpm lint
 
       - name: Check commits messages
-        uses: wagoid/commitlint-github-action@v4
+        uses: wagoid/commitlint-github-action@v6

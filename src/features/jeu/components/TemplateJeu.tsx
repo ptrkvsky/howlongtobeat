@@ -1,7 +1,7 @@
 import PortableText from '@/components/Sanity/PortableText';
 import Layout from '@/components/layouts/front/LayoutFront';
 import { breakpoints } from '@/styles/foundations';
-import { SanityGame } from '@/types/sanity/SanityGame';
+import { SanityGame, SanityGameSummary } from '@/types/sanity/SanityGame';
 import styled from '@emotion/styled';
 import { TitleMain, Description } from '../styles';
 import Banner from './Banner/Banner';
@@ -30,7 +30,7 @@ const Content = styled(`div`)`
 
 interface Props {
   game: SanityGame;
-  relatedGames: SanityGame[];
+  relatedGames: SanityGameSummary[];
 }
 
 const TemplateJeu = ({ game, relatedGames }: Props) => {

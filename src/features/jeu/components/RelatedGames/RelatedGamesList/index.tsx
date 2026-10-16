@@ -1,9 +1,9 @@
-import { SanityGame } from '@/types/sanity/SanityGame';
+import { SanityGameSummary } from '@/types/sanity/SanityGame';
 
 import RelatedGamesItem from '../RelatedGamesItem';
 
 interface Props {
-  relatedGames: SanityGame[];
+  relatedGames: SanityGameSummary[];
 }
 
 const RelatedGamesList = ({ relatedGames }: Props) => {

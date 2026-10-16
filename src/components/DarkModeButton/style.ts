@@ -57,14 +57,26 @@ export const ToggleModeButton = styled.button<PropsButton>`
     left: 50%;
 
     .theme-dark & {
-      box-shadow: 0 -23px 0 #fff, 0 23px 0 #fff, 23px 0 0 #fff, -23px 0 0 #fff,
-        15px 15px 0 #fff, -15px 15px 0 #fff, 15px -15px 0 #fff,
+      box-shadow:
+        0 -23px 0 #fff,
+        0 23px 0 #fff,
+        23px 0 0 #fff,
+        -23px 0 0 #fff,
+        15px 15px 0 #fff,
+        -15px 15px 0 #fff,
+        15px -15px 0 #fff,
         -15px -15px 0 #fff;
       transform: scale(1);
     }
     .theme-light & {
-      box-shadow: 0 -23px 0 #000, 0 23px 0 #000, 23px 0 0 #000, -23px 0 0 #000,
-        15px 15px 0 #000, -15px 15px 0 #000, 15px -15px 0 #000,
+      box-shadow:
+        0 -23px 0 #000,
+        0 23px 0 #000,
+        23px 0 0 #000,
+        -23px 0 0 #000,
+        15px 15px 0 #000,
+        -15px 15px 0 #000,
+        15px -15px 0 #000,
         -15px -15px 0 #000;
       transform: scale(0);
     }

@@ -39,17 +39,11 @@ const LinkSitemap: FC<Props> = ({ cloakFooter = true }: Props) => {
   if (!cloakFooter) {
     return (
       <WrapperLinks>
-        <Link href={urls.plan}>
-          <a>Plan du site</a>
-        </Link>
+        <Link href={urls.plan}>Plan du site</Link>
         <span className="separator">/</span>
-        <Link href={urls.mentions}>
-          <a>Mentions légales</a>
-        </Link>
+        <Link href={urls.mentions}>Mentions légales</Link>
         <span className="separator">/</span>
-        <Link href={urls.politique}>
-          <a>Politique de confidentialité</a>
-        </Link>
+        <Link href={urls.politique}>Politique de confidentialité</Link>
       </WrapperLinks>
     );
   } else {

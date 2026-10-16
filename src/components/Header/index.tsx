@@ -30,7 +30,7 @@ const StyledHeader = styled(`header`)`
 `;
 
 interface Props {
-  refOverlay?: RefObject<SVGPathElement>;
+  refOverlay?: RefObject<SVGPathElement | null>;
   isAdmin?: boolean;
 }
 

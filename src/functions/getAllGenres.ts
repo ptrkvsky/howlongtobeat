@@ -1,23 +1,14 @@
-import { gql } from '@apollo/client';
-import apolloClient from '@/lib/apollo/apolloClient';
+import sanity from '@/lib/sanity/sanityClient';
 import { SanityGenre } from '@/types/sanity/SanityGenre';
 
-export async function getAllGenres() {
-  const {
-    data: { allGenre },
-  } = await apolloClient.instance.query({
-    query: gql`
-      query GetAllGenres {
-        allGenre {
-          _id
-          name
-          slug {
-            current
-          }
-        }
-      }
-    `,
-  });
+let genresPromise: Promise<SanityGenre[]> | undefined;
 
-  return allGenre as SanityGenre[];
+export function getAllGenres() {
+  if (!genresPromise) {
+    genresPromise = sanity.instance.fetch<SanityGenre[]>(
+      `*[_type == "genre"]{ _id, name, slug } | order(name asc)`,
+    );
+  }
+
+  return genresPromise;
 }

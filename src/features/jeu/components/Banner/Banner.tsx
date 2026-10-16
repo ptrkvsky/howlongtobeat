@@ -16,8 +16,9 @@ const Banner = ({ game }: Props) => {
             priority
             alt={game.name}
             src={`https:${game.cover}`}
-            layout="fill"
-            objectFit="cover"
+            fill
+            sizes="100vw"
+            style={{ objectFit: `cover` }}
           />
         </Wrapper>
       </Hidden>

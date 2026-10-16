@@ -1,13 +1,13 @@
 import useOutsideAlerter from '@/hooks/useOutsideAlerter';
-import { SanityGame } from '@/types/sanity/SanityGame';
-import Fuse from 'fuse.js';
+import { SanityGameSummary } from '@/types/sanity/SanityGame';
+import { FuseResult } from 'fuse.js';
 import { Dispatch, SetStateAction, useRef } from 'react';
 import ResultSearchItem from '../ResultSearchItem';
 
 import { Wrapper } from './style';
 
 interface Props {
-  searchResults: Fuse.FuseResult<SanityGame>[];
+  searchResults: FuseResult<SanityGameSummary>[];
   isResultsOpen: boolean;
   setIsResultsOpen: Dispatch<SetStateAction<boolean>>;
   isAdmin?: boolean;

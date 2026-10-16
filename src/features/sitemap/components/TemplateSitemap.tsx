@@ -14,16 +14,9 @@ const TemplateSitemap = ({ genres }: Props) => {
       <List>
         {genres.map((genre) => (
           <li key={genre._id}>
-            <Link href={`genre/${genre.slug.current}`}>
-              <a>{genre.name}</a>
-            </Link>
+            <Link href={`/genre/${genre.slug.current}`}>{genre.name}</Link>
           </li>
         ))}
-        <li>
-          <Link href={`genre/999`}>
-            <a>Aucun</a>
-          </Link>
-        </li>
       </List>
     </Layout>
   );

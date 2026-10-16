@@ -6,7 +6,7 @@ import { useTheme } from '@emotion/react';
 import { animateLight, animateDark } from './animate';
 
 interface Props {
-  refOverlay: RefObject<SVGPathElement>;
+  refOverlay: RefObject<SVGPathElement | null>;
 }
 
 const DarkModeButton = ({ refOverlay }: Props) => {

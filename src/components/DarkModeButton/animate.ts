@@ -4,7 +4,7 @@ import { RefObject, SetStateAction } from 'react';
 
 const animateLight = (
   setIsAnimating: (value: SetStateAction<boolean>) => void,
-  refOverlay: RefObject<SVGPathElement>,
+  refOverlay: RefObject<SVGPathElement | null>,
   theme: Theme,
   toggleMode: () => void,
 ) => {
@@ -65,7 +65,7 @@ const animateLight = (
 
 const animateDark = (
   setIsAnimating: (value: SetStateAction<boolean>) => void,
-  refOverlay: RefObject<SVGPathElement>,
+  refOverlay: RefObject<SVGPathElement | null>,
   theme: Theme,
   toggleMode: () => void,
 ) => {

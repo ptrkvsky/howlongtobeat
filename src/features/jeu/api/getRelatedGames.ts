@@ -1,21 +1,21 @@
-import apolloClient from '@/lib/apollo/apolloClient';
-import { SanityGame } from '@/types/sanity/SanityGame';
-import { RELATED_GAMES } from '../gql';
+import { SanityGame, SanityGameSummary } from '@/types/sanity/SanityGame';
+import { getGames, toGameSummary } from './getGames';
 
-export async function getRelatedGames(idHltb: number) {
-  try {
-    const {
-      data: { allGame },
-    } = await apolloClient.instance.query({
-      query: RELATED_GAMES,
-      variables: {
-        idHltb: idHltb,
-      },
-    });
+/**
+ * Well rated games (>= 80) whose HLTB id is above the given one
+ */
+export async function getRelatedGames(
+  game: SanityGame,
+): Promise<SanityGameSummary[]> {
+  const games = await getGames();
+  const minIdHltb = game.idHltb + 20;
 
-    const games: SanityGame[] = allGame;
-    return games;
-  } catch (error) {
-    console.error(error);
-  }
+  return games
+    .filter(
+      (relatedGame) =>
+        relatedGame.rating >= 80 && relatedGame.idHltb >= minIdHltb,
+    )
+    .sort((a, b) => a.idHltb - b.idHltb)
+    .slice(0, 99)
+    .map(toGameSummary);
 }

@@ -2,8 +2,8 @@ import gsap from 'gsap';
 import { RefObject } from 'react';
 
 export const transition = (
-  preloader: RefObject<HTMLDivElement>,
-  template: RefObject<HTMLDivElement>,
+  preloader: RefObject<HTMLDivElement | null>,
+  template: RefObject<HTMLDivElement | null>,
   callback: () => any,
 ) => {
   gsap
@@ -65,8 +65,8 @@ export const animatePanels = (panels: (HTMLDivElement | null)[], delay = 0) => {
 };
 
 export const enterTitles = (
-  refGame: RefObject<HTMLSpanElement>,
-  refOver: RefObject<HTMLSpanElement>,
+  refGame: RefObject<HTMLSpanElement | null>,
+  refOver: RefObject<HTMLSpanElement | null>,
   delay = 0,
 ) => {
   gsap.from(refGame.current, {
@@ -93,8 +93,8 @@ export const enterTitles = (
 };
 
 export const exitTitles = (
-  refGame: RefObject<HTMLSpanElement>,
-  refOver: RefObject<HTMLSpanElement>,
+  refGame: RefObject<HTMLSpanElement | null>,
+  refOver: RefObject<HTMLSpanElement | null>,
   callback: () => void,
 ) => {
   gsap.to(refGame.current, {

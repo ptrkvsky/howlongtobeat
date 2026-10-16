@@ -1,7 +1,7 @@
 import gsap from 'gsap';
 
 export const removeFilter = (
-  wrapperImage: React.RefObject<HTMLSpanElement>,
+  wrapperImage: React.RefObject<HTMLElement | null>,
   delay = 0,
 ) => {
   gsap.to(wrapperImage.current, {
@@ -12,7 +12,7 @@ export const removeFilter = (
 };
 
 export const enterText = (
-  refTitle: React.RefObject<HTMLSpanElement>,
+  refTitle: React.RefObject<HTMLElement | null>,
   splitTextTitle: SplitText,
   delay = 0,
 ) => {
@@ -36,7 +36,7 @@ export const enterText = (
 };
 
 export const revealDescription = (
-  refDescription: React.RefObject<HTMLSpanElement>,
+  refDescription: React.RefObject<HTMLElement | null>,
   splitDescription: SplitText,
   delay = 0,
 ) => {

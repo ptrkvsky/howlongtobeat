@@ -1,4 +1,10 @@
-import { createContext, useState, FC, useEffect } from 'react';
+import {
+  createContext,
+  useState,
+  FC,
+  PropsWithChildren,
+  useEffect,
+} from 'react';
 import { Mode, DarkModeContextType } from './types';
 
 const initialState: Mode = `DARK`;
@@ -13,7 +19,7 @@ const initialContext: DarkModeContextType = {
 export const DarkModeContext =
   createContext<DarkModeContextType>(initialContext);
 
-const DarkModeProvider: FC = ({ children }) => {
+const DarkModeProvider: FC<PropsWithChildren> = ({ children }) => {
   const [mode, setMode] = useState<Mode>(initialState);
 
   useEffect(() => {

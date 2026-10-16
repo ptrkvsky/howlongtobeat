@@ -1,48 +1,41 @@
 import Seo from '@/components/Seo';
-
 import TemplateJeu from '@/features/jeu/components/TemplateJeu';
 import { getGames, getGame, getRelatedGames } from '@/features/jeu/api';
-import { SanityGame } from '@/types/sanity/SanityGame';
+import { SanityGame, SanityGameSummary } from '@/types/sanity/SanityGame';
+import { GetStaticPaths, GetStaticProps } from 'next';
 
-// This function gets called at build time
-export async function getStaticPaths() {
+type Params = { slug: string };
+
+// Static export: every game page is generated at build time
+export const getStaticPaths: GetStaticPaths<Params> = async () => {
   const allGames = await getGames();
-  // Get the paths we want to pre-render based on games
-  const paths = allGames?.map((game) => ({
+
+  const paths = allGames.map((game) => ({
     params: { slug: game.slug.current },
   }));
 
-  // fallback: blocking (preferred) – when a request is made to a page that hasn't been generated, Next.js will server-render the page on the first request. Future requests will serve the static file from the cache.
-  return { paths, fallback: `blocking` };
-}
+  return { paths, fallback: false };
+};
 
-interface PropsGetStaticProps {
-  params: {
-    slug: string;
-  };
-}
-
-// This also gets called at build time
-export async function getStaticProps({ params }: PropsGetStaticProps) {
-  const slug = params.slug;
-  const game = await getGame(slug);
+export const getStaticProps: GetStaticProps<PropsGame, Params> = async ({
+  params,
+}) => {
+  const game = params && (await getGame(params.slug));
 
   if (!game) {
     return { notFound: true };
   }
 
-  const relatedGames = await getRelatedGames(game.idHltb + 20);
+  const relatedGames = await getRelatedGames(game);
 
   return {
     props: { game, relatedGames },
-    // 24h: limits Sanity API usage, content rarely changes
-    revalidate: 86400,
   };
-}
+};
 
 interface PropsGame {
   game: SanityGame;
-  relatedGames: SanityGame[];
+  relatedGames: SanityGameSummary[];
 }
 
 function Game({ game, relatedGames = [] }: PropsGame) {
@@ -53,8 +46,7 @@ function Game({ game, relatedGames = [] }: PropsGame) {
 
   return (
     <>
-      <Seo pageSeo={pageSeo} />
-
+      <Seo pageSeo={pageSeo} canonicalUrl={`/jeu/${game.slug.current}`} />
       <TemplateJeu game={game} relatedGames={relatedGames} />
     </>
   );

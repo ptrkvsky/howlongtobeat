@@ -2,55 +2,43 @@ import TemplateGenre from '@/features/genre/components/TemplateGenre';
 import { getAllGenres } from '@/functions/getAllGenres';
 import { getGamesByGenre } from '@/functions/getGamesByGenre';
 import { getGenre } from '@/functions/getGenre';
-
-import { SanityGame } from '@/types/sanity/SanityGame';
-
+import { SanityGameSummary } from '@/types/sanity/SanityGame';
 import { SanityGenre } from '@/types/sanity/SanityGenre';
+import { GetStaticPaths, GetStaticProps } from 'next';
 
-// This function gets called at build time
-export async function getStaticPaths() {
+type Params = { slug: string };
+
+export const getStaticPaths: GetStaticPaths<Params> = async () => {
   const genres = await getAllGenres();
 
-  if (!genres) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const paths = genres?.map((genre) => ({
+  const paths = genres.map((genre) => ({
     params: { slug: genre.slug.current },
   }));
 
-  // { fallback: false } means other routes should 404.
-  // We'll pre-render only these paths at build time.
   return { paths, fallback: false };
-}
+};
 
-interface PropsGetStaticProps {
-  params: {
-    slug: string;
-  };
-}
+export const getStaticProps: GetStaticProps<PropsGenre, Params> = async ({
+  params,
+}) => {
+  const genre = params && (await getGenre(params.slug));
 
-export async function getStaticProps({ params }: PropsGetStaticProps) {
-  const genre = await getGenre(params.slug);
+  if (!genre) {
+    return { notFound: true };
+  }
+
   const games = await getGamesByGenre(genre._id);
 
   return { props: { games, genre } };
-  // Pass game data to the page via props
-}
+};
 
-interface PropsGame {
-  games: SanityGame[];
+interface PropsGenre {
+  games: SanityGameSummary[];
   genre: SanityGenre;
 }
 
-function Genre({ games, genre }: PropsGame) {
-  return (
-    <>
-      <TemplateGenre genre={genre} games={games} />
-    </>
-  );
+function Genre({ games, genre }: PropsGenre) {
+  return <TemplateGenre genre={genre} games={games} />;
 }
 
 export default Genre;

@@ -7,7 +7,7 @@ import { transition } from './animation';
 import PreloaderSvg from './PreloaderSvg';
 
 interface PreloaderContainerProps {
-  Template: () => JSX.Element;
+  Template: () => React.JSX.Element;
 }
 
 const PreloaderContainer: FC<PreloaderContainerProps> = ({ Template }) => {

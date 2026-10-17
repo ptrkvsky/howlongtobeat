@@ -1,5 +1,5 @@
 import { getGames, toGameSummary } from '@/features/jeu/api';
-import { SanityGameSummary } from '@/types/sanity/SanityGame';
+import type { SanityGameSummary } from '@/types/sanity/SanityGame';
 
 export async function getGamesByGenre(
   genreId: string,

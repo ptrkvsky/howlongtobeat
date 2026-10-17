@@ -1,0 +1,11 @@
+---
+import type { MarkProps } from 'astro-portabletext/types';
+
+type Props = MarkProps<{ _type: `internalLink`; slug: { current: string } }>;
+
+const { node } = Astro.props;
+---
+
+<a href={`/jeu/${node.markDef.slug.current}`}>
+  <slot />
+</a>

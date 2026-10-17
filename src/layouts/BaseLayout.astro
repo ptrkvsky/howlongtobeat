@@ -1,0 +1,64 @@
+---
+import { siteInformations } from '@/config/siteInformations';
+import '@/styles/globals.css';
+
+interface Props {
+  title?: string;
+  // Full title, without the " - Game Over" suffix
+  absoluteTitle?: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const { title, absoluteTitle, description, canonical, ogImage, noindex } =
+  Astro.props;
+
+const fullTitle =
+  absoluteTitle ??
+  (title ? `${title} - ${siteInformations.title}` : siteInformations.title);
+const gtmId = siteInformations.tagManager;
+const gtmSnippet = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${gtmId}');`;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    {description && <meta name="description" content={description} />}
+    {noindex && <meta name="robots" content="noindex" />}
+    {canonical && (
+      <link rel="canonical" href={new URL(canonical, Astro.site)} />
+    )}
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:site" content={siteInformations.twitter} />
+    <meta name="theme-color" content="#6100FF" />
+    <meta
+      name="google-site-verification"
+      content="JToiALKPVzracQqpHh9U1OEf0n1wkC9Z8VaRsUmSboo"
+    />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="/icons/76x76.png" type="image/png" sizes="76x76" />
+    <link rel="icon" href="/icons/72x72.png" type="image/png" sizes="72x72" />
+    <link rel="apple-touch-icon" href="/icons/180x180.png" />
+    <script is:inline set:html={gtmSnippet} />
+  </head>
+  <body>
+    <noscript>
+      <iframe
+        src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe>
+    </noscript>
+    <slot />
+    <script>
+      import '@/scripts/enhance';
+    </script>
+  </body>
+</html>

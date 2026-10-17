@@ -1,0 +1,42 @@
+---
+import { Image } from 'astro:assets';
+import banner from '@/assets/bg.jpg';
+import styles from './banner.module.css';
+
+interface Props {
+  countGames: number;
+}
+
+const { countGames } = Astro.props;
+---
+
+<div class={styles.wrapper}>
+  <div class="container">
+    <h1 class={styles.title}>
+      Quelle est la durée de vie de mes{' '}
+      <span class={styles.highlight}>jeux favoris</span> ?
+    </h1>
+    <div class={styles.description}>
+      Vous souhaitez savoir le temps nécessaire pour arriver au boutde votre
+      dernier jeu ? Game-over recense aujourd’hui plus de{' '}
+      <a href="/plan-du-site" class={styles.highlight}>
+        {' '}
+        {countGames} jeux
+      </a>
+      .<br /> Action, aventure, RPG, tous les genres sont représentés. Votre jeu
+      ne se trouve pas dans la liste ? Enregistrez-vous et ajouter le facilement
+      à notre base de données.
+    </div>
+  </div>
+  <div class={styles.wrapperImage}>
+    <Image
+      src={banner}
+      alt="Illustration jeux video"
+      widths={[640, 1080, 1920, 2560]}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
+      style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"
+    />
+  </div>
+</div>

@@ -1,5 +1,5 @@
-import { PortableTextBlock } from '@portabletext/react';
-import { SanitySlug } from './SanitySlug';
+import type { PortableTextBlock } from '@portabletext/types';
+import type { SanitySlug } from './SanitySlug';
 
 // Projection of src/features/jeu/api/getGames.ts
 export interface SanityGame {

@@ -1,0 +1,41 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import LayoutFront from '@/layouts/LayoutFront.astro';
+import HomeTitle from '@/styles/components/titles/HomeTitle.astro';
+import { getAllGenres } from '@/functions/getAllGenres';
+import { getGamesByGenre } from '@/functions/getGamesByGenre';
+
+export const getStaticPaths = (async () => {
+  const genres = await getAllGenres();
+
+  return Promise.all(
+    genres.map(async (genre) => ({
+      params: { slug: genre.slug.current },
+      props: { genre, games: await getGamesByGenre(genre._id) },
+    })),
+  );
+}) satisfies GetStaticPaths;
+
+const { genre, games } = Astro.props;
+---
+
+<BaseLayout
+  title={`Durée de vie des jeux ${genre.name}`}
+  description={`Découvrez le temps nécessaire pour terminer les jeux ${genre.name}.`}
+  canonical={`/genre/${genre.slug.current}`}
+>
+  <LayoutFront cloakFooter isCentered>
+    <HomeTitle>
+      {genre.name}
+      <br /> {games.length} jeux
+    </HomeTitle>
+    <ul>
+      {games.map((game) => (
+        <li>
+          <a href={`/jeu/${game.slug.current}`}>{game.name}</a>
+        </li>
+      ))}
+    </ul>
+  </LayoutFront>
+</BaseLayout>

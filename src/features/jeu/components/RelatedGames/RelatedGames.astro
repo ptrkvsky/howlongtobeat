@@ -1,0 +1,36 @@
+---
+import type { SanityGameSummary } from '@/types/sanity/SanityGame';
+import Cover from '../Cover.astro';
+import jeuStyles from '../jeu.module.css';
+import styles from './relatedGames.module.css';
+
+interface Props {
+  relatedGames: SanityGameSummary[];
+}
+
+const { relatedGames } = Astro.props;
+---
+
+<div class="container">
+  <h2 class={jeuStyles.titleSecondary}>D'autres jeux à terminer</h2>
+</div>
+<nav class={styles.menu}>
+  {relatedGames.map((relatedGame) => (
+    <div class={styles.item}>
+      <div class={styles.link}>
+        <a href={`/jeu/${relatedGame.slug.current}`}>{relatedGame.name}</a>
+      </div>
+      <div class={styles.img}>
+        {relatedGame.cover && <Cover game={relatedGame} />}
+      </div>
+      <div class={styles.marquee}>
+        <div class={styles.marqueeInner} aria-hidden="true">
+          <span>{relatedGame.name}</span>
+          <span>{relatedGame.name}</span>
+          <span>{relatedGame.name}</span>
+          <span>{relatedGame.name}</span>
+        </div>
+      </div>
+    </div>
+  ))}
+</nav>

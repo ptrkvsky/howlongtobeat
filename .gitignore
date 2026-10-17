@@ -11,9 +11,9 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
+# astro
+/dist/
+/.astro/
 
 # production
 /build
@@ -38,10 +38,10 @@ yarn-error.log*
 .vercel
 .env*
 
-# generated at build time (scripts/build-static-data.ts)
-/public/sitemap.xml
-/public/search-index.json
 *.tsbuildinfo
 
 # translation drafts (scripts/translate-games.ts)
 /.translations/
+
+# enrichment POC output (scripts/enrich-games.ts)
+/.enrichment/

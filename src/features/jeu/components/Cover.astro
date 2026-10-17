@@ -1,0 +1,23 @@
+---
+import type { SanityGameSummary } from '@/types/sanity/SanityGame';
+
+interface Props {
+  game: SanityGameSummary;
+  priority?: boolean;
+}
+
+const { game, priority = false } = Astro.props;
+---
+
+<div style="position: relative; width: 352px; height: 469px">
+  <img
+    alt={game.name}
+    src={`https:${game.cover}`}
+    width="352"
+    height="469"
+    loading={priority ? `eager` : `lazy`}
+    fetchpriority={priority ? `high` : undefined}
+    decoding="async"
+    style="width: 100%; height: auto"
+  />
+</div>

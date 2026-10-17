@@ -6,56 +6,54 @@
   "author": "Johan Petrikovky",
   "license": "MIT",
   "keywords": [
-    "nextjs",
-    "starter",
-    "typescript"
+    "astro",
+    "static"
   ],
   "packageManager": "pnpm@10.33.2",
   "engines": {
     "node": "24.x"
   },
   "scripts": {
-    "dev": "next dev -p 2811",
-    "build": "tsx scripts/build-static-data.ts && next build",
-    "start": "serve out -l 2881",
-    "type-check": "next typegen && tsc --noEmit",
+    "dev": "astro dev --port 2811",
+    "build": "astro build",
+    "start": "astro preview --port 2881",
+    "type-check": "astro check",
     "lint": "eslint src scripts",
-    "format": "prettier \"src/**/*.+(ts|js|tsx)\" --write",
+    "format": "prettier \"src/**/*.+(ts|js|astro|css)\" --write",
     "prepare": "husky",
     "commit": "cz"
   },
   "lint-staged": {
-    "./src/**/*.{ts,js,jsx,tsx}": [
+    "./src/**/*.{ts,js,astro}": [
       "eslint --fix",
       "prettier --write"
     ]
   },
   "dependencies": {
-    "@portabletext/react": "8.0.1",
+    "@astrojs/sitemap": "3.7.4",
+    "@portabletext/types": "4.0.2",
     "@sanity/client": "8.9.0",
-    "fuse.js": "7.5.0",
-    "get-youtube-id": "1.0.1",
-    "next": "16.4.2",
-    "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "astro": "7.3.5",
+    "astro-portabletext": "1.0.1",
+    "get-youtube-id": "1.0.1"
   },
   "devDependencies": {
+    "@astrojs/check": "0.9.10",
     "@commitlint/cli": "21.2.3",
     "@commitlint/config-conventional": "21.2.3",
     "@types/node": "24.19.2",
-    "@types/react": "19.3.0",
-    "@types/react-dom": "19.3.0",
     "commitizen": "4.3.2",
     "cz-conventional-changelog": "3.3.0",
     "eslint": "9.39.5",
-    "eslint-config-next": "16.4.2",
     "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-astro": "3.2.1",
     "eslint-plugin-prettier": "5.5.7",
     "husky": "9.1.7",
     "lint-staged": "17.6.0",
     "openai": "7.36.0",
     "prettier": "3.9.10",
-    "serve": "14.2.6",
+    "prettier-plugin-astro": "1.1.0",
+    "sharp": "0.35.5",
     "tsx": "4.23.15",
     "typescript": "5.9.3",
     "typescript-eslint": "8.71.2"

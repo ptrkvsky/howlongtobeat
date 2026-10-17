@@ -1,0 +1,12 @@
+---
+// Rendered without a link: src/scripts/enhance.ts adds it on hover
+interface Props {
+  url: string;
+}
+
+const { url } = Astro.props;
+---
+
+<span data-cloak-href={url} style="display: inline-block">
+  <slot />
+</span>

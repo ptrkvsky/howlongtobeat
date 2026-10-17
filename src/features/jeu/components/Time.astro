@@ -1,0 +1,36 @@
+---
+import type { SanityGame } from '@/types/sanity/SanityGame';
+import styles from './jeu.module.css';
+
+interface Props {
+  game: SanityGame;
+}
+
+const { game } = Astro.props;
+---
+
+{game.timeMainStory > 0 && (
+  <div class={styles.description}>
+    Pour terminer <span class="primary-color bold">l'histoire principale</span>{' '}
+    de {game.name} il faut compter environ{' '}
+    <span class="primary-color bold">{game.timeMainStory} heures.</span>
+  </div>
+)}
+
+{game.timeMainExtras > 0 && (
+  <div class={styles.description}>
+    Pour terminer{' '}
+    <span class="primary-color bold">{game.name} et faire quelques extras</span>{' '}
+    c'est environ{' '}
+    <span class="primary-color bold">{game.timeMainExtras} heures</span> qu'il
+    faudra compter
+  </div>
+)}
+
+{game.timeCompletionists > 0 && (
+  <div class={styles.description}>
+    Si vous êtes un acharné de la manette, pour terminer le jeu{' '}
+    <span class="primary-color bold">100%</span> il vous faudra environ{' '}
+    <span class="primary-color bold">{game.timeCompletionists} heures.</span>
+  </div>
+)}

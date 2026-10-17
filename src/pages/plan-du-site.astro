@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import LayoutFront from '@/layouts/LayoutFront.astro';
+import HomeTitle from '@/styles/components/titles/HomeTitle.astro';
+import List from '@/styles/components/titles/List.astro';
+import { getAllGenres } from '@/functions/getAllGenres';
+
+const genres = await getAllGenres();
+---
+
+<BaseLayout
+  title="Plan du site"
+  description="Decouvrez l'ensemble des pages du site internet"
+>
+  <LayoutFront isCentered>
+    <HomeTitle>Plan du site</HomeTitle>
+    <List>
+      {genres.map((genre) => (
+        <li>
+          <a href={`/genre/${genre.slug.current}`}>{genre.name}</a>
+        </li>
+      ))}
+    </List>
+  </LayoutFront>
+</BaseLayout>

@@ -1,0 +1,62 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import LayoutFront from '@/layouts/LayoutFront.astro';
+import PortableText from '@/components/Sanity/PortableText.astro';
+import Banner from '@/features/jeu/components/Banner/Banner.astro';
+import CircularBar from '@/features/jeu/components/CircularBar.astro';
+import Cover from '@/features/jeu/components/Cover.astro';
+import RelatedGames from '@/features/jeu/components/RelatedGames/RelatedGames.astro';
+import Time from '@/features/jeu/components/Time.astro';
+import styles from '@/features/jeu/components/jeu.module.css';
+import { getGames, getRelatedGames } from '@/features/jeu/api';
+
+export const getStaticPaths = (async () => {
+  const games = await getGames();
+  // A few Sanity documents share a slug: keep the first one (as getGame does)
+  const slugs = new Set<string>();
+  const uniqueGames = games.filter(
+    (game) => !slugs.has(game.slug.current) && slugs.add(game.slug.current),
+  );
+
+  return Promise.all(
+    uniqueGames.map(async (game) => ({
+      params: { slug: game.slug.current },
+      props: { game, relatedGames: await getRelatedGames(game) },
+    })),
+  );
+}) satisfies GetStaticPaths;
+
+const { game, relatedGames } = Astro.props;
+---
+
+<BaseLayout
+  title={`Combien de temps faut-il pour terminer ${game.name} ?`}
+  description={`Découvrez la durée de vie de ${game.name}. Quel temps vous faudra t-il pour voir la fin.`}
+  canonical={`/jeu/${game.slug.current}`}
+  ogImage={game.cover ? `https:${game.cover}` : undefined}
+>
+  <LayoutFront>
+    {game.cover && <Banner game={game} />}
+
+    <div class:list={[`container`, styles.content]}>
+      <div class={styles.cover}>
+        {game.cover && <Cover game={game} priority />}
+      </div>
+      {game.rating && <CircularBar percentage={game.rating} />}
+      <div>
+        <h1 class={styles.titleMain}>
+          Combien de temps faut-il pour terminer <br />
+          <span class={styles.name}>{game.name}</span> ?
+        </h1>
+        <div class={styles.description}>
+          <PortableText blocks={game.description} />
+        </div>
+        <Time game={game} />
+      </div>
+    </div>
+    <div class="container">
+      <RelatedGames relatedGames={relatedGames} />
+    </div>
+  </LayoutFront>
+</BaseLayout>

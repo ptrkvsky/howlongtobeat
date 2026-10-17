@@ -1,0 +1,32 @@
+---
+import CloakLink from '@/components/CloakLink.astro';
+import urls from '@/config/urls';
+import styles from './footer.module.css';
+
+interface Props {
+  cloakFooter?: boolean;
+}
+
+const { cloakFooter = true } = Astro.props;
+
+const links = [
+  { url: urls.plan, label: `Plan du site` },
+  { url: urls.mentions, label: `Mentions légales` },
+  { url: urls.politique, label: `Politique de confidentialité` },
+];
+---
+
+<footer class:list={[`container`, styles.footer]}>
+  <div class={styles.links}>
+    {links.map(({ url, label }, index) => (
+      <>
+        {index > 0 && <span class={styles.separator}>/</span>}
+        {cloakFooter ? (
+          <CloakLink url={url}>{label}</CloakLink>
+        ) : (
+          <a href={url}>{label}</a>
+        )}
+      </>
+    ))}
+  </div>
+</footer>

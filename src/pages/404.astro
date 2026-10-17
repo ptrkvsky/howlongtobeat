@@ -1,0 +1,12 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import LayoutFront from '@/layouts/LayoutFront.astro';
+import HomeTitle from '@/styles/components/titles/HomeTitle.astro';
+---
+
+<BaseLayout title="Page introuvable" noindex>
+  <LayoutFront isCentered>
+    <HomeTitle>Game over : cette page n'existe pas</HomeTitle>
+    <a href="/">Retour à l'accueil</a>
+  </LayoutFront>
+</BaseLayout>

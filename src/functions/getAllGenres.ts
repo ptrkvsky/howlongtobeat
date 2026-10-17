@@ -1,5 +1,5 @@
 import sanity from '@/lib/sanity/sanityClient';
-import { SanityGenre } from '@/types/sanity/SanityGenre';
+import type { SanityGenre } from '@/types/sanity/SanityGenre';
 
 let genresPromise: Promise<SanityGenre[]> | undefined;
 

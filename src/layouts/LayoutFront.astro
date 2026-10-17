@@ -1,0 +1,20 @@
+---
+import Header from '@/components/Header/Header.astro';
+import Footer from '@/components/Footer/Footer.astro';
+import styles from './layoutFront.module.css';
+
+interface Props {
+  cloakFooter?: boolean;
+  isCentered?: boolean;
+}
+
+const { cloakFooter, isCentered } = Astro.props;
+---
+
+<div class:list={[styles.layout, isCentered && `container`]}>
+  <main>
+    <slot />
+  </main>
+  <Header />
+  <Footer cloakFooter={cloakFooter} />
+</div>

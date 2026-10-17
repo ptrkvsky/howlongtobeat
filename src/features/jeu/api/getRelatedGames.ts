@@ -1,4 +1,4 @@
-import { SanityGame, SanityGameSummary } from '@/types/sanity/SanityGame';
+import type { SanityGame, SanityGameSummary } from '@/types/sanity/SanityGame';
 import { getGames, toGameSummary } from './getGames';
 
 /**

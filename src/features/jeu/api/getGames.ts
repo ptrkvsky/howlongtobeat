@@ -1,8 +1,8 @@
 import sanity from '@/lib/sanity/sanityClient';
-import { SanityGame, SanityGameSummary } from '@/types/sanity/SanityGame';
+import type { SanityGame, SanityGameSummary } from '@/types/sanity/SanityGame';
 
-// Only the fields rendered by the site: every extra field ends up in the
-// prerendered payload of thousands of pages.
+// Only the fields rendered by the site: the whole catalog is held in memory
+// during the build.
 const query = `*[_type == "game" && isTranslated == true]{
   _id,
   name,

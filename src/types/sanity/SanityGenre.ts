@@ -1,4 +1,4 @@
-import { SanitySlug } from './SanitySlug';
+import type { SanitySlug } from './SanitySlug';
 
 export interface SanityGenre {
   _createdAt?: string;

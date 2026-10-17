@@ -1,0 +1,41 @@
+---
+import styles from './circularBar.module.css';
+
+// Static port of react-circular-progressbar (same geometry)
+interface Props {
+  percentage: number;
+}
+
+const STROKE_WIDTH = 8;
+const RADIUS = 50 - STROKE_WIDTH / 2;
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+const PATH = `M 50,50 m 0,-${RADIUS} a ${RADIUS},${RADIUS} 0 1 1 0,${2 * RADIUS} a ${RADIUS},${RADIUS} 0 1 1 0,-${2 * RADIUS}`;
+
+const { percentage } = Astro.props;
+const offset =
+  (1 - Math.min(Math.max(percentage, 0), 100) / 100) * CIRCUMFERENCE;
+const dasharray = `${CIRCUMFERENCE}px ${CIRCUMFERENCE}px`;
+---
+
+<div class={styles.wrapper}>
+  <svg class={styles.svg} viewBox="0 0 100 100">
+    <path
+      class={styles.trail}
+      d={PATH}
+      stroke-width={STROKE_WIDTH}
+      fill-opacity="0"
+      stroke-dasharray={dasharray}
+    ></path>
+    <path
+      class={styles.path}
+      d={PATH}
+      stroke-width={STROKE_WIDTH}
+      fill-opacity="0"
+      stroke-dasharray={dasharray}
+      stroke-dashoffset={`${offset}px`}
+    ></path>
+    <text class={styles.text} x="50" y="50">
+      {percentage}%
+    </text>
+  </svg>
+</div>

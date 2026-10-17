@@ -1,12 +1,8 @@
-const sanityId = process.env.SANITY_ID;
-const sanityDataset = process.env.SANITY_DATASET;
-// const sanityToken = process.env.SANITY_TOKEN;
-
+// Read at build time (Astro loads the .env files into import.meta.env)
 const sanityConfig = {
-  projectId: sanityId,
-  dataset: sanityDataset,
+  projectId: import.meta.env.SANITY_ID,
+  dataset: import.meta.env.SANITY_DATASET,
   apiVersion: `2024-01-01`,
-  // token: sanityToken,
   useCdn: true,
 };
 

@@ -1,0 +1,22 @@
+---
+import type { SanityGame } from '@/types/sanity/SanityGame';
+import styles from './banner.module.css';
+
+interface Props {
+  game: SanityGame;
+}
+
+const { game } = Astro.props;
+---
+
+<div class={styles.hidden}>
+  <div class={styles.wrapper}>
+    <img
+      alt={game.name}
+      src={`https:${game.cover}`}
+      fetchpriority="high"
+      decoding="async"
+      style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"
+    />
+  </div>
+</div>

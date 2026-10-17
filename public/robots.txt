@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://game-over.io/sitemap.xml
+Sitemap: https://game-over.io/sitemap-index.xml

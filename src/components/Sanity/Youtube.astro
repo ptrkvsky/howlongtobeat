@@ -1,0 +1,21 @@
+---
+import getYouTubeId from 'get-youtube-id';
+import type { Props as NodeProps } from 'astro-portabletext/types';
+
+type Props = NodeProps<{ _type: `youtube`; url: string }>;
+
+const { url } = Astro.props.node;
+const id = getYouTubeId(url);
+---
+
+{id && (
+  <iframe
+    width="640"
+    height="390"
+    src={`https://www.youtube.com/embed/${id}`}
+    title="YouTube video player"
+    loading="lazy"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen
+  />
+)}

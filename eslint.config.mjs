@@ -1,10 +1,10 @@
-import nextCoreWebVitals from 'eslint-config-next/core-web-vitals';
-import nextTypescript from 'eslint-config-next/typescript';
+import tseslint from 'typescript-eslint';
+import astro from 'eslint-plugin-astro';
 import prettierRecommended from 'eslint-plugin-prettier/recommended';
 
 const eslintConfig = [
-  ...nextCoreWebVitals,
-  ...nextTypescript,
+  ...tseslint.configs.recommended,
+  ...astro.configs[`flat/recommended`],
   prettierRecommended,
   {
     rules: {
@@ -12,20 +12,10 @@ const eslintConfig = [
       '@typescript-eslint/no-explicit-any': `off`,
       '@typescript-eslint/no-require-imports': `off`,
       '@typescript-eslint/no-use-before-define': `warn`,
-      // Rules introduced with the React Compiler: existing code predates them
-      'react-hooks/set-state-in-effect': `warn`,
-      'react-hooks/refs': `warn`,
-      'react-hooks/immutability': `warn`,
     },
   },
   {
-    ignores: [
-      `.next/**`,
-      `out/**`,
-      `node_modules/**`,
-      `public/**`,
-      `next-env.d.ts`,
-    ],
+    ignores: [`dist/**`, `.astro/**`, `node_modules/**`, `public/**`],
   },
 ];
 

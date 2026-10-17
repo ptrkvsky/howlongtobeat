@@ -4,7 +4,7 @@ import { FuseResult } from 'fuse.js';
 import { Dispatch, SetStateAction, useRef } from 'react';
 import ResultSearchItem from '../ResultSearchItem';
 
-import { Wrapper } from './style';
+import styles from '../../searchGames.module.css';
 
 interface Props {
   searchResults: FuseResult<SanityGameSummary>[];
@@ -28,8 +28,8 @@ const ResultSearch = ({
   useOutsideAlerter(wrapperRef, handleClickOutside);
 
   return (
-    <Wrapper
-      className={`${isResultsOpen ? `open` : `close`} `}
+    <div
+      className={`${styles.results} ${isResultsOpen ? `` : styles.close}`}
       ref={wrapperRef}
     >
       <ul>
@@ -37,7 +37,7 @@ const ResultSearch = ({
           <ResultSearchItem game={game.item} key={game.item._id} />
         ))}
       </ul>
-    </Wrapper>
+    </div>
   );
 };
 

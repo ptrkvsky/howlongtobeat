@@ -6,7 +6,6 @@ import {
 } from '@portabletext/react';
 import getYouTubeId from 'get-youtube-id';
 import Link from 'next/link';
-import YouTube from 'react-youtube';
 import { slugify } from '@/utils/slugify';
 import CloakLink from '@/components/Cloaklink';
 
@@ -24,13 +23,23 @@ const components: PortableTextComponents = {
   types: {
     youtube: ({ value }) => {
       const id = getYouTubeId(value.url);
-      return id ? <YouTube videoId={id} /> : null;
+      return id ? (
+        <iframe
+          width="640"
+          height="390"
+          src={`https://www.youtube.com/embed/${id}`}
+          title="YouTube video player"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      ) : null;
     },
   },
 
   marks: {
     internalLink: ({ value, children }) => (
-      <Link href={value.slug.current}>{children}</Link>
+      <Link href={`/jeu/${value.slug.current}`}>{children}</Link>
     ),
     link: ({ value, children }) => {
       const { blank, href, cloaked, sponsored, noreferrer, ugc } = value;

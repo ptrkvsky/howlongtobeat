@@ -1,6 +1,6 @@
 import { SanityGameSummary } from '@/types/sanity/SanityGame';
-import { TitleSecondary } from '../../styles/TitleSecondary';
 import RelatedGamesList from './RelatedGamesList';
+import styles from '../jeu.module.css';
 
 interface Props {
   relatedGames: SanityGameSummary[];
@@ -10,7 +10,7 @@ const RelatedGames = ({ relatedGames }: Props) => {
   return (
     <>
       <div className="container">
-        <TitleSecondary>D&apos;autres jeux à terminer</TitleSecondary>
+        <h2 className={styles.titleSecondary}>D&apos;autres jeux à terminer</h2>
       </div>
       <RelatedGamesList relatedGames={relatedGames} />
     </>

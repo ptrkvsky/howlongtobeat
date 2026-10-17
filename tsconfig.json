@@ -26,7 +26,12 @@
         "./public/*"
       ]
     },
-    "incremental": true
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "exclude": [
     "node_modules",
@@ -35,8 +40,9 @@
   ],
   "include": [
     "next-env.d.ts",
-    "emotion.d.ts",
+    ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    ".next/dev/types/**/*.ts"
   ]
 }

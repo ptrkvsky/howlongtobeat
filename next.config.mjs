@@ -10,9 +10,6 @@ const nextConfig = {
   turbopack: {
     root: import.meta.dirname,
   },
-  compiler: {
-    emotion: true,
-  },
 };
 
 export default nextConfig;

@@ -1,7 +1,6 @@
 import { FC } from 'react';
-import { StyleFooter } from './style';
 import LinkSitemap from './Links';
-import Logo from '../Logo';
+import styles from './footer.module.css';
 
 interface Props {
   cloakFooter?: boolean;
@@ -9,10 +8,9 @@ interface Props {
 
 const Footer: FC<Props> = ({ cloakFooter }) => {
   return (
-    <StyleFooter className="container">
-      {/* <Logo /> */}
+    <footer className={`container ${styles.footer}`}>
       <LinkSitemap cloakFooter={cloakFooter} />
-    </StyleFooter>
+    </footer>
   );
 };
 

@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { Wrapper, Placeholder } from './style';
 import { SanityGameSummary } from '@/types/sanity/SanityGame';
+import styles from '../../searchGames.module.css';
 
 interface Props {
   game: SanityGameSummary;
@@ -10,7 +10,7 @@ interface Props {
 
 const ResultSearchItem = ({ game }: Props) => {
   return (
-    <Wrapper key={game._id}>
+    <li className={styles.item}>
       <Link href={`/jeu/${game.slug.current}`}>
         {game.cover ? (
           <Image
@@ -20,11 +20,11 @@ const ResultSearchItem = ({ game }: Props) => {
             height={92}
           />
         ) : (
-          <Placeholder />
+          <div className={styles.placeholder} />
         )}
         {game.name}
       </Link>
-    </Wrapper>
+    </li>
   );
 };
 

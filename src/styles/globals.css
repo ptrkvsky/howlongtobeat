@@ -1,0 +1,224 @@
+@import './tokens.css';
+
+/* Reset (http://meyerweb.com/eric/tools/css/reset/, was emotion-reset) */
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Fonts */
+@font-face {
+  font-family: 'Monument Black';
+  src: url('/fonts/MonumentExtended-Black.woff2') format('woff2');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'PolySans Neutral';
+  src: url('/fonts/PolySans-Neutral.woff2') format('woff2');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'PolySans Slim';
+  src: url('/fonts/PolySans-Slim.woff2') format('woff2');
+  font-display: swap;
+}
+
+/* Base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+:root {
+  font-size: 1rem;
+  font-size: clamp(
+    0.875rem,
+    0.4626rem + 1.0309vw + var(--user-font-scale),
+    1.125rem
+  );
+}
+
+::selection {
+  background: var(--color-secondary-500);
+  transition: all 0.1s linear;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-text);
+  min-height: 100vh;
+  font-family: var(--font-body);
+  transition-duration: 0.2s;
+  transition-property: background-color, color;
+  font-size: var(--font-size-xl);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:visited {
+  color: inherit;
+}
+
+.bold,
+b,
+strong {
+  font-weight: var(--font-weight-bold);
+}
+
+button {
+  color: var(--color-text);
+}
+
+/* Utilities */
+.relative {
+  position: relative;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--max-width-desktop);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media screen and (max-width: 1280px) {
+  .container {
+    padding: 0 var(--space-2);
+  }
+}
+
+.primary-color {
+  color: var(--color-primary-500);
+}

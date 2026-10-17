@@ -1,6 +1,6 @@
 import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 
-import { InputSearch as InputSearchStyle } from './style';
+import styles from '../../searchGames.module.css';
 
 interface Props {
   query: string;
@@ -22,7 +22,8 @@ const InputSearch = ({ query, setQuery, setIsResultsOpen, onOpen }: Props) => {
   };
 
   return (
-    <InputSearchStyle
+    <input
+      className={styles.input}
       type="text"
       value={query}
       onClick={handleClick}

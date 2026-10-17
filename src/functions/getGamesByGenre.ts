@@ -7,8 +7,6 @@ export async function getGamesByGenre(
   const games = await getGames();
 
   return games
-    .filter((game) =>
-      game.genres?.some((genre: { _ref: string }) => genre._ref === genreId),
-    )
+    .filter((game) => game.genreIds?.includes(genreId))
     .map(toGameSummary);
 }

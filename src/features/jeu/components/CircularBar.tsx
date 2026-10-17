@@ -1,77 +1,42 @@
-import styled from '@emotion/styled';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
-import { useTheme } from '@emotion/react';
+import styles from './circularBar.module.css';
 
-const Wrapper = styled(`div`)`
-  position: absolute;
-  right: 0;
-  top: calc(33vh - 125px);
-  width: 200px;
-  height: 200px;
-  padding: ${({ theme }) => theme.spacing[4]};
-  background-color: ${({ theme }) => theme.colors.background};
-  border-radius: 50%;
-  box-shadow: var(--box-shadow);
-
-  text {
-    font-family: ${({ theme }) => theme.typography.fonts.heading};
-    font-size: ${({ theme }) => theme.typography.fontSizes[`9xl`]};
-  }
-
-  .theme-dark & {
-    box-shadow: var(--shadow-elevation-medium);
-  }
-
-  .theme-light & {
-    box-shadow: var(--shadow-elevation-low);
-  }
-  ${({ theme }) => theme.breakpoints.mobile} {
-    width: 100px;
-    height: 100px;
-    padding: ${({ theme }) => theme.spacing[2]};
-    right: initial;
-    left: ${({ theme }) => theme.spacing[4]};
-    top: ${({ theme }) => theme.spacing[4]};
-  }
-`;
+// Static port of react-circular-progressbar (same geometry): no client JS
+const STROKE_WIDTH = 8;
+const RADIUS = 50 - STROKE_WIDTH / 2;
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+const PATH = `M 50,50 m 0,-${RADIUS} a ${RADIUS},${RADIUS} 0 1 1 0,${2 * RADIUS} a ${RADIUS},${RADIUS} 0 1 1 0,-${2 * RADIUS}`;
 
 interface Props {
   percentage: number;
 }
 
 const CircularBar = ({ percentage }: Props) => {
-  const theme = useTheme();
+  const offset =
+    (1 - Math.min(Math.max(percentage, 0), 100) / 100) * CIRCUMFERENCE;
 
   return (
-    <Wrapper>
-      <CircularProgressbar
-        value={percentage}
-        text={`${percentage}%`}
-        styles={buildStyles({
-          // Rotation of path and trail, in number of turns (0-1)
-          rotation: 0.25,
-
-          // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
-          strokeLinecap: `butt`,
-
-          // Text size
-          textSize: `${theme.typography.fontSizes[`2xl`]}`,
-
-          // How long animation takes to go from one percentage to another, in seconds
-          pathTransitionDuration: 0.5,
-
-          // Can specify path transition in more detail, or remove it entirely
-          // pathTransition: 'none',
-
-          // Colors
-          pathColor: `#33ff00`,
-          textColor: `#33ff00`,
-          trailColor: `#d6d6d6`,
-          backgroundColor: `${theme.colors.background}`,
-        })}
-      />
-    </Wrapper>
+    <div className={styles.wrapper}>
+      <svg className={styles.svg} viewBox="0 0 100 100">
+        <path
+          className={styles.trail}
+          d={PATH}
+          strokeWidth={STROKE_WIDTH}
+          fillOpacity={0}
+          strokeDasharray={`${CIRCUMFERENCE}px ${CIRCUMFERENCE}px`}
+        />
+        <path
+          className={styles.path}
+          d={PATH}
+          strokeWidth={STROKE_WIDTH}
+          fillOpacity={0}
+          strokeDasharray={`${CIRCUMFERENCE}px ${CIRCUMFERENCE}px`}
+          strokeDashoffset={`${offset}px`}
+        />
+        <text className={styles.text} x={50} y={50}>
+          {percentage}%
+        </text>
+      </svg>
+    </div>
   );
 };
 

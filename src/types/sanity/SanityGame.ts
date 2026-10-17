@@ -1,23 +1,19 @@
+import { PortableTextBlock } from '@portabletext/react';
 import { SanitySlug } from './SanitySlug';
 
+// Projection of src/features/jeu/api/getGames.ts
 export interface SanityGame {
-  _createdAt: string;
   _id: string;
-  _rev: string;
-  _type: string;
-  _updatedAt: string;
   cover?: string | null;
-  description: any;
-  genres: any;
+  description: PortableTextBlock[];
+  genreIds?: string[] | null;
   idHltb: number;
-  isTranslated: boolean;
   name: string;
   rating: number;
   slug: SanitySlug;
   timeCompletionists: number;
   timeMainExtras: number;
   timeMainStory: number;
-  totalPoll: number;
 }
 
 export type SanityGameSummary = Pick<SanityGame, '_id' | 'name' | 'cover'> & {

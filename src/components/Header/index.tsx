@@ -1,48 +1,12 @@
-import styled from '@emotion/styled';
-import { styleInformations } from '@/config/styleInformations';
-import Logo from '../Logo';
-import { RefObject } from 'react';
-import DarkModeButton from '../DarkModeButton';
-import { SearchGames } from '@/components/searchGames';
+import styles from './header.module.css';
 
-const StyledHeader = styled(`header`)`
-  position: relative;
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: ${styleInformations.headerHeight.dekstop};
-
-  .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    ${({ theme }) => theme.breakpoints.mobile} {
-      flex-direction: column;
-    }
-  }
-
-  ${({ theme }) => theme.breakpoints.mobile} {
-    flex-direction: column;
-    height: ${styleInformations.headerHeight.mobile};
-  }
-`;
-
-interface Props {
-  refOverlay?: RefObject<SVGPathElement | null>;
-  isAdmin?: boolean;
-}
-
-const Header = ({ refOverlay, isAdmin = false }: Props) => {
+// Empty for now: the logo, search and dark mode toggle were disabled.
+// Kept so the layout keeps its header row.
+const Header = () => {
   return (
-    <StyledHeader>
-      <div className="container">
-        {/* <Logo /> */}
-        {/* <SearchGames isAdmin={isAdmin} /> */}
-        {/* {refOverlay && <DarkModeButton refOverlay={refOverlay} />} */}
-      </div>
-    </StyledHeader>
+    <header className={styles.header}>
+      <div className="container"></div>
+    </header>
   );
 };
 

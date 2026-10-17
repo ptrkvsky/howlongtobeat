@@ -1,0 +1,19 @@
+.wrapper {
+  max-width: 800px;
+}
+
+.wrapper h2,
+.wrapper h3,
+.wrapper h4,
+.wrapper h5,
+.wrapper h6 {
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-4xl);
+}
+
+.wrapper ul,
+.wrapper p {
+  margin-top: var(--space-2-5);
+  margin-bottom: var(--space-2);
+}

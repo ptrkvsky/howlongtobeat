@@ -16,6 +16,6 @@ export async function getRelatedGames(
         relatedGame.rating >= 80 && relatedGame.idHltb >= minIdHltb,
     )
     .sort((a, b) => a.idHltb - b.idHltb)
-    .slice(0, 99)
+    .slice(0, 12)
     .map(toGameSummary);
 }

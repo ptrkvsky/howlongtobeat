@@ -1,0 +1,50 @@
+.wrapper {
+  position: absolute;
+  right: 0;
+  top: calc(33vh - 125px);
+  width: 200px;
+  height: 200px;
+  padding: var(--space-4);
+  background-color: var(--color-background);
+  border-radius: 50%;
+  box-shadow: var(--shadow-elevation-medium);
+}
+
+@media screen and (max-width: 480px) {
+  .wrapper {
+    width: 100px;
+    height: 100px;
+    padding: var(--space-2);
+    right: initial;
+    left: var(--space-4);
+    top: var(--space-4);
+  }
+}
+
+.svg {
+  width: 100%;
+  vertical-align: middle;
+}
+
+.trail,
+.path {
+  stroke-linecap: butt;
+  transform: rotate(0.25turn);
+  transform-origin: center center;
+}
+
+.trail {
+  stroke: #d6d6d6;
+}
+
+.path {
+  stroke: #33ff00;
+}
+
+.text {
+  fill: #33ff00;
+  font-family: var(--font-heading);
+  font-size: var(--font-size-2xl);
+  dominant-baseline: middle;
+  text-anchor: middle;
+}

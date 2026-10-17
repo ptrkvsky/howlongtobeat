@@ -1,22 +1,16 @@
 import { SanityGameSummary } from '@/types/sanity/SanityGame';
-import styled from '@emotion/styled';
 import Image from 'next/image';
 
 interface Props {
   game: SanityGameSummary;
+  priority?: boolean;
 }
 
-const Wrapper = styled(`div`)`
-  position: relative;
-  width: 352px;
-  height: 469px;
-`;
-
-const Cover = ({ game }: Props) => {
+const Cover = ({ game, priority = false }: Props) => {
   return (
-    <Wrapper>
+    <div style={{ position: `relative`, width: 352, height: 469 }}>
       <Image
-        priority
+        priority={priority}
         alt={game.name}
         src={`https:${game.cover}`}
         width={352}
@@ -24,7 +18,7 @@ const Cover = ({ game }: Props) => {
         sizes="352px"
         style={{ width: `100%`, height: `auto` }}
       />
-    </Wrapper>
+    </div>
   );
 };
 

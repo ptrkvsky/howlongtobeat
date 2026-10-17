@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { WrapperImage, Title, Wrapper } from './style';
 import banner from '@/assets/bg.jpg';
+import styles from './banner.module.css';
 
 interface Props {
   countGames: number;
@@ -9,16 +9,16 @@ interface Props {
 
 const Banner = ({ countGames }: Props) => {
   return (
-    <Wrapper>
+    <div className={styles.wrapper}>
       <div className="container">
-        <Title className="title">
+        <h1 className={styles.title}>
           Quelle est la durée de vie de mes{` `}
-          <span className="highlight">jeux favoris</span> ?
-        </Title>
-        <div className="description">
+          <span className={styles.highlight}>jeux favoris</span> ?
+        </h1>
+        <div className={styles.description}>
           Vous souhaitez savoir le temps nécessaire pour arriver au boutde votre
           dernier jeu ? Game-over recense aujourd’hui plus de{` `}
-          <Link href="/plan-du-site" className="highlight">
+          <Link href="/plan-du-site" className={styles.highlight}>
             {` `}
             {countGames} jeux
           </Link>
@@ -27,7 +27,7 @@ const Banner = ({ countGames }: Props) => {
           facilement à notre base de données.
         </div>
       </div>
-      <WrapperImage className={`wrapper-image`}>
+      <div className={styles.wrapperImage}>
         <Image
           priority
           alt="Illustration jeux video"
@@ -37,8 +37,8 @@ const Banner = ({ countGames }: Props) => {
           placeholder="blur"
           style={{ objectFit: `cover` }}
         />
-      </WrapperImage>
-    </Wrapper>
+      </div>
+    </div>
   );
 };
 

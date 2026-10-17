@@ -1,36 +1,9 @@
 import Link from 'next/link';
 import { FC } from 'react';
-import styled from '@emotion/styled';
 import urls from '@/config/urls';
 import CloakLink from '@/components/Cloaklink';
-import { breakpoints } from '@/styles/foundations';
+import styles from '../footer.module.css';
 
-const WrapperLinks = styled(`div`)`
-  display: flex;
-  flex-direction: row;
-  gap: ${({ theme }) => theme.spacing[2]};
-  * {
-    .theme-light & {
-      color: ${({ theme }) => theme.colors.gray[700]};
-    }
-    .theme-dark & {
-      color: ${({ theme }) => theme.colors.gray[200]};
-    }
-    &:hover {
-      color: ${({ theme }) => theme.colors.primary[500]};
-    }
-  }
-
-  ${breakpoints.tabletPortrait} {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    .separator {
-      display: none;
-    }
-  }
-`;
 interface Props {
   cloakFooter?: boolean;
 }
@@ -38,25 +11,25 @@ interface Props {
 const LinkSitemap: FC<Props> = ({ cloakFooter = true }: Props) => {
   if (!cloakFooter) {
     return (
-      <WrapperLinks>
+      <div className={styles.links}>
         <Link href={urls.plan}>Plan du site</Link>
-        <span className="separator">/</span>
+        <span className={styles.separator}>/</span>
         <Link href={urls.mentions}>Mentions légales</Link>
-        <span className="separator">/</span>
+        <span className={styles.separator}>/</span>
         <Link href={urls.politique}>Politique de confidentialité</Link>
-      </WrapperLinks>
+      </div>
     );
   } else {
     return (
-      <WrapperLinks>
+      <div className={styles.links}>
         <CloakLink url={urls.plan}>Plan du site</CloakLink>
         {` `}
-        <span className="separator">/</span>
+        <span className={styles.separator}>/</span>
         <CloakLink url={urls.mentions}>Mentions légales</CloakLink>
         {` `}
-        <span className="separator">/</span>
+        <span className={styles.separator}>/</span>
         <CloakLink url={urls.politique}>Politique de confidentialité</CloakLink>
-      </WrapperLinks>
+      </div>
     );
   }
 };

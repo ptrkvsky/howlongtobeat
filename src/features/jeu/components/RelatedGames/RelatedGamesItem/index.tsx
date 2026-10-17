@@ -1,23 +1,25 @@
 import { SanityGameSummary } from '@/types/sanity/SanityGame';
 import Link from 'next/link';
 import Cover from '../../Cover';
+import styles from '../relatedGames.module.css';
+
 interface Props {
   relatedGame: SanityGameSummary;
 }
 
 const RelatedGamesItem = ({ relatedGame }: Props) => {
   return (
-    <div className="menu__item">
-      <div className="menu__item-link">
+    <div className={styles.item}>
+      <div className={styles.link}>
         <Link href={`/jeu/${relatedGame.slug.current}`}>
           {relatedGame.name}
         </Link>
       </div>
-      <div className="menu__item-img">
+      <div className={styles.img}>
         {relatedGame.cover && <Cover game={relatedGame} />}
       </div>
-      <div className="marquee">
-        <div className="marquee__inner" aria-hidden="true">
+      <div className={styles.marquee}>
+        <div className={styles.marqueeInner} aria-hidden="true">
           <span>{relatedGame.name}</span>
           <span>{relatedGame.name}</span>
           <span>{relatedGame.name}</span>

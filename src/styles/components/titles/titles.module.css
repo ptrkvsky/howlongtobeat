@@ -1,0 +1,20 @@
+.homeTitle {
+  font-size: var(--font-size-9xl);
+  color: var(--color-white-alpha-800);
+}
+
+@media screen and (max-width: 766px) {
+  .homeTitle {
+    font-size: var(--font-size-6xl);
+  }
+}
+
+.list {
+  margin-top: var(--space-12);
+}
+
+.list a {
+  display: inline-block;
+  color: var(--color-white-alpha-800);
+  padding-bottom: var(--space-4);
+}

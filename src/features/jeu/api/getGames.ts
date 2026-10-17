@@ -1,8 +1,19 @@
 import sanity from '@/lib/sanity/sanityClient';
 import { SanityGame, SanityGameSummary } from '@/types/sanity/SanityGame';
 
+// Only the fields rendered by the site: every extra field ends up in the
+// prerendered payload of thousands of pages.
 const query = `*[_type == "game" && isTranslated == true]{
-  ...,
+  _id,
+  name,
+  slug,
+  cover,
+  rating,
+  idHltb,
+  timeMainStory,
+  timeMainExtras,
+  timeCompletionists,
+  "genreIds": genres[]._ref,
   description[]{
     ...,
     markDefs[]{
@@ -27,7 +38,7 @@ export function getGames() {
   return gamesPromise;
 }
 
-// Fields needed to list a game (props must be JSON serializable: no undefined)
+// Fields needed to list a game
 export function toGameSummary({
   _id,
   name,

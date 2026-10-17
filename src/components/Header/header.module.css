@@ -1,0 +1,25 @@
+.header {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-height);
+}
+
+.header :global(.container) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media screen and (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    height: var(--header-height-mobile);
+  }
+
+  .header :global(.container) {
+    flex-direction: column;
+  }
+}

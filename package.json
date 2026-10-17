@@ -18,7 +18,7 @@
     "dev": "next dev -p 2811",
     "build": "tsx scripts/build-static-data.ts && next build",
     "start": "serve out -l 2881",
-    "type-check": "tsc --noEmit",
+    "type-check": "next typegen && tsc --noEmit",
     "lint": "eslint src scripts",
     "format": "prettier \"src/**/*.+(ts|js|tsx)\" --write",
     "prepare": "husky",
@@ -31,20 +31,13 @@
     ]
   },
   "dependencies": {
-    "@emotion/react": "11.14.0",
-    "@emotion/styled": "11.14.1",
     "@portabletext/react": "8.0.1",
     "@sanity/client": "8.9.0",
-    "emotion-reset": "3.0.1",
     "fuse.js": "7.5.0",
     "get-youtube-id": "1.0.1",
-    "gsap": "3.15.0",
     "next": "16.4.2",
     "react": "19.3.1",
-    "react-circular-progressbar": "2.2.0",
-    "react-dom": "19.3.1",
-    "react-gtm-module": "2.0.11",
-    "react-youtube": "10.1.0"
+    "react-dom": "19.3.1"
   },
   "devDependencies": {
     "@commitlint/cli": "21.2.3",
@@ -52,7 +45,6 @@
     "@types/node": "24.19.2",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
-    "@types/react-gtm-module": "2.0.4",
     "commitizen": "4.3.2",
     "cz-conventional-changelog": "3.3.0",
     "eslint": "9.39.5",

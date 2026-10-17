@@ -42,3 +42,6 @@ yarn-error.log*
 /public/sitemap.xml
 /public/search-index.json
 *.tsbuildinfo
+
+# translation drafts (scripts/translate-games.ts)
+/.translations/

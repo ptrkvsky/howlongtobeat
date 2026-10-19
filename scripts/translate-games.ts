@@ -4,7 +4,8 @@
  * database until `--write` is run on a reviewed file.
  *
  * Translate untranslated games (best rated first) into a JSONL file:
- *   pnpm tsx scripts/translate-games.ts --limit 50 [--out <file>]
+ *   pnpm tsx scripts/translate-games.ts --limit 50 [--out <file>] [--imported]
+ * (--imported: only the games added by scripts/import-games.ts)
  * Re-translate the games of a previous file from their original source:
  *   pnpm tsx scripts/translate-games.ts --retranslate <file>
  * Clean the endings of published descriptions (".." / "," / cut sentences):
@@ -48,6 +49,7 @@ const { values: args } = parseArgs({
     write: { type: `string` },
     retranslate: { type: `string` },
     polish: { type: `boolean`, default: false },
+    imported: { type: `boolean`, default: false },
   },
 });
 
@@ -257,7 +259,13 @@ async function loadJobs(): Promise<Job[]> {
   const games = await getDb()
     .db.select(fields)
     .from(game)
-    .where(and(eq(game.isTranslated, false), ne(game.descriptionMd, ``)))
+    .where(
+      and(
+        eq(game.isTranslated, false),
+        ne(game.descriptionMd, ``),
+        args.imported ? eq(game.source, `import`) : undefined,
+      ),
+    )
     .orderBy(desc(game.rating))
     .limit(limit);
   return games.flatMap((row) => {

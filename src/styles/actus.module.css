@@ -63,3 +63,123 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Article page */
+.article {
+  max-width: 800px;
+}
+
+.articleTitle {
+  margin-bottom: var(--space-4);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-4xl);
+  line-height: 1.2;
+  color: var(--color-contrast);
+}
+
+.lead {
+  margin: var(--space-5) 0;
+  font-size: var(--font-size-xl);
+  line-height: 1.5;
+}
+
+.cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--space-2);
+}
+
+.content {
+  margin-top: var(--space-8);
+  font-size: var(--font-size-lg);
+  line-height: 1.7;
+  color: var(--color-white-alpha-800);
+}
+
+.content p,
+.content ul,
+.content ol {
+  margin-bottom: var(--space-5);
+}
+
+.content ul,
+.content ol {
+  padding-left: var(--space-5);
+}
+
+.content ul {
+  list-style: disc;
+}
+
+.content ol {
+  list-style: decimal;
+}
+
+.content h2,
+.content h3 {
+  margin: var(--space-8) 0 var(--space-4);
+  font-family: var(--font-heading);
+  line-height: 1.3;
+  color: var(--color-contrast);
+}
+
+.content h2 {
+  font-size: var(--font-size-2xl);
+}
+
+.content h3 {
+  font-size: var(--font-size-xl);
+}
+
+.content a,
+.source a {
+  color: var(--color-primary-500);
+  text-decoration: underline;
+}
+
+.content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--space-2);
+}
+
+.content strong {
+  font-weight: var(--font-weight-bold);
+}
+
+.content em {
+  font-style: italic;
+}
+
+.source {
+  margin-top: var(--space-8);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-gray-700);
+  color: var(--color-gray-300);
+}
+
+.back {
+  display: inline-block;
+  margin: var(--space-8) 0;
+  color: var(--color-white-alpha-800);
+}
+
+.back:hover {
+  color: var(--color-primary-500);
+}
+
+@media screen and (max-width: 766px) {
+  .articleTitle {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+.content iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin-bottom: var(--space-5);
+  border: 0;
+  border-radius: var(--space-2);
+}

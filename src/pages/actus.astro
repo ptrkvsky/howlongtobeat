@@ -7,7 +7,6 @@ import styles from '@/styles/actus.module.css';
 
 // POC: the 5 latest GameSpot news, published 3 times a day on Vercel Blob by
 // scripts/fetch-gamespot.ts and loaded client-side, so no rebuild is needed
-const feedUrl = import.meta.env?.PUBLIC_GAMESPOT_JSON_URL ?? ``;
 const breadcrumb = [
   { name: `Accueil`, path: `/` },
   { name: `Actus`, path: `/actus` },
@@ -16,7 +15,7 @@ const breadcrumb = [
 
 <BaseLayout
   title="Actus jeux vidéo"
-  description="Les 5 dernières actus jeux vidéo de GameSpot, mises à jour à 6h, 11h30 et 17h30."
+  description="Les 5 dernières actus jeux vidéo de GameSpot traduites en français, mises à jour à 6h, 11h30 et 17h30."
   noindex
 >
   <LayoutFront isCentered>
@@ -25,10 +24,10 @@ const breadcrumb = [
     <p class={styles.meta} data-news-meta>
       Chargement des actus…
     </p>
-    <ol class={styles.list} data-news-list data-feed-url={feedUrl}></ol>
+    <ol class={styles.list} data-news-list></ol>
     <template data-news-card>
       <li class={styles.card}>
-        <a class={styles.link} target="_blank" rel="noopener nofollow">
+        <a class={styles.link}>
           <img
             class={styles.image}
             alt=""

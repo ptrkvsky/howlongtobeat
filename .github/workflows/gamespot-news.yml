@@ -1,4 +1,4 @@
-# POC: publishes the 5 latest GameSpot news read by /actus, at 6:00, 11:30
+# POC: publishes the 5 latest GameSpot news, translated to French, read by /actus, at 6:00, 11:30
 # and 17:30 Paris time. Cron is in UTC: each slot is scheduled for UTC+1 and
 # UTC+2, scripts/fetch-gamespot.ts only keeps the run matching Paris time.
 name: GameSpot news
@@ -29,3 +29,4 @@ jobs:
       - run: pnpm tsx scripts/fetch-gamespot.ts ${{ github.event_name == 'workflow_dispatch' && '--force' || '' }}
         env:
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

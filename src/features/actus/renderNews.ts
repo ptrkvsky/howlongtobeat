@@ -1,43 +1,23 @@
 /**
- * Client side of /actus: renders the GameSpot news published on Vercel Blob
- * by scripts/fetch-gamespot.ts in the page's card template.
+ * Client side of /actus: renders the index of the GameSpot news published on
+ * Vercel Blob by scripts/fetch-gamespot.ts in the page's card template.
  */
-export interface NewsArticle {
-  title: string;
-  url: string;
-  date: string;
-  image: string | null;
-  excerpt: string;
-}
-
-export interface NewsFeed {
-  source: string;
-  updatedAt: string;
-  articles: NewsArticle[];
-}
+import {
+  NEWS_INDEX_URL,
+  newsPageUrl,
+  type NewsIndex,
+  type NewsSummary,
+} from '@/config/news';
+import { formatDate, formatDayAndTime } from './format';
 
 const list = document.querySelector<HTMLOListElement>(`[data-news-list]`)!;
 const meta = document.querySelector<HTMLElement>(`[data-news-meta]`)!;
 const template =
   document.querySelector<HTMLTemplateElement>(`[data-news-card]`)!;
 
-const formatDate = new Intl.DateTimeFormat(`fr-FR`, {
-  dateStyle: `long`,
-  timeStyle: `short`,
-  timeZone: `Europe/Paris`,
-});
-const formatDay = new Intl.DateTimeFormat(`fr-FR`, {
-  dateStyle: `long`,
-  timeZone: `Europe/Paris`,
-});
-const formatTime = new Intl.DateTimeFormat(`fr-FR`, {
-  timeStyle: `short`,
-  timeZone: `Europe/Paris`,
-});
-
-function renderCard(article: NewsArticle): Node {
+function renderCard(article: NewsSummary): Node {
   const card = template.content.cloneNode(true) as DocumentFragment;
-  card.querySelector(`a`)!.href = article.url;
+  card.querySelector(`a`)!.href = newsPageUrl(article.slug);
   const image = card.querySelector(`img`)!;
   if (article.image) image.src = article.image;
   else image.remove();
@@ -50,15 +30,12 @@ function renderCard(article: NewsArticle): Node {
 }
 
 async function loadNews() {
-  const feedUrl = list.dataset.feedUrl;
-  if (!feedUrl) throw new Error(`PUBLIC_GAMESPOT_JSON_URL is not set`);
-  const response = await fetch(feedUrl);
+  const response = await fetch(NEWS_INDEX_URL);
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  const feed: NewsFeed = await response.json();
+  const index: NewsIndex = await response.json();
 
-  list.replaceChildren(...feed.articles.map(renderCard));
-  const updatedAt = new Date(feed.updatedAt);
-  meta.textContent = `Source : ${feed.source}, mis à jour le ${formatDay.format(updatedAt)} à ${formatTime.format(updatedAt)}.`;
+  list.replaceChildren(...index.articles.map(renderCard));
+  meta.textContent = `Source : ${index.source}, mis à jour le ${formatDayAndTime(new Date(index.updatedAt))}.`;
 }
 
 loadNews().catch((error) => {

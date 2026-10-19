@@ -1,0 +1,52 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import LayoutFront from '@/layouts/LayoutFront.astro';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
+import HomeTitle from '@/styles/components/titles/HomeTitle.astro';
+import styles from '@/styles/actus.module.css';
+
+// POC: the 5 latest GameSpot news, published 3 times a day on Vercel Blob by
+// scripts/fetch-gamespot.ts and loaded client-side, so no rebuild is needed
+const feedUrl = import.meta.env?.PUBLIC_GAMESPOT_JSON_URL ?? ``;
+const breadcrumb = [
+  { name: `Accueil`, path: `/` },
+  { name: `Actus`, path: `/actus` },
+];
+---
+
+<BaseLayout
+  title="Actus jeux vidéo"
+  description="Les 5 dernières actus jeux vidéo de GameSpot, mises à jour à 6h, 11h30 et 17h30."
+  noindex
+>
+  <LayoutFront isCentered>
+    <Breadcrumb items={breadcrumb} />
+    <HomeTitle>Actus</HomeTitle>
+    <p class={styles.meta} data-news-meta>
+      Chargement des actus…
+    </p>
+    <ol class={styles.list} data-news-list data-feed-url={feedUrl}></ol>
+    <template data-news-card>
+      <li class={styles.card}>
+        <a class={styles.link} target="_blank" rel="noopener nofollow">
+          <img
+            class={styles.image}
+            alt=""
+            loading="lazy"
+            width="320"
+            height="180"
+          />
+          <div class={styles.body}>
+            <time class={styles.date}></time>
+            <h2 class={styles.title}></h2>
+            <p class={styles.excerpt}></p>
+          </div>
+        </a>
+      </li>
+    </template>
+  </LayoutFront>
+</BaseLayout>
+
+<script>
+  import '@/features/actus/renderNews';
+</script>

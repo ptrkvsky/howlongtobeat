@@ -1,0 +1,99 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import LayoutFront from '@/layouts/LayoutFront.astro';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
+import Pagination from '@/components/Pagination/Pagination.astro';
+import HomeTitle from '@/styles/components/titles/HomeTitle.astro';
+import { GENRE_PAGE_SIZE } from '@/config/pagination';
+import { getAllGenres } from '@/functions/getAllGenres';
+import { getGamesByGenre } from '@/functions/getGamesByGenre';
+import type { GameSummary } from '@/types/Game';
+import type { Genre } from '@/types/Genre';
+import {
+  breadcrumbNode,
+  gameItemListNode,
+  pageIds,
+  ref,
+  webPageNode,
+} from '@/utils/structuredData';
+
+// /genre/<slug> for the first page, then /genre/<slug>/2…
+export const getStaticPaths = (async ({ paginate }) => {
+  const genres = await getAllGenres();
+
+  const pages = await Promise.all(
+    genres.map(async (genre) =>
+      paginate(await getGamesByGenre(genre.id), {
+        params: { slug: genre.slug },
+        props: { genre },
+        pageSize: GENRE_PAGE_SIZE,
+      }),
+    ),
+  );
+  return pages.flat();
+}) satisfies GetStaticPaths;
+
+interface Props {
+  genre: Genre;
+  page: Page<GameSummary>;
+}
+
+const { genre, page } = Astro.props;
+const genrePath = `/genre/${genre.slug}`;
+const canonical = page.url.current;
+// Other pages get their own title and description
+const pageSuffix = page.currentPage > 1 ? ` - Page ${page.currentPage}` : ``;
+const title = `Durée de vie des jeux ${genre.name}${pageSuffix}`;
+const description = `Découvrez le temps nécessaire pour terminer les jeux ${genre.name}.${pageSuffix}`;
+const breadcrumb = [
+  { name: `Accueil`, path: `/` },
+  { name: genre.name, path: genrePath },
+  ...(page.currentPage > 1
+    ? [{ name: `Page ${page.currentPage}`, path: canonical }]
+    : []),
+];
+const jsonLd = [
+  webPageNode({
+    type: `CollectionPage`,
+    path: canonical,
+    name: title,
+    description,
+    extra: { mainEntity: ref(pageIds(canonical).itemList) },
+  }),
+  breadcrumbNode(canonical, breadcrumb),
+  gameItemListNode(canonical, page.data, {
+    total: page.total,
+    start: page.start,
+  }),
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  prev={page.url.prev}
+  next={page.url.next}
+  jsonLd={jsonLd}
+>
+  <LayoutFront cloakFooter isCentered>
+    <Breadcrumb items={breadcrumb} />
+    <HomeTitle>
+      {genre.name}
+      <br /> {page.total} jeux
+    </HomeTitle>
+    <ul>
+      {page.data.map((game) => (
+        <li>
+          <a href={`/jeu/${game.slug}`}>{game.name}</a>
+        </li>
+      ))}
+    </ul>
+    <Pagination
+      baseUrl={genrePath}
+      currentPage={page.currentPage}
+      lastPage={page.lastPage}
+    />
+  </LayoutFront>
+</BaseLayout>

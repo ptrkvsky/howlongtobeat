@@ -2,7 +2,7 @@
  * POC: can HowLongToBeat game pages still be read, and which signals tell a
  * game known to the general public from an obscure one? Quality first: the
  * threshold is the most permissive rule that lets no obscure game through,
- * the resulting volume is only an outcome. Nothing is written to Sanity.
+ * the resulting volume is only an outcome. Nothing is written to the database.
  *
  * 1. List the candidates (Wikidata items with an HLTB id + current catalog):
  *   pnpm tsx scripts/hltb-poc.ts --candidates
@@ -16,7 +16,7 @@
  * --sample resumes: games already in sample.jsonl are skipped, unless they
  * had errors.
  *
- * Env (.env.local / .env): SANITY_ID, SANITY_DATASET
+ * Env (.env.local / .env): DATABASE_URL
  */
 import {
   appendFileSync,
@@ -27,7 +27,8 @@ import {
 } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
-import { createClient } from '@sanity/client';
+import { closeDb, getDb } from '../src/db/client';
+import { game } from '../src/db/schema';
 import {
   checkHltb,
   getHltbGame,
@@ -208,17 +209,14 @@ function percentiles(values: number[], points = [0.1, 0.25, 0.5, 0.75, 0.9]) {
 // ── 1. Candidates ──────────────────────────────────────────────────────────
 
 async function candidates() {
-  const sanity = createClient({
-    projectId: process.env.SANITY_ID,
-    dataset: process.env.SANITY_DATASET,
-    apiVersion: `2024-01-01`,
-    useCdn: true,
-  });
   const [wikidata, catalog] = await Promise.all([
     getAllHltbItems(),
-    sanity.fetch<{ idHltb: number; name: string; totalPoll: number | null }[]>(
-      `*[_type == "game"]{ idHltb, name, totalPoll }`,
-    ),
+    // totalPoll (stale HLTB popularity) did not survive the Sanity migration:
+    // the catalog stratum of a new sample is no longer spread by popularity
+    getDb()
+      .db.select({ idHltb: game.hltbId, name: game.name })
+      .from(game)
+      .then((rows) => rows.map((row) => ({ ...row, totalPoll: null }))),
   ]);
   const byHltb = new Map<number, Candidate>();
   for (const item of wikidata.values()) {
@@ -862,7 +860,9 @@ if (!command) {
   console.error(`Usage: --candidates | --sample [--limit n] | --analyze`);
   process.exit(1);
 }
-command().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+command()
+  .catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  })
+  .finally(closeDb);

@@ -2,7 +2,7 @@
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import LayoutFront from '@/layouts/LayoutFront.astro';
-import PortableText from '@/components/Sanity/PortableText.astro';
+import Markdown from '@/components/Markdown.astro';
 import Banner from '@/features/jeu/components/Banner/Banner.astro';
 import CircularBar from '@/features/jeu/components/CircularBar.astro';
 import Cover from '@/features/jeu/components/Cover.astro';
@@ -13,15 +13,10 @@ import { getGames, getRelatedGames } from '@/features/jeu/api';
 
 export const getStaticPaths = (async () => {
   const games = await getGames();
-  // A few Sanity documents share a slug: keep the first one (as getGame does)
-  const slugs = new Set<string>();
-  const uniqueGames = games.filter(
-    (game) => !slugs.has(game.slug.current) && slugs.add(game.slug.current),
-  );
 
   return Promise.all(
-    uniqueGames.map(async (game) => ({
-      params: { slug: game.slug.current },
+    games.map(async (game) => ({
+      params: { slug: game.slug },
       props: { game, relatedGames: await getRelatedGames(game) },
     })),
   );
@@ -33,7 +28,7 @@ const { game, relatedGames } = Astro.props;
 <BaseLayout
   title={`Combien de temps faut-il pour terminer ${game.name} ?`}
   description={`Découvrez la durée de vie de ${game.name}. Quel temps vous faudra t-il pour voir la fin.`}
-  canonical={`/jeu/${game.slug.current}`}
+  canonical={`/jeu/${game.slug}`}
   ogImage={game.cover ? `https:${game.cover}` : undefined}
 >
   <LayoutFront>
@@ -50,7 +45,7 @@ const { game, relatedGames } = Astro.props;
           <span class={styles.name}>{game.name}</span> ?
         </h1>
         <div class={styles.description}>
-          <PortableText blocks={game.description} />
+          <Markdown source={game.descriptionMd} />
         </div>
         <Time game={game} />
       </div>

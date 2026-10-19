@@ -1,7 +1,7 @@
 /**
  * POC: cross the published games with Wikidata, IGDB, Steam and
  * IsThereAnyDeal to measure match rates and data coverage. Nothing is written
- * to Sanity: the output is a JSONL file to review and a summary.
+ * to the database: the output is a JSONL file to review and a summary.
  *
  * Enrich the most popular published games:
  *   pnpm tsx scripts/enrich-games.ts --limit 50 [--offset 0] [--out <file>]
@@ -16,15 +16,18 @@
  * Steps: ids (Wikidata exact match on idHltb + IGDB name match, compared)
  * then, for games with a Steam app id: reviews, achievements, prices.
  *
- * Env (.env.local / .env): SANITY_ID, SANITY_DATASET,
+ * Games are taken by rating (the former HLTB popularity, totalPoll, was stale).
+ *
+ * Env (.env.local / .env): DATABASE_URL,
  * IGDB_CLIENT_ID + IGDB_CLIENT_SECRET (Twitch app, falls back to CLIENT_ID /
  * CLIENT_SECRET), ITAD_API_KEY, STEAM_API_KEY (optional: achievement names)
  */
 import { appendFileSync, existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
-import { createClient } from '@sanity/client';
-import type { SanityGame } from '@/types/sanity/SanityGame';
+import { desc, eq, sql } from 'drizzle-orm';
+import { closeDb, getDb } from '../src/db/client';
+import { game as gameTable } from '../src/db/schema';
 import { errorMessage, requestCounts } from './enrich/http';
 import {
   findIgdbGame,
@@ -65,15 +68,15 @@ const { values: args } = parseArgs({
 
 const OUTPUT_DIR = join(process.cwd(), `.enrichment`);
 
-type Game = Pick<
-  SanityGame,
-  | `_id`
-  | `name`
-  | `idHltb`
-  | `timeMainStory`
-  | `timeMainExtras`
-  | `timeCompletionists`
-> & { totalPoll: number };
+interface Game {
+  // game.id as a string, the key of the JSONL entries
+  _id: string;
+  name: string;
+  idHltb: number;
+  timeMainStory: number;
+  timeMainExtras: number;
+  timeCompletionists: number;
+}
 
 type Status = `matched` | `conflict` | `ambiguous` | `no_steam` | `not_found`;
 
@@ -103,13 +106,6 @@ interface Entry extends Game {
   };
   errors: string[];
 }
-
-const sanity = createClient({
-  projectId: process.env.SANITY_ID,
-  dataset: process.env.SANITY_DATASET,
-  apiVersion: `2024-01-01`,
-  useCdn: true,
-});
 
 function readEntries(file: string) {
   const entries = new Map<string, Entry>();
@@ -370,10 +366,20 @@ async function run() {
     );
   const done = existsSync(file) ? readEntries(file) : new Map<string, Entry>();
 
-  const games = await sanity.fetch<Game[]>(
-    `*[_type == "game" && isTranslated == true] | order(totalPoll desc) [$offset...$end]{ _id, name, idHltb, timeMainStory, timeMainExtras, timeCompletionists, totalPoll }`,
-    { offset, end: offset + limit },
-  );
+  const games: Game[] = await getDb()
+    .db.select({
+      _id: sql<string>`${gameTable.id}::text`,
+      name: gameTable.name,
+      idHltb: gameTable.hltbId,
+      timeMainStory: gameTable.timeMainStory,
+      timeMainExtras: gameTable.timeMainExtras,
+      timeCompletionists: gameTable.timeCompletionists,
+    })
+    .from(gameTable)
+    .where(eq(gameTable.isPublished, true))
+    .orderBy(sql`${gameTable.rating} desc nulls last`, desc(gameTable.id))
+    .offset(offset)
+    .limit(limit);
   const pending = games.filter(
     (game) => !done.get(game._id) || done.get(game._id)!.errors.length,
   );
@@ -409,9 +415,9 @@ async function run() {
   if (existsSync(file)) printSummary(file, startedAt);
 }
 
-(args.summary ? Promise.resolve(printSummary(args.summary)) : run()).catch(
-  (error) => {
+(args.summary ? Promise.resolve(printSummary(args.summary)) : run())
+  .catch((error) => {
     console.error(error);
-    process.exit(1);
-  },
-);
+    process.exitCode = 1;
+  })
+  .finally(closeDb);

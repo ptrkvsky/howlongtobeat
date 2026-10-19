@@ -1,11 +1,11 @@
 ---
-import type { SanityGameSummary } from '@/types/sanity/SanityGame';
+import type { GameSummary } from '@/types/Game';
 import Cover from '../Cover.astro';
 import jeuStyles from '../jeu.module.css';
 import styles from './relatedGames.module.css';
 
 interface Props {
-  relatedGames: SanityGameSummary[];
+  relatedGames: GameSummary[];
 }
 
 const { relatedGames } = Astro.props;
@@ -18,7 +18,7 @@ const { relatedGames } = Astro.props;
   {relatedGames.map((relatedGame) => (
     <div class={styles.item}>
       <div class={styles.link}>
-        <a href={`/jeu/${relatedGame.slug.current}`}>{relatedGame.name}</a>
+        <a href={`/jeu/${relatedGame.slug}`}>{relatedGame.name}</a>
       </div>
       <div class={styles.img}>
         {relatedGame.cover && <Cover game={relatedGame} />}

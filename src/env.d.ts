@@ -1,8 +1,9 @@
 interface ImportMetaEnv {
-  readonly SANITY_ID: string;
-  readonly SANITY_DATASET: string;
+  // Postgres, see src/db/client.ts
+  readonly DATABASE_URL: string;
 }
 
 interface ImportMeta {
-  readonly env: ImportMetaEnv;
+  // Undefined when the code runs outside of Astro (scripts run with tsx)
+  readonly env: ImportMetaEnv | undefined;
 }

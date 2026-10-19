@@ -1,12 +1,10 @@
 import { getGames, toGameSummary } from '@/features/jeu/api';
-import type { SanityGameSummary } from '@/types/sanity/SanityGame';
+import type { GameSummary } from '@/types/Game';
 
-export async function getGamesByGenre(
-  genreId: string,
-): Promise<SanityGameSummary[]> {
+export async function getGamesByGenre(genreId: number): Promise<GameSummary[]> {
   const games = await getGames();
 
   return games
-    .filter((game) => game.genreIds?.includes(genreId))
+    .filter((game) => game.genreIds.includes(genreId))
     .map(toGameSummary);
 }

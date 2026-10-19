@@ -11,8 +11,8 @@ export const getStaticPaths = (async () => {
 
   return Promise.all(
     genres.map(async (genre) => ({
-      params: { slug: genre.slug.current },
-      props: { genre, games: await getGamesByGenre(genre._id) },
+      params: { slug: genre.slug },
+      props: { genre, games: await getGamesByGenre(genre.id) },
     })),
   );
 }) satisfies GetStaticPaths;
@@ -23,7 +23,7 @@ const { genre, games } = Astro.props;
 <BaseLayout
   title={`Durée de vie des jeux ${genre.name}`}
   description={`Découvrez le temps nécessaire pour terminer les jeux ${genre.name}.`}
-  canonical={`/genre/${genre.slug.current}`}
+  canonical={`/genre/${genre.slug}`}
 >
   <LayoutFront cloakFooter isCentered>
     <HomeTitle>
@@ -33,7 +33,7 @@ const { genre, games } = Astro.props;
     <ul>
       {games.map((game) => (
         <li>
-          <a href={`/jeu/${game.slug.current}`}>{game.name}</a>
+          <a href={`/jeu/${game.slug}`}>{game.name}</a>
         </li>
       ))}
     </ul>

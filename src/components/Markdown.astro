@@ -1,0 +1,13 @@
+---
+import { marked } from 'marked';
+
+interface Props {
+  source: string;
+}
+
+// Descriptions come from our own database (src/db/schema.ts), not from users
+const { source } = Astro.props;
+const html = marked.parse(source, { async: false });
+---
+
+<Fragment set:html={html} />

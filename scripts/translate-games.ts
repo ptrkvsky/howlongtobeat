@@ -1,7 +1,7 @@
 /**
  * Translates game descriptions (EN -> FR) with the OpenAI API, and cleans the
- * endings of already published descriptions. Nothing is written to Sanity
- * until `--write` is run on a reviewed file.
+ * endings of already published descriptions. Nothing is written to the
+ * database until `--write` is run on a reviewed file.
  *
  * Translate untranslated games (best rated first) into a JSONL file:
  *   pnpm tsx scripts/translate-games.ts --limit 50 [--out <file>]
@@ -9,14 +9,15 @@
  *   pnpm tsx scripts/translate-games.ts --retranslate <file>
  * Clean the endings of published descriptions (".." / "," / cut sentences):
  *   pnpm tsx scripts/translate-games.ts --polish [--limit 20]
- * Write a reviewed file to Sanity (entries with issues are skipped):
+ * Write a reviewed file to the database (entries with issues are skipped):
  *   pnpm tsx scripts/translate-games.ts --write <file>
  *
  * Passing an existing `--out` file resumes a run: games already in it are
  * skipped. Each translation is validated, rejected ones are retried once.
  *
- * Env (.env.local): OPENAI_API_KEY, OPENAI_MODEL, SANITY_ID, SANITY_DATASET,
- * SANITY_TOKEN (write access, only for --write)
+ * Only descriptions made of a single plain paragraph are handled.
+ *
+ * Env (.env.local): OPENAI_API_KEY, OPENAI_MODEL, DATABASE_URL
  */
 import {
   appendFileSync,
@@ -27,8 +28,11 @@ import {
 } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
-import { createClient } from '@sanity/client';
+import { and, desc, eq, inArray, ne, or } from 'drizzle-orm';
 import OpenAI from 'openai';
+import { closeDb, getDb } from '../src/db/client';
+import { game } from '../src/db/schema';
+import { escapeMarkdown, plainParagraph } from './lib/markdown';
 
 for (const file of [`.env.local`, `.env`]) {
   if (existsSync(file)) process.loadEnvFile(file);
@@ -57,24 +61,12 @@ const PRICES: Record<string, [number, number]> = {
 
 type Mode = `translate` | `polish`;
 
-interface Block {
-  _key: string;
-  _type: string;
-  children?: { _key: string; _type: string; marks?: string[]; text?: string }[];
-  [key: string]: unknown;
-}
-
-interface SanityGame {
-  _id: string;
-  name: string;
-  description: Block[];
-}
-
 interface Job {
+  // game.id, or the Sanity document id in files made before the migration
   _id: string;
   name: string;
   source: string;
-  // Sanity text when the job was created: --write skips the game if it changed
+  // Text when the job was created: --write skips the game if it changed
   previous?: string;
   mode: Mode;
 }
@@ -84,19 +76,11 @@ interface Entry extends Job {
   issues: string[];
 }
 
-const sanity = createClient({
-  projectId: process.env.SANITY_ID,
-  dataset: process.env.SANITY_DATASET,
-  apiVersion: `2024-01-01`,
-  token: process.env.SANITY_TOKEN,
-  useCdn: false,
-});
-
-// Only single paragraph / single span descriptions are handled
-const singleSpanText = (description?: Block[]) => {
-  if (description?.length !== 1) return undefined;
-  const children = description[0].children || [];
-  return children.length === 1 ? (children[0].text ?? ``) : undefined;
+const fields = {
+  id: game.id,
+  sanityId: game.sanityId,
+  name: game.name,
+  descriptionMd: game.descriptionMd,
 };
 
 const COMMON_RULES = `- Le texte source contient parfois des caractères corrompus (�), le plus souvent à la place d'une apostrophe ou d'un guillemet : corrige-les.
@@ -241,21 +225,23 @@ async function loadJobs(): Promise<Job[]> {
   }
 
   if (args.polish) {
-    const games = await sanity.fetch<SanityGame[]>(
-      `*[_type == "game" && isTranslated == true] | order(rating desc){ _id, name, description }`,
-    );
+    const games = await getDb()
+      .db.select(fields)
+      .from(game)
+      .where(eq(game.isTranslated, true))
+      .orderBy(desc(game.rating));
     const jobs: Job[] = [];
     let multiBlock = 0;
-    for (const game of games) {
-      const text = singleSpanText(game.description);
+    for (const row of games) {
+      const text = plainParagraph(row.descriptionMd);
       if (text === undefined) {
         multiBlock += 1;
         continue;
       }
       if (!ENDS_WELL.test(text.trimEnd()) || /\.\.,?$/.test(text.trimEnd())) {
         jobs.push({
-          _id: game._id,
-          name: game.name,
+          _id: String(row.id),
+          name: row.name,
           source: text,
           previous: text,
           mode: `polish`,
@@ -263,22 +249,24 @@ async function loadJobs(): Promise<Job[]> {
       }
     }
     console.info(
-      `${jobs.length} published descriptions to polish, ${multiBlock} skipped (several blocks, fix them in the Studio)`,
+      `${jobs.length} published descriptions to polish, ${multiBlock} skipped (formatted or several paragraphs, fix them in pnpm db:studio)`,
     );
     return jobs.slice(0, limit);
   }
 
-  const games = await sanity.fetch<SanityGame[]>(
-    `*[_type == "game" && isTranslated != true && defined(description)] | order(rating desc) [0...$limit]{ _id, name, description }`,
-    { limit },
-  );
-  return games.flatMap((game) => {
-    const text = singleSpanText(game.description);
+  const games = await getDb()
+    .db.select(fields)
+    .from(game)
+    .where(and(eq(game.isTranslated, false), ne(game.descriptionMd, ``)))
+    .orderBy(desc(game.rating))
+    .limit(limit);
+  return games.flatMap((row) => {
+    const text = plainParagraph(row.descriptionMd);
     return text
       ? [
           {
-            _id: game._id,
-            name: game.name,
+            _id: String(row.id),
+            name: row.name,
             source: text,
             previous: text,
             mode: `translate` as const,
@@ -392,7 +380,7 @@ async function run() {
 }
 
 async function write(file: string) {
-  if (!process.env.SANITY_TOKEN) throw new Error(`SANITY_TOKEN must be set`);
+  const { db } = getDb();
   const entries = [...readEntries(file).values()].filter((entry) => {
     if (entry.issues.length || !entry.text) {
       console.warn(`⚠ skipped ${entry.name}: ${entry.issues.join(`, `)}`);
@@ -404,42 +392,65 @@ async function write(file: string) {
   let written = 0;
   for (let i = 0; i < entries.length; i += 100) {
     const chunk = entries.slice(i, i + 100);
-    const games = await sanity.fetch<SanityGame[]>(
-      `*[_id in $ids]{ _id, name, description }`,
-      { ids: chunk.map((entry) => entry._id) },
-    );
-    const byId = new Map(games.map((game) => [game._id, game]));
-
-    const transaction = sanity.transaction();
-    for (const entry of chunk) {
-      const game = byId.get(entry._id);
-      const current = singleSpanText(game?.description);
-      if (!game || current === undefined) {
-        console.warn(`⚠ skipped ${entry.name}: unexpected description`);
-        continue;
-      }
-      if (entry.previous !== undefined && current !== entry.previous) {
-        console.warn(`⚠ skipped ${entry.name}: changed in Sanity since`);
-        continue;
-      }
-      const [block] = game.description;
-      const [span] = block.children!;
-      // Keep the block and span keys, replace the text only
-      const description = [
-        { ...block, children: [{ ...span, text: entry.text }] },
-      ];
-      transaction.patch(game._id, (patch) =>
-        patch.set({ description, isTranslated: true }),
+    const isId = (entry: Entry) => /^\d+$/.test(entry._id);
+    const rows = await db
+      .select(fields)
+      .from(game)
+      .where(
+        or(
+          inArray(
+            game.id,
+            chunk.filter(isId).map((entry) => Number(entry._id)),
+          ),
+          inArray(
+            game.sanityId,
+            chunk.filter((entry) => !isId(entry)).map((entry) => entry._id),
+          ),
+        ),
       );
-      written += 1;
-    }
-    await transaction.commit();
+    const byId = new Map(
+      rows.flatMap((row) => [
+        [String(row.id), row],
+        ...(row.sanityId ? [[row.sanityId, row] as const] : []),
+      ]),
+    );
+
+    await db.transaction(async (tx) => {
+      for (const entry of chunk) {
+        const row = byId.get(entry._id);
+        const current = row && plainParagraph(row.descriptionMd);
+        if (!row || current === undefined) {
+          console.warn(`⚠ skipped ${entry.name}: unexpected description`);
+          continue;
+        }
+        if (entry.previous !== undefined && current !== entry.previous) {
+          console.warn(`⚠ skipped ${entry.name}: changed since`);
+          continue;
+        }
+        // Only if the description did not change in the meantime
+        const updated = await tx
+          .update(game)
+          .set({
+            descriptionMd: escapeMarkdown(entry.text),
+            isTranslated: true,
+            isPublished: true,
+            updatedAt: new Date(),
+          })
+          .where(
+            and(eq(game.id, row.id), eq(game.descriptionMd, row.descriptionMd)),
+          )
+          .returning({ id: game.id });
+        written += updated.length;
+      }
+    });
     console.info(`✔ ${Math.min(i + 100, entries.length)}/${entries.length}`);
   }
-  console.info(`${written} descriptions written to Sanity`);
+  console.info(`${written} descriptions written to the database`);
 }
 
-(args.write ? write(args.write) : run()).catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+(args.write ? write(args.write) : run())
+  .catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  })
+  .finally(closeDb);

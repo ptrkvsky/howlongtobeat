@@ -1,14 +1,19 @@
-import sanity from '@/lib/sanity/sanityClient';
-import type { SanityGenre } from '@/types/sanity/SanityGenre';
+import { asc, sql } from 'drizzle-orm';
+import { getDb } from '@/db/client';
+import { genre } from '@/db/schema';
+import type { Genre } from '@/types/Genre';
 
-let genresPromise: Promise<SanityGenre[]> | undefined;
+let genresPromise: Promise<Genre[]> | undefined;
 
 export function getAllGenres() {
-  if (!genresPromise) {
-    genresPromise = sanity.instance.fetch<SanityGenre[]>(
-      `*[_type == "genre"]{ _id, name, slug } | order(name asc)`,
+  genresPromise ??= getDb()
+    .db.select({ id: genre.id, name: genre.name, slug: genre.slug })
+    .from(genre)
+    .orderBy(
+      asc(genre.name),
+      // Same order as Sanity for genres with the same name
+      sql`${genre.sanityId} collate "C"`,
     );
-  }
 
   return genresPromise;
 }

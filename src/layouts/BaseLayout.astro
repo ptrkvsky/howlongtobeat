@@ -9,6 +9,9 @@ interface Props {
   absoluteTitle?: string;
   description?: string;
   canonical?: string;
+  // Previous and next pages of a paginated list
+  prev?: string;
+  next?: string;
   ogImage?: string;
   noindex?: boolean;
   // schema.org nodes, rendered as one JSON-LD @graph
@@ -20,6 +23,8 @@ const {
   absoluteTitle,
   description,
   canonical,
+  prev,
+  next,
   ogImage,
   noindex,
   jsonLd,
@@ -43,6 +48,8 @@ const gtmSnippet = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':ne
     {canonical && (
       <link rel="canonical" href={new URL(canonical, Astro.site)} />
     )}
+    {prev && <link rel="prev" href={new URL(prev, Astro.site)} />}
+    {next && <link rel="next" href={new URL(next, Astro.site)} />}
     {ogImage && <meta property="og:image" content={ogImage} />}
     {jsonLd?.length && (
       <script

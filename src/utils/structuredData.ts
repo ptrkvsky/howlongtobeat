@@ -165,16 +165,18 @@ export function videoGameNode(
   };
 }
 
+// A paginated list gives the whole list size and the first game's index
 export const gameItemListNode = (
   path: string,
   games: GameSummary[],
+  { total = games.length, start = 0 } = {},
 ): JsonLdNode => ({
   '@type': `ItemList`,
   '@id': pageIds(path).itemList,
-  numberOfItems: games.length,
+  numberOfItems: total,
   itemListElement: games.map((game, index) => ({
     '@type': `ListItem`,
-    position: index + 1,
+    position: start + index + 1,
     url: absolute(`/jeu/${game.slug}`),
     name: game.name,
   })),

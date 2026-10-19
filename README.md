@@ -1,132 +1,148 @@
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/26466516/141659551-d7ba5630-7200-46fe-863b-87818dae970a.png" alt="Next.js TypeScript Starter">
-</p>
+# game-over.io
 
-<br />
+Le temps de jeu de vos jeux favoris : durées pour finir l'histoire, l'histoire et les extras, ou le jeu à 100 %, avec des fiches jeux enrichies (genres, éditeurs, avis Steam, liens externes…).
 
-<div align="center"><strong>Non-opinionated TypeScript starter for Next.js</strong></div>
-<div align="center">Highly scalable foundation with the best DX. All the tools you need to build your next project.</div>
+Site : [game-over.io](https://game-over.io)
 
-<br />
+## Stack
 
-<div align="center">
-  <img src="https://img.shields.io/static/v1?label=PRs&message=welcome&style=flat-square&color=5e17eb&labelColor=000000" alt="PRs welcome!" />
+- [Astro](https://astro.build) 7 en sortie **100 % statique** (`build.format: file`, servi sans `.html` grâce à `cleanUrls` dans `vercel.json`)
+- TypeScript, CSS Modules
+- PostgreSQL 17 + [Drizzle ORM](https://orm.drizzle.team) (lu au build uniquement)
+- Node 24, pnpm 10
+- Hébergement : Vercel (CDN statique + Blob), build sur un VPS
 
-  <img alt="License" src="https://img.shields.io/github/license/jpedroschmitz/typescript-nextjs-starter?style=flat-square&color=5e17eb&labelColor=000000">
+## Hébergement et déploiement
 
-  <a href="https://twitter.com/intent/follow?screen_name=jpedroschmitz">
-    <img src="https://img.shields.io/twitter/follow/jpedroschmitz?style=flat-square&color=5e17eb&labelColor=000000" alt="Follow @jpedroschmitz" />
-  </a>
-</div>
-
-<div align="center">
-  <sub>Created by <a href="https://twitter.com/jpedroschmitz">João Pedro</a> with the help of many <a href="https://github.com/jpedroschmitz/typescript-nextjs-starter/graphs/contributors">wonderful contributors</a>.</sub>
-</div>
-
-<br />
-
-## Features
-
-- ⚡️ Next.js 12
-- ⚛️ React 17
-- ⛑ TypeScript
-- 📏 ESLint — Find and fix problems in your code
-- 💖 Prettier — Code Formatter for consistent style
-- 🐶 Husky — For running scripts before committing
-- 📄 Commitizen — To define a standard way of committing rules
-- 🚓 Commitlint — Make sure your commit messages follow the convention
-- 🖌 Renovate — Keep your dependencies up to date
-- 🚫 lint-staged — To run ESLint and Prettier against staged Git files
-- 👷 PR Workflow — Run Type Check & Linters on all Pull Requests
-- ⚙️ EditorConfig - Maintain consistent coding styles across editors and IDEs
-- 🗂 Path Mapping — Import components or images using the `@` prefix
-
-## Quick Start
-
-The best way to start with this template is using [Create Next App](https://nextjs.org/docs/api-reference/create-next-app).
+Le site est buildé **sur un VPS**, pas chez Vercel. Vercel ne sert que les fichiers statiques déjà construits.
 
 ```
-yarn create next-app -e https://github.com/jpedroschmitz/typescript-nextjs-starter
-# or
-npx create-next-app -e https://github.com/jpedroschmitz/typescript-nextjs-starter
+                    VPS (chaque lundi vers 4 h, timer systemd)
+ ┌─────────────────────────────────────────────────────────────────────────┐
+ │ scripts/deploy.sh                                                       │
+ │   git pull → pg_dump → db:migrate → update-catalog.sh                   │
+ │   → vercel build → contrôle du nombre de pages → vercel deploy --prebuilt│
+ │                       │                                                 │
+ │                       ▼                                                 │
+ │   Postgres (Docker « gameover-postgres », 127.0.0.1:5433 uniquement)     │
+ └───────────────────────┬─────────────────────────────────────────────────┘
+                         │ build prêt à servir
+                         ▼
+               Vercel : CDN statique game-over.io
+                         ▲
+                         │ /actus lit un JSON côté client
+               Vercel Blob ◄── GitHub Action « GameSpot news » (6 h, 11 h 30, 17 h 30)
 ```
 
-### Development
+Pourquoi ce montage :
 
-First add your gsap token
+- **Aucune minute de build Vercel** : le build, long (plusieurs milliers de pages et mise à jour des données), tourne sur le VPS.
+- **La base n'est jamais exposée** : Postgres n'écoute que sur la boucle locale du VPS. Seuls le build et les scripts d'import y accèdent.
+- **Pas de déploiement au push** : `vercel.json` désactive les déploiements Git (`git.deploymentEnabled: false`). Seul `scripts/deploy.sh` met la production à jour.
+
+Garde-fous de `scripts/deploy.sh` :
+
+- refus de déployer si le build contient moins de 95 % des pages du déploiement précédent (`FORCE=1` pour passer outre) ;
+- un seul déploiement à la fois (verrou `flock`) ;
+- sauvegarde `pg_dump` avant chaque run, les 8 dernières sont gardées ;
+- alerte [healthchecks.io](https://healthchecks.io) si un run échoue ou n'a pas lieu (`HEALTHCHECK_URL`) ;
+- retour arrière avec `vercel rollback`.
+
+Installation du VPS, du timer et commandes d'exploitation (logs, run manuel, restauration de la base) : **[scripts/systemd/README.md](scripts/systemd/README.md)**.
+
+### Actus GameSpot
+
+La page `/actus` est un POC. Le workflow [.github/workflows/gamespot-news.yml](.github/workflows/gamespot-news.yml) lance [scripts/fetch-gamespot.ts](scripts/fetch-gamespot.ts) trois fois par jour. Le script publie les 5 dernières actus GameSpot dans un JSON sur Vercel Blob, et la page le charge côté client : aucune reconstruction du site n'est nécessaire. Le secret GitHub `BLOB_READ_WRITE_TOKEN` doit être défini.
+
+## Développement local
+
+Prérequis : Node 24 (`.nvmrc`), pnpm 10, le CLI Vercel pour déployer.
 
 ```bash
-export NPM_TOKEN=my_token_goes_here_foo_bar
+pnpm install
+cp <votre .env.local> .env.local
+pnpm dev            # http://localhost:2811
 ```
 
-To start the project locally, run:
+La base tourne sur le VPS. Pour builder ou lancer les scripts depuis votre poste, ouvrez un tunnel SSH, puis pointez `DATABASE_URL` sur `127.0.0.1:5433` :
 
 ```bash
-yarn dev
+ssh -N -L 5433:127.0.0.1:5433 ubuntu@51.38.191.183
 ```
 
-Open `http://localhost:3000` with your browser to see the result.
+### Variables d'environnement (`.env.local`)
 
-## Testimonials
+| Variable                               | Utilisée par                                         |
+| -------------------------------------- | ---------------------------------------------------- |
+| `DATABASE_URL`                         | build du site, scripts, Drizzle                      |
+| `PUBLIC_GAMESPOT_JSON_URL`             | page `/actus` (URL publique du JSON sur Vercel Blob) |
+| `IGDB_CLIENT_ID`, `IGDB_CLIENT_SECRET` | enrichissement IGDB (identifiants Twitch)            |
+| `STEAM_API_KEY`                        | avis et succès Steam                                 |
+| `ITAD_API_KEY`                         | prix IsThereAnyDeal (POC `enrich-games.ts`)          |
+| `OPENAI_API_KEY`, `OPENAI_MODEL`       | traduction des descriptions                          |
+| `BLOB_READ_WRITE_TOKEN`                | publication des actus GameSpot                       |
+| `SANITY_ID`, `SANITY_DATASET`          | migration ponctuelle depuis Sanity uniquement        |
 
-> [**“This starter is by far the best TypeScript starter for Next.js. Feature packed but un-opinionated at the same time!”**](https://github.com/jpedroschmitz/typescript-nextjs-starter/issues/87#issue-789642190)<br>
-> — Arafat Zahan
+Les variables du déploiement (`VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`, `UPDATE_CMD`, `HEALTHCHECK_URL`…) sont décrites dans [scripts/systemd/deploy.env.example](scripts/systemd/deploy.env.example).
 
-> [**“I can really recommend the Next.js Typescript Starter repo as a solid foundation for your future Next.js projects.”**](https://corfitz.medium.com/create-a-custom-create-next-project-command-2a6b35a1c8e6)<br>
-> — Corfitz
+### Scripts npm
 
-> [**“Brilliant work!”**](https://github.com/jpedroschmitz/typescript-nextjs-starter/issues/87#issuecomment-769314539)<br>
-> — Soham Dasgupta
+| Commande           | Rôle                                                |
+| ------------------ | --------------------------------------------------- |
+| `pnpm dev`         | serveur de développement sur le port 2811           |
+| `pnpm build`       | build statique dans `dist/`                         |
+| `pnpm start`       | prévisualise le build sur le port 2881              |
+| `pnpm type-check`  | `astro check`                                       |
+| `pnpm lint`        | ESLint sur `src` et `scripts`                       |
+| `pnpm format`      | Prettier sur `src`                                  |
+| `pnpm commit`      | commit guidé (Commitizen)                           |
+| `pnpm db:generate` | génère une migration depuis `src/db/schema.ts`      |
+| `pnpm db:migrate`  | applique les migrations de `drizzle/`               |
+| `pnpm db:studio`   | Drizzle Studio, pour corriger des données à la main |
 
-## Showcase
+## Données du catalogue
 
-List of websites that started off with Next.js TypeScript Starter:
+Le catalogue vit dans Postgres (schéma : [src/db/schema.ts](src/db/schema.ts)) : jeux, genres, surcharges manuelles, et une table par source externe (identifiants, IGDB, Steam, HowLongToBeat).
 
-- [dowhile.io](https://dowhile.io)
-- [graphcms.com](https://graphcms.com)
-- [mobg.com.br](https://mobg.com.br)
-- [nextlevelweek.com](https://nextlevelweek.com)
-- [rocketseat.com.br](https://www.rocketseat.com.br)
+| Script                                                   | Rôle                                                                                                           |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| [scripts/update-catalog.sh](scripts/update-catalog.sh)   | chaîne hebdomadaire lancée par `deploy.sh` (`UPDATE_CMD`) : import → enrichissement → traduction → publication |
+| [scripts/import-games.ts](scripts/import-games.ts)       | importe les jeux qui passent le seuil de popularité, puis publie ceux qui sont prêts (`--publish`)             |
+| [scripts/sync.ts](scripts/sync.ts)                       | remplit les tables des sources externes (`ids`, `igdb`, `steam`, `summary`), avec reprise après arrêt          |
+| [scripts/translate-games.ts](scripts/translate-games.ts) | traduit les descriptions EN → FR avec OpenAI, dans un fichier relu avant `--write`                             |
+| [scripts/fetch-gamespot.ts](scripts/fetch-gamespot.ts)   | publie les actus GameSpot sur Vercel Blob                                                                      |
+| [scripts/deploy.sh](scripts/deploy.sh)                   | build et déploiement (voir plus haut)                                                                          |
+| `scripts/enrich-games.ts`, `scripts/hltb-poc.ts`         | POC : couverture des sources et seuil de popularité. Rien n'est écrit en base                                  |
+| `scripts/migrate-from-sanity.ts`                         | migration ponctuelle Sanity → Postgres                                                                         |
 
-## Documentation
+Le périmètre fonctionnel des fiches jeux et l'étude du seuil de popularité sont dans [docs/enrichissement-fiches-jeux.md](docs/enrichissement-fiches-jeux.md).
 
-### Requirements
+## Structure du dépôt
 
-- Node.js >= 12.22.0
-- Yarn 1 (Classic)
+- [`src/pages`](src/pages) : accueil, `/jeu/[slug]`, `/genre/[slug]`, `/actus`, plan du site, pages légales
+- [`src/db`](src/db) : client et schéma Drizzle
+- [`src/features`](src/features), [`src/components`](src/components), [`src/layouts`](src/layouts), [`src/styles`](src/styles) : interface
+- [`scripts`](scripts) : données, déploiement, unités systemd
+- [`drizzle`](drizzle) : migrations SQL
+- [`infra/postgres`](infra/postgres) : `docker-compose.yml` de la base sur le VPS
+- [`docs`](docs) : documentation fonctionnelle
+- [`.github/workflows`](.github/workflows) : CI des PR et actus GameSpot
 
-### Directory Structure
+## Qualité
 
-- [`.github`](.github) — GitHub configuration including the CI workflow.<br>
-- [`.husky`](.husky) — Husky configuration and hooks.<br>
-- [`public`](./public) — Static assets such as robots.txt, images, and favicon.<br>
-- [`src`](./src) — Application source code, including pages, components, styles.
+- ESLint + Prettier, lancés sur les fichiers modifiés par Husky et lint-staged
+- Commits au format [Conventional Commits](https://www.conventionalcommits.org), vérifiés par commitlint
+- CI sur chaque PR : type-check, lint, messages de commit ([.github/workflows/ci.yml](.github/workflows/ci.yml))
+- Dépendances mises à jour par Renovate
 
-### Scripts
+## Historique
 
-- `yarn dev` — Starts the application in development mode at `http://localhost:3000`.
-- `yarn build` — Creates an optimized production build of your application.
-- `yarn start` — Starts the application in production mode.
-- `yarn type-check` — Validate code using TypeScript compiler.
-- `yarn lint` — Runs ESLint for all files in the `src` directory.
-- `yarn format` — Runs Prettier for all files in the `src` directory.
-- `yarn commit` — Run commitizen. Alternative to `git commit`.
+1. **Next.js + Prisma**, puis **Sanity** comme source des jeux (avec GraphQL/Apollo et une authentification, retirée depuis).
+2. **v2** : Next 16 / React 19 en export statique, puis App Router et CSS Modules.
+3. **Migration vers Astro**, site entièrement statique.
+4. **Build sur VPS** et déploiement `--prebuilt` sur Vercel, à la place des builds Vercel au push.
+5. **Postgres + Drizzle** à la place de Sanity, enrichissement des fiches (IGDB, Steam, HLTB) et import automatique des jeux connus.
 
-### Path Mapping
+## Licence
 
-TypeScript are pre-configured with custom path mappings. To import components or files, use the `@` prefix.
-
-```tsx
-import { Button } from '@/components/Button';
-
-// To import images or other files from the public folder
-import avatar from '@/public/avatar.png';
-```
-
-### Switch to npm
-
-By default, this starter uses Yarn 1 (Classic), but this choice is yours. If you'd like to switch to npm, delete the `yarn.lock` file, install the dependencies with `npm install`, and change the CI workflows, Husky Git hooks, and lint-staged steps to use npm commands.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for more information.
+MIT, voir [LICENSE.md](LICENSE.md).

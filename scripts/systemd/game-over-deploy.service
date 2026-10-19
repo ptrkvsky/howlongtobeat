@@ -1,0 +1,14 @@
+# Weekly build + deploy of game-over.io (user unit, see README.md here)
+[Unit]
+Description=Build game-over.io and deploy it to Vercel
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/howlongtobeat
+EnvironmentFile=%h/.config/game-over/deploy.env
+# Login shell so node, pnpm and vercel are on the PATH (nvm, corepack...)
+ExecStart=/bin/bash -lc 'scripts/deploy.sh'
+TimeoutStartSec=6h
+Nice=10

@@ -1,0 +1,11 @@
+[Unit]
+Description=Weekly build + deploy of game-over.io
+
+[Timer]
+OnCalendar=Mon *-*-* 04:00:00 Europe/Paris
+# Catch up on the next boot if the VPS was off at that time
+Persistent=true
+RandomizedDelaySec=15min
+
+[Install]
+WantedBy=timers.target

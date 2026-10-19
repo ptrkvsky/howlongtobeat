@@ -1,4 +1,5 @@
 ---
+import { PAGINATION_BLOCK } from '@/config/pagination';
 import styles from './pagination.module.css';
 
 // Page 1 is baseUrl, the next ones baseUrl/2, baseUrl/3… (Astro paginate)
@@ -11,15 +12,20 @@ interface Props {
 const { baseUrl, currentPage, lastPage } = Astro.props;
 const pageUrl = (page: number) => (page === 1 ? baseUrl : `${baseUrl}/${page}`);
 
-// First, last and two pages around the current one, null for a gap
-const pages: (number | null)[] = [];
-for (let page = 1; page <= lastPage; page++) {
-  if (page === 1 || page === lastPage || Math.abs(page - currentPage) <= 2) {
-    pages.push(page);
-  } else if (pages.at(-1) !== null) {
-    pages.push(null);
-  }
+// Level 1: every page of the current block of ten
+const blockStart =
+  Math.floor((currentPage - 1) / PAGINATION_BLOCK) * PAGINATION_BLOCK + 1;
+const blockEnd = Math.min(blockStart + PAGINATION_BLOCK - 1, lastPage);
+const pages: number[] = [];
+for (let page = blockStart; page <= blockEnd; page++) pages.push(page);
+
+// Level 2: one jump per ten (10, 20, 30…) and the last page, outside the block
+const jumps: number[] = [];
+for (let page = PAGINATION_BLOCK; page < lastPage; page += PAGINATION_BLOCK) {
+  jumps.push(page);
 }
+jumps.push(lastPage);
+const otherJumps = jumps.filter((page) => page < blockStart || page > blockEnd);
 ---
 
 {lastPage > 1 && (
@@ -33,9 +39,7 @@ for (let page = 1; page <= lastPage; page++) {
         </li>
       )}
       {pages.map((page) =>
-        page === null ? (
-          <li aria-hidden="true">…</li>
-        ) : page === currentPage ? (
+        page === currentPage ? (
           <li>
             <span aria-current="page">{page}</span>
           </li>
@@ -53,5 +57,14 @@ for (let page = 1; page <= lastPage; page++) {
         </li>
       )}
     </ol>
+    {otherJumps.length > 0 && (
+      <ol aria-label="Pages par dizaines" class={styles.jumps}>
+        {otherJumps.map((page) => (
+          <li>
+            <a href={pageUrl(page)}>{page}</a>
+          </li>
+        ))}
+      </ol>
+    )}
   </nav>
 )}

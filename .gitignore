@@ -45,3 +45,5 @@ yarn-error.log*
 
 # enrichment POC output (scripts/enrich-games.ts)
 /.enrichment/
+# HLTB popularity POC output (scripts/hltb-poc.ts)
+/.hltb-poc/

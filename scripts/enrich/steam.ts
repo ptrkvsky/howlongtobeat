@@ -25,6 +25,8 @@ export interface SteamAchievements {
   count: number;
   max: number;
   median: number;
+  // Least unlocked achievement
+  rarest: Achievement;
   // Achievement most likely unlocked when the main story is finished
   completion: Achievement | null;
   candidates: Achievement[];
@@ -168,11 +170,15 @@ export async function getSteamAchievements(
     percent: Math.round(Number(percent) * 10) / 10,
   }));
   const sorted = achievements.map((a) => a.percent).sort((a, b) => a - b);
+  const rarest = achievements.reduce((min, a) =>
+    a.percent < min.percent ? a : min,
+  );
 
   return {
     count: achievements.length,
     max: sorted[sorted.length - 1],
     median: sorted[Math.floor(sorted.length / 2)],
+    rarest,
     ...pickCompletion(achievements),
     withSchema: Boolean(schema),
   };

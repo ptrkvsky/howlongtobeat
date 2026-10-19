@@ -146,3 +146,105 @@ export async function findIgdbGame(name: string): Promise<IgdbResult> {
     },
   };
 }
+
+const igdbQuery = async <T>(body: string) =>
+  fetchJson<T>(`https://api.igdb.com/v4/games`, {
+    method: `POST`,
+    headers: await getHeaders(),
+    body,
+  });
+
+// Wikidata only gives IGDB slugs: their ids, in batches of 500
+export async function getIgdbIdsBySlug(slugs: string[]) {
+  const ids = new Map<string, number>();
+  for (let i = 0; i < slugs.length; i += 500) {
+    const chunk = slugs.slice(i, i + 500);
+    const games = await igdbQuery<{ id: number; slug: string }[]>(
+      `fields slug; where slug = (${chunk.map((slug) => `"${slug.replace(/"/g, ``)}"`).join(`,`)}); limit 500;`,
+    );
+    for (const game of games) ids.set(game.slug, game.id);
+  }
+  return ids;
+}
+
+export interface IgdbDetails {
+  id: number;
+  firstReleaseDate: string | null;
+  developers: string[];
+  publishers: string[];
+  // IGDB platform slugs, mapped to labels by src/config/platforms.ts
+  platformSlugs: string[];
+  isMature: boolean;
+  summary: string | null;
+}
+
+interface IgdbDetailsRow {
+  id: number;
+  first_release_date?: number;
+  summary?: string;
+  platforms?: { slug: string }[];
+  involved_companies?: {
+    company?: { name: string };
+    developer?: boolean;
+    publisher?: boolean;
+  }[];
+  age_ratings?: {
+    organization?: { name: string };
+    rating_category?: { rating: string };
+    // Deprecated enums, still filled on older entries
+    category?: number;
+    rating?: number;
+  }[];
+}
+
+// PEGI 18, ESRB Mature or Adults Only
+const isMatureRating = (
+  rating: NonNullable<IgdbDetailsRow[`age_ratings`]>[number],
+) => {
+  const organization = rating.organization?.name.toUpperCase();
+  const value = rating.rating_category?.rating.toUpperCase();
+  if (organization && value) {
+    return (
+      (organization === `PEGI` && [`18`, `EIGHTEEN`].includes(value)) ||
+      (organization === `ESRB` && [`M`, `AO`].includes(value))
+    );
+  }
+  // Deprecated: category 1 ESRB / 2 PEGI, rating 5 PEGI 18, 11 M, 12 AO
+  return (
+    (rating.category === 2 && rating.rating === 5) ||
+    (rating.category === 1 && [11, 12].includes(rating.rating ?? 0))
+  );
+};
+
+const unique = (values: string[]) => [...new Set(values)];
+
+export async function getIgdbDetails(ids: number[]) {
+  const details = new Map<number, IgdbDetails>();
+  for (let i = 0; i < ids.length; i += 500) {
+    const chunk = ids.slice(i, i + 500);
+    const rows = await igdbQuery<IgdbDetailsRow[]>(
+      `fields first_release_date, summary, platforms.slug, involved_companies.company.name, involved_companies.developer, involved_companies.publisher, age_ratings.organization.name, age_ratings.rating_category.rating, age_ratings.category, age_ratings.rating; where id = (${chunk.join(`,`)}); limit 500;`,
+    );
+    for (const row of rows) {
+      const companies = row.involved_companies ?? [];
+      const names = (role: `developer` | `publisher`) =>
+        unique(
+          companies.flatMap((involved) =>
+            involved[role] && involved.company ? [involved.company.name] : [],
+          ),
+        );
+      details.set(row.id, {
+        id: row.id,
+        firstReleaseDate: row.first_release_date
+          ? new Date(row.first_release_date * 1000).toISOString().slice(0, 10)
+          : null,
+        developers: names(`developer`),
+        publishers: names(`publisher`),
+        platformSlugs: unique((row.platforms ?? []).map(({ slug }) => slug)),
+        isMature: (row.age_ratings ?? []).some(isMatureRating),
+        summary: row.summary?.trim() || null,
+      });
+    }
+  }
+  return details;
+}

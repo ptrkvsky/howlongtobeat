@@ -15,6 +15,13 @@
       "when": 1792431498740,
       "tag": "0001_concerned_matthew_murdock",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792432658963,
+      "tag": "0002_chief_sentinel",
+      "breakpoints": true
     }
   ]
 }

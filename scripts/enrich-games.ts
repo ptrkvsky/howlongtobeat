@@ -29,6 +29,7 @@ import { desc, eq, sql } from 'drizzle-orm';
 import { closeDb, getDb } from '../src/db/client';
 import { game as gameTable } from '../src/db/schema';
 import { errorMessage, requestCounts } from './enrich/http';
+import { resolveIds, type Status } from './enrich/ids';
 import {
   findIgdbGame,
   hasIgdbCredentials,
@@ -77,8 +78,6 @@ interface Game {
   timeMainExtras: number;
   timeCompletionists: number;
 }
-
-type Status = `matched` | `conflict` | `ambiguous` | `no_steam` | `not_found`;
 
 interface Ids {
   status: Status;
@@ -141,38 +140,6 @@ function enabledSources() {
   return sources;
 }
 
-function resolveIds(
-  wikidata: WikidataIds | undefined,
-  igdb: IgdbResult | undefined,
-): Omit<Ids, `wikidata` | `igdb`> {
-  const match = igdb?.match;
-  const wdSteam = wikidata?.steam ?? [];
-  const igdbSteam = match?.steam ?? [];
-  const igdbAgreement =
-    wikidata?.igdb.length && match ? wikidata.igdb.includes(match.slug) : null;
-  const result = (
-    status: Status,
-    steamAppId: number | null = null,
-    steamFrom: Ids[`steamFrom`] = null,
-  ) => ({ status, steamAppId, steamFrom, igdbAgreement });
-
-  if (!wikidata && !match) return result(`not_found`);
-  if (wdSteam.length && igdbSteam.length) {
-    const shared = wdSteam.find((id) => igdbSteam.includes(id));
-    return shared ? result(`matched`, shared, `both`) : result(`conflict`);
-  }
-  // Wikidata is an exact match on the HLTB id: trusted alone
-  if (wdSteam.length) return result(`matched`, wdSteam[0], `wikidata`);
-  if (igdbSteam.length) {
-    return match!.ambiguous
-      ? result(`ambiguous`)
-      : result(`matched`, igdbSteam[0], `igdb`);
-  }
-  return !wikidata && match?.ambiguous
-    ? result(`ambiguous`)
-    : result(`no_steam`);
-}
-
 const round2 = (value: number) => Math.round(value * 100) / 100;
 
 async function enrichGame(
@@ -193,7 +160,12 @@ async function enrichGame(
   }
 
   const ids: Ids = {
-    ...resolveIds(wikidata, igdb),
+    ...(({ status, steamAppId, steamFrom, igdbAgreement }) => ({
+      status,
+      steamAppId,
+      steamFrom,
+      igdbAgreement,
+    }))(resolveIds(wikidata, igdb)),
     wikidata: wikidata ?? null,
     igdb: igdb ? (igdb.match ?? { closest: igdb.closest }) : null,
   };

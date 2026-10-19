@@ -1,0 +1,22 @@
+---
+import type { GameCompletion } from '@/types/Game';
+import { formatDate, formatPercent } from '@/utils/format';
+import styles from './enriched.module.css';
+
+// F3: share of Steam players who unlocked the end of game achievement
+interface Props {
+  name: string;
+  completion: GameCompletion;
+}
+
+const { name, completion } = Astro.props;
+---
+
+<div class={styles.stat}>
+  <span class={styles.value}>{formatPercent(completion.percent)}</span> des
+  joueurs Steam ont terminé {name}.
+  <div class={styles.source}>
+    D'après le succès « {completion.achievement} », source : Steam, mis à jour
+    le {formatDate(completion.updatedAt)}
+  </div>
+</div>

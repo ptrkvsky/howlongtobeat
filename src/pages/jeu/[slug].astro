@@ -7,29 +7,61 @@ import Banner from '@/features/jeu/components/Banner/Banner.astro';
 import CircularBar from '@/features/jeu/components/CircularBar.astro';
 import Cover from '@/features/jeu/components/Cover.astro';
 import RelatedGames from '@/features/jeu/components/RelatedGames/RelatedGames.astro';
+import Completion from '@/features/jeu/components/Completion.astro';
+import ExternalLinks from '@/features/jeu/components/ExternalLinks.astro';
+import Identity from '@/features/jeu/components/Identity.astro';
+import Reviews from '@/features/jeu/components/Reviews.astro';
 import Time from '@/features/jeu/components/Time.astro';
 import styles from '@/features/jeu/components/jeu.module.css';
 import { getGames, getRelatedGames } from '@/features/jeu/api';
+import { getAllGenres } from '@/functions/getAllGenres';
 
 export const getStaticPaths = (async () => {
-  const games = await getGames();
+  const [games, allGenres] = await Promise.all([getGames(), getAllGenres()]);
 
   return Promise.all(
     games.map(async (game) => ({
       params: { slug: game.slug },
-      props: { game, relatedGames: await getRelatedGames(game) },
+      props: {
+        game,
+        genres: allGenres.filter((genre) => game.genreIds.includes(genre.id)),
+        relatedGames: await getRelatedGames(game),
+      },
     })),
   );
 }) satisfies GetStaticPaths;
 
-const { game, relatedGames } = Astro.props;
+const { game, genres, relatedGames } = Astro.props;
+const canonical = `/jeu/${game.slug}`;
+const image = game.cover ? `https:${game.cover}` : undefined;
+const organizations = (names: string[] = []) =>
+  names.length
+    ? names.map((name) => ({ '@type': `Organization`, name }))
+    : undefined;
+
+// F9: only data shown on the page, and no aggregateRating (third-party reviews)
+const jsonLd = {
+  '@context': `https://schema.org`,
+  '@type': `VideoGame`,
+  name: game.name,
+  url: new URL(canonical, Astro.site).href,
+  image,
+  datePublished: game.identity?.releaseDate ?? undefined,
+  genre: genres.length ? genres.map((genre) => genre.name) : undefined,
+  gamePlatform: game.identity?.platforms.length
+    ? game.identity.platforms
+    : undefined,
+  author: organizations(game.identity?.developers),
+  publisher: organizations(game.identity?.publishers),
+};
 ---
 
 <BaseLayout
   title={`Combien de temps faut-il pour terminer ${game.name} ?`}
   description={`Découvrez la durée de vie de ${game.name}. Quel temps vous faudra t-il pour voir la fin.`}
-  canonical={`/jeu/${game.slug}`}
-  ogImage={game.cover ? `https:${game.cover}` : undefined}
+  canonical={canonical}
+  ogImage={image}
+  jsonLd={jsonLd}
 >
   <LayoutFront>
     {game.cover && <Banner game={game} />}
@@ -44,10 +76,16 @@ const { game, relatedGames } = Astro.props;
           Combien de temps faut-il pour terminer <br />
           <span class={styles.name}>{game.name}</span> ?
         </h1>
+        <Identity identity={game.identity} genres={genres} />
         <div class={styles.description}>
           <Markdown source={game.descriptionMd} />
         </div>
         <Time game={game} />
+        {game.completion && (
+          <Completion name={game.name} completion={game.completion} />
+        )}
+        {game.reviews && <Reviews reviews={game.reviews} />}
+        <ExternalLinks links={game.links} />
       </div>
     </div>
     <div class="container">

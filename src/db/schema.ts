@@ -5,8 +5,10 @@
 import {
   boolean,
   date,
+  doublePrecision,
   integer,
   jsonb,
+  pgEnum,
   pgTable,
   primaryKey,
   serial,
@@ -87,3 +89,109 @@ export const gameOverride = pgTable(
   },
   (table) => [primaryKey({ columns: [table.gameId, table.field] })],
 );
+
+// ── External sources: one row per game and source, dated by fetched_at ─────
+
+const gameId = () =>
+  integer(`game_id`)
+    .primaryKey()
+    .references(() => game.id, { onDelete: `cascade` });
+const fetchedAt = () =>
+  timestamp(`fetched_at`, { withTimezone: true }).notNull().defaultNow();
+
+// `manual`: fixed by hand, never rewritten by scripts/sync.ts
+export const matchStatus = pgEnum(`match_status`, [
+  `matched`,
+  `conflict`,
+  `ambiguous`,
+  `no_steam`,
+  `not_found`,
+  `manual`,
+]);
+export const matchSource = pgEnum(`match_source`, [`both`, `wikidata`, `igdb`]);
+
+// Ids of the game in the other sources. Only `matched` and `manual` rows are
+// trusted enough to publish data
+export const gameExternalId = pgTable(`game_external_id`, {
+  gameId: gameId(),
+  status: matchStatus(`status`).notNull(),
+  wikidataQid: text(`wikidata_qid`),
+  igdbId: integer(`igdb_id`),
+  igdbSlug: text(`igdb_slug`),
+  igdbFrom: matchSource(`igdb_from`),
+  steamAppId: integer(`steam_app_id`),
+  steamFrom: matchSource(`steam_from`),
+  fetchedAt: fetchedAt(),
+});
+
+// Game identity (F1)
+export const igdbInfo = pgTable(`igdb_info`, {
+  gameId: gameId(),
+  firstReleaseDate: date(`first_release_date`),
+  developers: text(`developers`).array().notNull().default([]),
+  publishers: text(`publishers`).array().notNull().default([]),
+  // Labels from src/config/platforms.ts, unknown platforms are left out
+  platforms: text(`platforms`).array().notNull().default([]),
+  // PEGI 18, ESRB M or AO
+  isMature: boolean(`is_mature`).notNull().default(false),
+  summaryEn: text(`summary_en`),
+  fetchedAt: fetchedAt(),
+});
+
+// `validated` and `rejected` are set by hand and never rewritten; only `auto`
+// and `validated` completion rates are published
+export const completionStatus = pgEnum(`completion_status`, [
+  `auto`,
+  `pending`,
+  `validated`,
+  `rejected`,
+]);
+
+// Steam reviews (F2) and achievements (F3, F4)
+export const steamStats = pgTable(`steam_stats`, {
+  gameId: gameId(),
+  appId: integer(`app_id`).notNull(),
+  reviewPositive: integer(`review_positive`),
+  reviewTotal: integer(`review_total`),
+  reviewPercent: integer(`review_percent`),
+  // Steam label in English ("Overwhelmingly Positive"), translated on display
+  reviewDesc: text(`review_desc`),
+  achievementCount: integer(`achievement_count`),
+  rarestName: text(`rarest_name`),
+  rarestPercent: doublePrecision(`rarest_percent`),
+  // End of game achievement: { name, displayName, percent, rule }
+  completion: jsonb(`completion`).$type<{
+    name: string;
+    displayName?: string;
+    percent: number;
+    rule: string;
+  }>(),
+  completionStatus: completionStatus(`completion_status`),
+  fetchedAt: fetchedAt(),
+});
+
+// HowLongToBeat page data (filled by the HLTB refresh), times in seconds
+export const hltbStats = pgTable(`hltb_stats`, {
+  gameId: gameId(),
+  type: text(`type`).notNull(),
+  countTotal: integer(`count_total`).notNull(),
+  countComp: integer(`count_comp`).notNull(),
+  countBacklog: integer(`count_backlog`).notNull(),
+  countPlaying: integer(`count_playing`).notNull(),
+  countReview: integer(`count_review`).notNull(),
+  reviewScore: integer(`review_score`).notNull(),
+  compMainCount: integer(`comp_main_count`).notNull(),
+  compPlusCount: integer(`comp_plus_count`).notNull(),
+  comp100Count: integer(`comp_100_count`).notNull(),
+  compAllCount: integer(`comp_all_count`).notNull(),
+  compMain: integer(`comp_main`).notNull(),
+  compMainMed: integer(`comp_main_med`).notNull(),
+  compPlus: integer(`comp_plus`).notNull(),
+  comp100: integer(`comp_100`).notNull(),
+  steamAppId: integer(`steam_app_id`),
+  platforms: text(`platforms`),
+  developer: text(`developer`),
+  publisher: text(`publisher`),
+  releaseWorld: text(`release_world`),
+  fetchedAt: fetchedAt(),
+});

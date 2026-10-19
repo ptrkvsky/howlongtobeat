@@ -1,0 +1,58 @@
+---
+import type { GameIdentity } from '@/types/Game';
+import type { Genre } from '@/types/Genre';
+import { formatDate, formatList } from '@/utils/format';
+import styles from './enriched.module.css';
+
+// F1: only the known lines are shown
+interface Props {
+  identity: GameIdentity | null;
+  genres: Genre[];
+}
+
+const { identity, genres } = Astro.props;
+const plural = (values: string[], one: string, many: string) =>
+  values.length > 1 ? many : one;
+const rows = identity
+  ? ([
+      [`Sortie`, identity.releaseDate && formatDate(identity.releaseDate)],
+      [
+        plural(identity.developers, `Développeur`, `Développeurs`),
+        identity.developers.length > 0 && formatList(identity.developers),
+      ],
+      [
+        plural(identity.publishers, `Éditeur`, `Éditeurs`),
+        identity.publishers.length > 0 && formatList(identity.publishers),
+      ],
+      [
+        `Plateformes`,
+        identity.platforms.length > 0 && identity.platforms.join(`, `),
+      ],
+    ].filter(([, value]) => value) as [string, string][])
+  : [];
+---
+
+{identity?.isMature && <p class={styles.mature}>Contenu pour adultes</p>}
+{(rows.length > 0 || genres.length > 0) && (
+  <dl class={styles.identity}>
+    {rows.map(([label, value]) => (
+      <>
+        <dt>{label}</dt>
+        <dd>{value}</dd>
+      </>
+    ))}
+    {genres.length > 0 && (
+      <>
+        <dt>{genres.length > 1 ? `Genres` : `Genre`}</dt>
+        <dd>
+          {genres.map((genre, index) => (
+            <>
+              {index > 0 && `, `}
+              <a href={`/genre/${genre.slug}`}>{genre.name}</a>
+            </>
+          ))}
+        </dd>
+      </>
+    )}
+  </dl>
+)}

@@ -1,0 +1,33 @@
+---
+import type { GameLinks } from '@/types/Game';
+import styles from './enriched.module.css';
+
+// F6: only confirmed ids get a link
+interface Props {
+  links: GameLinks;
+}
+
+const { links } = Astro.props;
+const items = [
+  links.steamAppId && {
+    label: `Page Steam`,
+    href: `https://store.steampowered.com/app/${links.steamAppId}/`,
+  },
+  links.igdbSlug && {
+    label: `Fiche IGDB`,
+    href: `https://www.igdb.com/games/${links.igdbSlug}`,
+  },
+].filter(Boolean) as { label: string; href: string }[];
+---
+
+{items.length > 0 && (
+  <ul class={styles.links}>
+    {items.map((item) => (
+      <li>
+        <a href={item.href} target="_blank" rel="noopener">
+          {item.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+)}

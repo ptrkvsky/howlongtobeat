@@ -10,10 +10,19 @@ interface Props {
   canonical?: string;
   ogImage?: string;
   noindex?: boolean;
+  // schema.org data, rendered as JSON-LD
+  jsonLd?: Record<string, unknown>;
 }
 
-const { title, absoluteTitle, description, canonical, ogImage, noindex } =
-  Astro.props;
+const {
+  title,
+  absoluteTitle,
+  description,
+  canonical,
+  ogImage,
+  noindex,
+  jsonLd,
+} = Astro.props;
 
 const fullTitle =
   absoluteTitle ??
@@ -34,6 +43,12 @@ const gtmSnippet = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':ne
       <link rel="canonical" href={new URL(canonical, Astro.site)} />
     )}
     {ogImage && <meta property="og:image" content={ogImage} />}
+    {jsonLd && (
+      <script
+        type="application/ld+json"
+        set:html={JSON.stringify(jsonLd).replace(/</g, `\\u003c`)}
+      />
+    )}
     <meta name="twitter:site" content={siteInformations.twitter} />
     <meta name="theme-color" content="#6100FF" />
     <meta

@@ -1,0 +1,21 @@
+---
+import type { GameReviews } from '@/types/Game';
+import { formatCount, formatDate, formatPercent } from '@/utils/format';
+import styles from './enriched.module.css';
+
+// F2. Not declared as aggregateRating: Google forbids reviews from other sites
+interface Props {
+  reviews: GameReviews;
+}
+
+const { reviews } = Astro.props;
+---
+
+<div class={styles.stat}>
+  <span class={styles.value}>{formatPercent(reviews.percent)}</span> d'avis
+  positifs sur Steam{reviews.label && <> ({reviews.label})</>}, sur{' '}
+  {formatCount(reviews.total)} avis.
+  <div class={styles.source}>
+    Source : Steam, mis à jour le {formatDate(reviews.updatedAt)}
+  </div>
+</div>

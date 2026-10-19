@@ -1,34 +1,37 @@
 ---
 import type { Game } from '@/types/Game';
-import { formatList } from '@/utils/format';
+import {
+  getGameTimes,
+  isCurrentHltbTime,
+} from '@/features/jeu/utils/gameTimes';
+import { formatCount, formatDate } from '@/utils/format';
 import styles from './time.module.css';
 
-// HLTB times in hours. A time at 0 is unknown: its card is hidden
+// HLTB times in hours, with the number of players behind each one (the
+// sentence answer is in Verdict.astro)
 interface Props {
   game: Game;
 }
 
 const { game } = Astro.props;
-const times = [
-  {
-    label: `Histoire principale`,
-    goal: `l'histoire principale`,
-    hours: game.timeMainStory,
-  },
-  {
-    label: `Histoire + extras`,
-    goal: `l'histoire et quelques extras`,
-    hours: game.timeMainExtras,
-  },
-  { label: `100 %`, goal: `le 100 %`, hours: game.timeCompletionists },
-].filter((time) => time.hours > 0);
+const times = getGameTimes(game);
 const max = Math.max(...times.map((time) => time.hours));
 const hours = (value: number) => `${value} h`;
-const plural = (value: number) => (value > 1 ? `heures` : `heure`);
-// Text version for search engines: "3 heures pour l'histoire principale…"
-const summary = formatList(
-  times.map((time) => `${time.hours} ${plural(time.hours)} pour ${time.goal}`),
-);
+const players = (count: number) =>
+  `${formatCount(count)} joueur${count > 1 ? `s` : ``}`;
+// Few submissions: one speedrun or forgotten timer moves the average a lot
+const reliability = (count: number) =>
+  count < 10
+    ? { label: `estimation fragile`, weak: true }
+    : count < 100
+      ? { label: `fiable`, weak: false }
+      : { label: `très fiable`, weak: false };
+// The median is shown when the average is pulled away from it
+const median = game.hltb?.mainMedian ?? 0;
+const showMedian =
+  median > 0 &&
+  isCurrentHltbTime(game, `main`) &&
+  Math.abs(median - game.timeMainStory) / game.timeMainStory > 0.1;
 ---
 
 {times.length > 0 && (
@@ -46,12 +49,30 @@ const summary = formatList(
             style={`--ratio: ${time.hours / max}`}
             aria-hidden="true"
           ></span>
+          {time.key === `main` && showMedian && (
+            <span class={styles.detail}>médiane : {hours(median)}</span>
+          )}
+          {time.count != null && time.count > 0 && (
+            <span class={styles.detail}>
+              d'après {players(time.count)}
+              <span
+                class:list={[
+                  styles.reliability,
+                  reliability(time.count).weak && styles.weak,
+                ]}
+              >
+                {reliability(time.count).label}
+              </span>
+            </span>
+          )}
         </li>
       ))}
     </ul>
-    <p class={styles.summary}>
-      Pour terminer {game.name}, comptez environ {summary}.
+    <p class={styles.source}>
+      Source : HowLongToBeat
+      {times.some((time) => time.count != null) && (
+        <>, relevé le {formatDate(game.hltb!.updatedAt)}</>
+      )}
     </p>
-    <p class={styles.source}>Source : HowLongToBeat</p>
   </section>
 )}

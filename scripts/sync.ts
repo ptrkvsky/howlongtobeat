@@ -7,6 +7,7 @@
  *   pnpm tsx scripts/sync.ts ids     [--max-age 90]  Wikidata + IGDB ids
  *   pnpm tsx scripts/sync.ts igdb    [--max-age 30]  identity (F1)
  *   pnpm tsx scripts/sync.ts steam   [--max-age 7]   reviews, achievements
+ *   pnpm tsx scripts/sync.ts prices  [--max-age 6]   IsThereAnyDeal prices (F7)
  *   pnpm tsx scripts/sync.ts summary                 coverage
  *
  * Options: --limit n, --hltb <id,id…> (only these games), --dry-run (print
@@ -18,7 +19,7 @@
  *
  * Env (.env.local): DATABASE_URL, IGDB_CLIENT_ID + IGDB_CLIENT_SECRET (Twitch
  * app), STEAM_API_KEY (achievement names, needed for automatic completion
- * rates)
+ * rates), ITAD_API_KEY (prices)
  */
 import { existsSync } from 'node:fs';
 import { parseArgs } from 'node:util';
@@ -41,6 +42,7 @@ import {
   gameGenre,
   genre,
   igdbInfo,
+  itadPrice,
   steamStats,
 } from '../src/db/schema';
 import { errorMessage, requestCounts } from './enrich/http';
@@ -52,6 +54,7 @@ import {
   hasIgdbCredentials,
   type IgdbResult,
 } from './enrich/igdb';
+import { getPrices } from './enrich/itad';
 import { getSteamAchievements, getSteamReviews } from './enrich/steam';
 import { getWikidataIds } from './enrich/wikidata';
 
@@ -59,12 +62,14 @@ for (const file of [`.env.local`, `.env`]) {
   if (existsSync(file)) process.loadEnvFile(file);
 }
 
-const COMMANDS = [`ids`, `igdb`, `steam`, `summary`] as const;
+const COMMANDS = [`ids`, `igdb`, `steam`, `prices`, `summary`] as const;
 type Command = (typeof COMMANDS)[number];
 const DEFAULT_MAX_AGE: Record<Command, number> = {
   ids: 90,
   igdb: 30,
   steam: 7,
+  // Under a week: refreshed by every weekly build (scripts/update-catalog.sh)
+  prices: 6,
   summary: 0,
 };
 
@@ -474,6 +479,89 @@ async function syncSteam() {
   await Promise.all([worker(), worker()]);
 }
 
+// ── prices ─────────────────────────────────────────────────────────────────
+
+async function syncPrices() {
+  if (!process.env.ITAD_API_KEY) {
+    throw new Error(`ITAD_API_KEY not set`);
+  }
+  const games = await db
+    .select({
+      id: game.id,
+      name: game.name,
+      appId: gameExternalId.steamAppId,
+    })
+    .from(game)
+    .innerJoin(gameExternalId, eq(gameExternalId.gameId, game.id))
+    .leftJoin(itadPrice, eq(itadPrice.gameId, game.id))
+    .where(
+      and(
+        gameFilter(),
+        inArray(gameExternalId.status, [...STEAM_TRUSTED]),
+        isNotNull(gameExternalId.steamAppId),
+        or(
+          isNull(itadPrice.gameId),
+          lt(itadPrice.fetchedAt, staleBefore),
+          ne(itadPrice.appId, gameExternalId.steamAppId),
+        ),
+      ),
+    )
+    .orderBy(sql`${itadPrice.fetchedAt} asc nulls first`, game.id)
+    .limit(limit ?? 1_000_000);
+  console.info(`prices: ${games.length} games to fetch`);
+
+  let found = 0;
+  for (let i = 0; i < games.length; i += 200) {
+    const batch = games.slice(i, i + 200);
+    let prices: Awaited<ReturnType<typeof getPrices>>;
+    try {
+      prices = await getPrices(batch.map((row) => row.appId!));
+    } catch (error) {
+      // Not written: retried by the next run
+      console.warn(`⚠ batch ${i / 200 + 1}: ${errorMessage(error)}`);
+      continue;
+    }
+    for (const row of batch) {
+      const price = prices.get(row.appId!);
+      // Not sold any more (or unknown to ITAD): an old price would be wrong
+      if (!price) {
+        await write(`itad_price ${row.name}: removed`, () =>
+          db.delete(itadPrice).where(eq(itadPrice.gameId, row.id)),
+        );
+        continue;
+      }
+      const value = {
+        gameId: row.id,
+        appId: row.appId!,
+        current: price.current,
+        shop: price.shop,
+        url: price.url,
+        lowest: price.lowest,
+        lowestShop: price.lowestShop,
+        currency: price.currency,
+        fetchedAt: new Date(),
+      };
+      await write(
+        `itad_price ${row.name}: ${price.current} ${price.currency}`,
+        () =>
+          db
+            .insert(itadPrice)
+            .values(value)
+            .onConflictDoUpdate({
+              target: itadPrice.gameId,
+              set: Object.fromEntries(
+                Object.entries(value).filter(([key]) => key !== `gameId`),
+              ),
+            }),
+      );
+      found++;
+    }
+    console.info(
+      `… ${Math.min(i + 200, games.length)}/${games.length}, ${found} prices`,
+    );
+  }
+}
+
 // ── summary ────────────────────────────────────────────────────────────────
 
 async function summary() {
@@ -491,7 +579,7 @@ async function summary() {
     .where(eq(game.isPublished, true))
     .groupBy(gameExternalId.status);
   const count = async (
-    table: typeof igdbInfo | typeof steamStats,
+    table: typeof igdbInfo | typeof steamStats | typeof itadPrice,
     where?: ReturnType<typeof and>,
   ) => {
     const [row] = await db
@@ -518,10 +606,17 @@ async function summary() {
   console.info(
     `Completion rate published (auto / validated): ${pct(await count(steamStats, and(inArray(steamStats.completionStatus, [`auto`, `validated`]))))}, pending: ${await count(steamStats, and(eq(steamStats.completionStatus, `pending`)))}`,
   );
+  console.info(`Prices (ITAD): ${pct(await count(itadPrice))}`);
 }
 
 const startedAt = Date.now();
-({ ids: syncIds, igdb: syncIgdb, steam: syncSteam, summary })
+({
+  ids: syncIds,
+  igdb: syncIgdb,
+  steam: syncSteam,
+  prices: syncPrices,
+  summary,
+})
   [command]()
   .then(() => {
     if (command !== `summary`) {

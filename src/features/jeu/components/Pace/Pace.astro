@@ -1,0 +1,78 @@
+---
+import type { Game } from '@/types/Game';
+import { getGameTimes } from '@/features/jeu/utils/gameTimes';
+import { DEFAULT_PACE, PACES, formatPace, paceDays } from './pace';
+import styles from './pace.module.css';
+
+// "At your pace": weeks to finish the chosen goal at the chosen hours per
+// week. Rendered for the default choice (indexable, works without JS); the
+// script updates it and adds the end date, which the build cannot know
+interface Props {
+  game: Game;
+}
+
+const { game } = Astro.props;
+const times = getGameTimes(game);
+const [first] = times;
+const hours = Object.fromEntries(times.map((time) => [time.key, time.hours]));
+const goals = Object.fromEntries(times.map((time) => [time.key, time.goal]));
+---
+
+{first && (
+  <section
+    class={styles.pace}
+    aria-labelledby="rythme"
+    data-pace
+    data-hours={JSON.stringify(hours)}
+    data-goals={JSON.stringify(goals)}
+  >
+    <h2 id="rythme" class={styles.heading}>
+      À votre rythme
+    </h2>
+    <form class={styles.form}>
+      {times.length > 1 && (
+        <fieldset class={styles.group}>
+          <legend class={styles.legend}>Objectif</legend>
+          {times.map((time) => (
+            <label class={styles.choice}>
+              <input
+                type="radio"
+                name="goal"
+                value={time.key}
+                checked={time === first}
+              />
+              <span>{time.label}</span>
+            </label>
+          ))}
+        </fieldset>
+      )}
+      <fieldset class={styles.group}>
+        <legend class={styles.legend}>Temps de jeu par semaine</legend>
+        {PACES.map((pace) => (
+          <label class={styles.choice}>
+            <input
+              type="radio"
+              name="perWeek"
+              value={pace}
+              checked={pace === DEFAULT_PACE}
+            />
+            <span>
+              {pace} h
+              {pace === 7 && <span class={styles.hint}> (1 h/jour)</span>}
+            </span>
+          </label>
+        ))}
+      </fieldset>
+    </form>
+    <p class={styles.result} aria-live="polite" data-pace-result>
+      À {DEFAULT_PACE} h par semaine, comptez{` `}
+      <strong>{formatPace(paceDays(first.hours, DEFAULT_PACE))}</strong> pour
+      {` `}
+      {first.goal}.
+    </p>
+  </section>
+)}
+
+<script>
+  import './paceClient';
+</script>

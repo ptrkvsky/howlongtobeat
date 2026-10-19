@@ -16,6 +16,12 @@ export interface Game {
   identity: GameIdentity | null;
   reviews: GameReviews | null;
   completion: GameCompletion | null;
+  hltb: GameHltb | null;
+  price: GamePrice | null;
+  // Main story compared with the catalog, null without time
+  timeRank: GameTimeRank | null;
+  // Sort key for game lists, see getGames.ts
+  popularity: number;
   links: GameLinks;
 }
 
@@ -41,6 +47,37 @@ export interface GameReviews {
 export interface GameCompletion {
   percent: number;
   achievement: string;
+  updatedAt: string;
+}
+
+// Share of the catalog (0-100) with a shorter / longer main story
+export interface GameTimeRank {
+  longerThan: number;
+  shorterThan: number;
+}
+
+// HowLongToBeat players and submissions behind the times
+export interface GameHltb {
+  players: number;
+  completed: number;
+  playing: number;
+  backlog: number;
+  // Current HLTB times in hours and their submissions. The legacy games keep
+  // their 2021 times: the counts only describe a time equal to these
+  times: Record<'main' | 'plus' | 'full', { hours: number; count: number }>;
+  // Main story median, in hours (0 when unknown)
+  mainMedian: number;
+  updatedAt: string;
+}
+
+// F7, from IsThereAnyDeal (France): current best price and historical low
+export interface GamePrice {
+  current: number;
+  shop: string;
+  url: string | null;
+  lowest: number | null;
+  lowestShop: string | null;
+  currency: string;
   updatedAt: string;
 }
 

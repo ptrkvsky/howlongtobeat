@@ -46,6 +46,15 @@
   font-weight: bold;
 }
 
+.stat a {
+  text-decoration: underline;
+}
+
+.detail {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-md);
+}
+
 .source {
   margin-top: var(--space-1);
   color: var(--color-gray-400);

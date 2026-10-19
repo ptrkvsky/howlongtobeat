@@ -176,6 +176,19 @@ export const steamStats = pgTable(`steam_stats`, {
   fetchedAt: fetchedAt(),
 });
 
+// IsThereAnyDeal prices in France (F7), looked up from the Steam app id
+export const itadPrice = pgTable(`itad_price`, {
+  gameId: gameId(),
+  appId: integer(`app_id`).notNull(),
+  current: doublePrecision(`current`).notNull(),
+  shop: text(`shop`).notNull(),
+  url: text(`url`),
+  lowest: doublePrecision(`lowest`),
+  lowestShop: text(`lowest_shop`),
+  currency: text(`currency`).notNull(),
+  fetchedAt: fetchedAt(),
+});
+
 // HowLongToBeat page data (filled by scripts/import-games.ts), times in seconds
 export const hltbStats = pgTable(`hltb_stats`, {
   gameId: gameId(),

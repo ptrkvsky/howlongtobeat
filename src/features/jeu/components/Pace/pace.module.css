@@ -1,0 +1,94 @@
+/* Pace calculator: goal and hours per week as pill radios */
+
+.pace {
+  margin-bottom: var(--space-8);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-gray-700);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 0.03);
+}
+
+.heading {
+  margin-bottom: var(--space-3);
+  font-size: var(--font-size-xl);
+}
+
+.form {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  width: 100%;
+  margin-bottom: var(--space-2);
+  color: var(--color-gray-400);
+  font-size: var(--font-size-md);
+}
+
+.choice {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Visually hidden, still focusable and announced */
+.choice input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.choice > span {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-gray-600);
+  border-radius: 999px;
+  color: var(--color-gray-200);
+  font-size: var(--font-size-md);
+}
+
+.choice:hover > span {
+  border-color: var(--color-gray-400);
+}
+
+.choice input:checked + span {
+  border-color: var(--color-primary-500);
+  background: var(--color-primary-500);
+  color: var(--color-contrast);
+}
+
+.choice input:focus-visible + span {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+.hint {
+  opacity: 0.75;
+}
+
+.result {
+  margin-top: var(--space-4);
+  font-size: var(--font-size-lg);
+}
+
+.result strong {
+  color: var(--color-primary-500);
+}
+
+@media screen and (max-width: 766px) {
+  .pace {
+    padding: var(--space-3);
+  }
+
+  .choice > span {
+    font-size: 0.875rem;
+  }
+}

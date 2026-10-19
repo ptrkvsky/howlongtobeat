@@ -8,11 +8,15 @@ import Banner from '@/features/jeu/components/Banner/Banner.astro';
 import CircularBar from '@/features/jeu/components/CircularBar.astro';
 import Cover from '@/features/jeu/components/Cover.astro';
 import RelatedGames from '@/features/jeu/components/RelatedGames/RelatedGames.astro';
+import Community from '@/features/jeu/components/Community.astro';
 import Completion from '@/features/jeu/components/Completion.astro';
 import ExternalLinks from '@/features/jeu/components/ExternalLinks.astro';
 import Identity from '@/features/jeu/components/Identity.astro';
+import Pace from '@/features/jeu/components/Pace/Pace.astro';
+import Price from '@/features/jeu/components/Price.astro';
 import Reviews from '@/features/jeu/components/Reviews.astro';
 import Time from '@/features/jeu/components/Time.astro';
+import Verdict from '@/features/jeu/components/Verdict.astro';
 import enriched from '@/features/jeu/components/enriched.module.css';
 import styles from '@/features/jeu/components/jeu.module.css';
 import { getGames, getRelatedGames } from '@/features/jeu/api';
@@ -94,14 +98,20 @@ const jsonLd = [
           Combien de temps faut-il pour terminer <br />
           <span class={styles.name}>{game.name}</span> ?
         </h1>
+        <Verdict game={game} />
         <Time game={game} />
+        <Pace game={game} />
         <Identity identity={game.identity} genres={genres} />
-        {(game.completion || game.reviews) && (
+        {(game.completion || game.reviews || game.hltb || game.price) && (
           <div class={enriched.stats}>
             {game.completion && (
               <Completion name={game.name} completion={game.completion} />
             )}
             {game.reviews && <Reviews reviews={game.reviews} />}
+            {game.hltb && <Community hltb={game.hltb} />}
+            {game.price && (
+              <Price price={game.price} mainStory={game.timeMainStory} />
+            )}
           </div>
         )}
         {game.descriptionMd &&

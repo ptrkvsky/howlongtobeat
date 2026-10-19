@@ -1,0 +1,77 @@
+---
+import type { Game } from '@/types/Game';
+import { getGameTimes, timesSummary } from '@/features/jeu/utils/gameTimes';
+import { formatPercent } from '@/utils/format';
+import styles from './verdict.module.css';
+
+// "Will I finish it?": the direct answer, right under the title, then how
+// the game compares (Steam completion, catalog rank, films)
+interface Props {
+  game: Game;
+}
+
+const { game } = Astro.props;
+const times = getGameTimes(game);
+const main = game.timeMainStory;
+const completion = game.completion?.percent;
+
+// Main story length, in hours
+const LENGTHS = [
+  { max: 10, label: `Vite terminé` },
+  { max: 30, label: `Durée raisonnable` },
+  { max: 60, label: `Gros morceau` },
+  { max: Infinity, label: `Marathon` },
+];
+// Steam completion rate, in percent
+const FEW_FINISH = 25;
+const MOST_FINISH = 50;
+const FILM_HOURS = 2;
+
+const length = main > 0 && LENGTHS.find((step) => main <= step.max)!.label;
+const outcome =
+  completion == null
+    ? null
+    : completion < FEW_FINISH
+      ? `peu de joueurs voient la fin`
+      : completion >= MOST_FINISH
+        ? `la plupart des joueurs le terminent`
+        : null;
+
+const rank = game.timeRank;
+const rankLabel =
+  rank &&
+  (rank.longerThan >= 50
+    ? `Plus long que ${rank.longerThan} % des jeux du catalogue`
+    : rank.shorterThan >= 50
+      ? `Plus court que ${rank.shorterThan} % des jeux du catalogue`
+      : null);
+const films = Math.round(main / FILM_HOURS);
+---
+
+{times.length > 0 && (
+  <section class={styles.verdict} aria-label="En bref">
+    {length && (
+      <p class={styles.title}>
+        {length}
+        {outcome && <span class={styles.outcome}> : {outcome}</span>}
+      </p>
+    )}
+    <p class={styles.answer}>
+      Pour terminer {game.name}, comptez environ {timesSummary(times)}.
+    </p>
+    <ul class={styles.badges}>
+      {completion != null && (
+        <li class={styles.badge}>
+          <strong>{formatPercent(completion)}</strong> des joueurs Steam le
+          terminent
+        </li>
+      )}
+      {rankLabel && <li class={styles.badge}>{rankLabel}</li>}
+      {films >= 3 && (
+        <li class={styles.badge}>
+          L'histoire dure autant que <strong>{films} films</strong>
+        </li>
+      )}
+    </ul>
+  </section>
+)}

@@ -1,4 +1,4 @@
-// The only client side script of the site
+// Client side script of every page (the game pages add Pace.astro's)
 
 // Cloaked links: rendered as a span, turned into a link while hovered
 // (keeps them out of the crawled HTML, like the previous CloakLink component)

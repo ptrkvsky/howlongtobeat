@@ -1,0 +1,61 @@
+---
+import type { GamePrice } from '@/types/Game';
+import { formatDate, formatPrice } from '@/utils/format';
+import styles from './enriched.module.css';
+
+// F7: best price in France (IsThereAnyDeal) and its cost per hour of main
+// story. Not declared as an Offer: a weekly price is too old for Google
+interface Props {
+  price: GamePrice;
+  mainStory: number;
+}
+
+const { price, mainStory } = Astro.props;
+const money = (value: number) => formatPrice(value, price.currency);
+// Free games (often a free first episode) have no cost per hour
+const perHour = (value: number) =>
+  mainStory > 0 && value > 0 ? money(value / mainStory) : null;
+const lowest =
+  price.lowest != null && price.lowest < price.current ? price.lowest : null;
+---
+
+<div class={styles.stat}>
+  {price.current > 0 ? (
+    <>
+      <span class={styles.value}>{money(price.current)}</span> chez{' '}
+      {/* One expression: a line break before the comma would render a space */}
+      {[
+        price.url ? (
+          <a href={price.url} rel="nofollow sponsored noopener" target="_blank">
+            {price.shop}
+          </a>
+        ) : (
+          price.shop
+        ),
+        perHour(price.current) ? (
+          <>
+            {`, soit `}
+            <span class={styles.value}>{perHour(price.current)}</span>
+            {` par heure d'histoire.`}
+          </>
+        ) : (
+          `.`
+        ),
+      ]}
+    </>
+  ) : (
+    <>
+      <span class={styles.value}>Gratuit</span> chez {price.shop}.
+    </>
+  )}
+  {lowest != null && (
+    <div class={styles.detail}>
+      Plus bas historique : {money(lowest)}
+      {price.lowestShop && <> chez {price.lowestShop}</>}
+      {perHour(lowest) && <> ({perHour(lowest)}/h)</>}
+    </div>
+  )}
+  <div class={styles.source}>
+    Source : IsThereAnyDeal, prix relevé le {formatDate(price.updatedAt)}
+  </div>
+</div>

@@ -6,7 +6,7 @@
 #   UPDATE_CMD=scripts/update-catalog.sh scripts/deploy.sh
 #
 # Env (.env.local): DATABASE_URL, IGDB_CLIENT_ID + IGDB_CLIENT_SECRET,
-# STEAM_API_KEY, OPENAI_API_KEY + OPENAI_MODEL
+# STEAM_API_KEY, ITAD_API_KEY, OPENAI_API_KEY + OPENAI_MODEL
 #   TRANSLATE_MAX_USD  OpenAI budget of a run (default 5)
 set -euo pipefail
 
@@ -21,6 +21,15 @@ log "Enriching the imported games"
 pnpm tsx scripts/sync.ts ids --unpublished
 pnpm tsx scripts/sync.ts igdb --unpublished
 pnpm tsx scripts/sync.ts steam --unpublished
+
+# Prices change every week: refreshed for the published games too
+log "Refreshing the prices"
+if [[ -n "${ITAD_API_KEY:-}" ]] || grep -qs '^ITAD_API_KEY=.' .env.local .env; then
+  pnpm tsx scripts/sync.ts prices --unpublished
+  pnpm tsx scripts/sync.ts prices
+else
+  log "ITAD_API_KEY not set: prices skipped"
+fi
 
 log "Translating their descriptions"
 translations=".translations/catalog-$(date '+%F').jsonl"

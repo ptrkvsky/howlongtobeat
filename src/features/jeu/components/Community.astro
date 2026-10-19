@@ -1,0 +1,30 @@
+---
+import type { GameHltb } from '@/types/Game';
+import { formatCount, formatDate, formatList } from '@/utils/format';
+import styles from './enriched.module.css';
+
+// HowLongToBeat players who finished, play or plan to play the game
+interface Props {
+  hltb: GameHltb;
+}
+
+const { hltb } = Astro.props;
+const people = (count: number) => (count > 1 ? `joueurs` : `joueur`);
+const facts = [
+  hltb.completed > 0 &&
+    `${formatCount(hltb.completed)} ${people(hltb.completed)} l'ont terminé`,
+  hltb.playing > 0 && `${formatCount(hltb.playing)} y jouent en ce moment`,
+  hltb.backlog > 0 &&
+    `${formatCount(hltb.backlog)} l'ont dans leur pile à jouer`,
+].filter((fact): fact is string => Boolean(fact));
+---
+
+{facts.length > 0 && (
+  <div class={styles.stat}>
+    <span class={styles.value}>{formatCount(hltb.players)}</span>{' '}
+    {people(hltb.players)} suivent ce jeu : {formatList(facts)}.
+    <div class={styles.source}>
+      Source : HowLongToBeat, mis à jour le {formatDate(hltb.updatedAt)}
+    </div>
+  </div>
+)}

@@ -43,6 +43,14 @@ const STEAM_REVIEW_LABELS: Record<string, string> = {
 export const steamReviewLabel = (desc: string | null) =>
   (desc && STEAM_REVIEW_LABELS[desc]) || null;
 
+// 19.99, "EUR" → "19,99 €", 20 → "20 €"
+export const formatPrice = (value: number, currency: string) =>
+  new Intl.NumberFormat(`fr-FR`, {
+    style: `currency`,
+    currency,
+    minimumFractionDigits: Number.isInteger(value) ? 0 : 2,
+  }).format(value);
+
 // "PC, PlayStation 5 et Xbox Series X|S"
 export const formatList = (values: string[]) =>
   new Intl.ListFormat(`fr-FR`, { type: `conjunction` }).format(values);

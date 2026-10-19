@@ -10,7 +10,8 @@
  *   pnpm tsx scripts/sync.ts summary                 coverage
  *
  * Options: --limit n, --hltb <id,id…> (only these games), --dry-run (print
- * instead of writing).
+ * instead of writing), --unpublished (the imported games waiting for their
+ * page, see scripts/import-games.ts, instead of the published ones).
  *
  * Rows fixed by hand are kept: game_external_id.status = manual,
  * steam_stats.completion_status = validated / rejected.
@@ -34,7 +35,14 @@ import {
 } from 'drizzle-orm';
 import { platformLabels } from '../src/config/platforms';
 import { closeDb, getDb } from '../src/db/client';
-import { game, gameExternalId, igdbInfo, steamStats } from '../src/db/schema';
+import {
+  game,
+  gameExternalId,
+  gameGenre,
+  genre,
+  igdbInfo,
+  steamStats,
+} from '../src/db/schema';
 import { errorMessage, requestCounts } from './enrich/http';
 import { resolveIds } from './enrich/ids';
 import {
@@ -67,6 +75,7 @@ const { values: args, positionals } = parseArgs({
     'max-age': { type: `string` },
     hltb: { type: `string` },
     'dry-run': { type: `boolean`, default: false },
+    unpublished: { type: `boolean`, default: false },
   },
 });
 
@@ -83,10 +92,13 @@ const hltbIds = args.hltb?.split(`,`).map(Number);
 const { db } = getDb();
 const staleBefore = new Date(Date.now() - maxAgeDays * 86_400_000);
 
-// Published games, optionally limited to some HLTB ids
+// Published games (or the imported ones not published yet), optionally
+// limited to some HLTB ids
 const gameFilter = () =>
   and(
-    eq(game.isPublished, true),
+    args.unpublished
+      ? and(eq(game.source, `import`), eq(game.isPublished, false))
+      : eq(game.isPublished, true),
     hltbIds ? inArray(game.hltbId, hltbIds) : undefined,
   );
 
@@ -205,12 +217,55 @@ async function syncIds() {
 const IGDB_TRUSTED = [`matched`, `no_steam`, `manual`] as const;
 const STEAM_TRUSTED = [`matched`, `manual`] as const;
 
+// Imported games (scripts/import-games.ts) take their genres from IGDB, and
+// its summary when HLTB had no description. The legacy genres stay as they are
+let genreIds: Map<string, number> | undefined;
+async function completeImported(
+  rows: { id: number; igdbId: number | null; descriptionMd: string }[],
+  details: Awaited<ReturnType<typeof getIgdbDetails>>,
+) {
+  genreIds ??= new Map(
+    (await db.select({ id: genre.id, name: genre.name }).from(genre)).map(
+      (row) => [row.name, row.id],
+    ),
+  );
+  for (const row of rows) {
+    const detail = details.get(row.igdbId!);
+    if (!detail) continue;
+    const links = detail.genres.flatMap((name) => {
+      const genreId = genreIds!.get(name);
+      return genreId ? [{ gameId: row.id, genreId }] : [];
+    });
+    if (links.length) {
+      await db.insert(gameGenre).values(links).onConflictDoNothing();
+    }
+    if (!row.descriptionMd && detail.summary) {
+      await db
+        .update(game)
+        .set({ descriptionMd: detail.summary, updatedAt: new Date() })
+        .where(
+          and(
+            eq(game.id, row.id),
+            eq(game.descriptionMd, ``),
+            eq(game.isTranslated, false),
+          ),
+        );
+    }
+  }
+}
+
 async function syncIgdb() {
   if (!hasIgdbCredentials()) {
     throw new Error(`IGDB_CLIENT_ID / IGDB_CLIENT_SECRET are needed`);
   }
   const games = await db
-    .select({ id: game.id, name: game.name, igdbId: gameExternalId.igdbId })
+    .select({
+      id: game.id,
+      name: game.name,
+      igdbId: gameExternalId.igdbId,
+      source: game.source,
+      descriptionMd: game.descriptionMd,
+    })
     .from(game)
     .innerJoin(gameExternalId, eq(gameExternalId.gameId, game.id))
     .leftJoin(igdbInfo, eq(igdbInfo.gameId, game.id))
@@ -273,6 +328,8 @@ async function syncIgdb() {
           }),
       );
     }
+    const imported = chunk.filter((row) => row.source === `import`);
+    if (imported.length && !dryRun) await completeImported(imported, details);
     console.info(
       `… ${Math.min(i + 500, games.length)}/${games.length} (${values.length} found)`,
     );

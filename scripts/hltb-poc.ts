@@ -37,6 +37,12 @@ import {
 } from './enrich/hltb';
 import { errorMessage, HttpError, requestCounts } from './enrich/http';
 import { getSteamReviews } from './enrich/steam';
+import {
+  PAGE_TYPES,
+  passes as passesRule,
+  RECOMMENDED,
+  type Rule,
+} from './enrich/threshold';
 import { getAllHltbItems } from './enrich/wikidata';
 
 for (const file of [`.env.local`, `.env`]) {
@@ -430,42 +436,20 @@ async function sample() {
 
 // ── 3. Analyze ─────────────────────────────────────────────────────────────
 
-interface Rule {
-  minMain: number; // A: comp_main_count, for a credible main story time
-  minTotal: number; // X: count_total (players who added the game)
-  minSitelinks: number; // Y
-  // Sitelinks alone let unknown retro games in: they also need this count_total
-  wikiMinTotal: number;
-  minSteam: number; // Z: Steam reviews
-}
-
-// Chosen after the first sample (see docs/enrichissement-fiches-jeux.md):
-// main ≥ 10 is where extras / 100 % times stop missing
-const RECOMMENDED: Rule = {
-  minMain: 10,
-  minTotal: 1000,
-  minSitelinks: 8,
-  wikiMinTotal: 300,
-  minSteam: 10_000,
-};
-
-// HLTB types that get a page: Minecraft is `endless`, It Takes Two `multi`.
-// Left out: dlc, mod, compil (duplicates), omit (not games), empty type
-const PAGE_TYPES = new Set([`game`, `multi`, `endless`, `sports`]);
 const isPageType = (entry: Entry) => PAGE_TYPES.has(entry.game?.type ?? ``);
 
-const passes = (entry: Entry, rule: Rule) => {
-  const game = entry.game;
-  if (!game || !isPageType(entry) || game.compMainCount < rule.minMain) {
-    return false;
-  }
-  return (
-    game.countTotal >= rule.minTotal ||
-    ((entry.sitelinks ?? 0) >= rule.minSitelinks &&
-      game.countTotal >= rule.wikiMinTotal) ||
-    (entry.steamReviews ?? 0) >= rule.minSteam
+const passes = (entry: Entry, rule: Rule) =>
+  entry.game !== null &&
+  passesRule(
+    {
+      type: entry.game.type,
+      compMainCount: entry.game.compMainCount,
+      countTotal: entry.game.countTotal,
+      sitelinks: entry.sitelinks,
+      steamReviews: entry.steamReviews,
+    },
+    rule,
   );
-};
 
 const ruleName = (rule: Rule) =>
   [

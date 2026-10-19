@@ -29,6 +29,12 @@ export interface HltbGame {
   developer: string;
   publisher: string;
   releaseWorld: string;
+  // English description, plain text
+  summary: string;
+  // File name under https://howlongtobeat.com/games/
+  image: string;
+  // HLTB genres ("Action, Open World"), not the site genres
+  genres: string;
 }
 
 export type HltbResult =
@@ -82,6 +88,9 @@ function parseGame(html: string, id: number): HltbGame | null {
     developer: str(`profile_dev`),
     publisher: str(`profile_pub`),
     releaseWorld: str(`release_world`),
+    summary: str(`profile_summary`).trim(),
+    image: str(`game_image`),
+    genres: str(`profile_genre`),
   };
 }
 

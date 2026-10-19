@@ -28,7 +28,7 @@ import {
 } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
-import { and, desc, eq, inArray, ne, or } from 'drizzle-orm';
+import { and, desc, eq, inArray, ne, or, sql } from 'drizzle-orm';
 import OpenAI from 'openai';
 import { closeDb, getDb } from '../src/db/client';
 import { game } from '../src/db/schema';
@@ -433,7 +433,9 @@ async function write(file: string) {
           .set({
             descriptionMd: escapeMarkdown(entry.text),
             isTranslated: true,
-            isPublished: true,
+            // Imported games are published by scripts/import-games.ts
+            // --publish, once their ids and cover are confirmed
+            isPublished: sql`${game.isPublished} or ${game.source} = 'legacy'`,
             updatedAt: new Date(),
           })
           .where(

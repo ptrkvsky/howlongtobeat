@@ -35,6 +35,9 @@ export const genre = pgTable(`genre`, {
   ...timestamps,
 });
 
+// `legacy`: 2021 scraping (via Sanity), `import`: scripts/import-games.ts
+export const gameSource = pgEnum(`game_source`, [`legacy`, `import`]);
+
 export const game = pgTable(`game`, {
   id: serial(`id`).primaryKey(),
   sanityId: text(`sanity_id`).unique(),
@@ -55,6 +58,7 @@ export const game = pgTable(`game`, {
   // Only published games get a page
   isPublished: boolean(`is_published`).notNull().default(false),
   firstReleaseDate: date(`first_release_date`),
+  source: gameSource(`source`).notNull().default(`legacy`),
   ...timestamps,
 });
 
@@ -172,7 +176,7 @@ export const steamStats = pgTable(`steam_stats`, {
   fetchedAt: fetchedAt(),
 });
 
-// HowLongToBeat page data (filled by the HLTB refresh), times in seconds
+// HowLongToBeat page data (filled by scripts/import-games.ts), times in seconds
 export const hltbStats = pgTable(`hltb_stats`, {
   gameId: gameId(),
   type: text(`type`).notNull(),

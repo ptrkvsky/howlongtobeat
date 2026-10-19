@@ -47,5 +47,7 @@ yarn-error.log*
 /.enrichment/
 # HLTB popularity POC output (scripts/hltb-poc.ts)
 /.hltb-poc/
+# HLTB pages read by the catalog import (scripts/import-games.ts)
+/.import/
 # Sanity export of the Postgres migration (scripts/migrate-from-sanity.ts)
 /.migration/

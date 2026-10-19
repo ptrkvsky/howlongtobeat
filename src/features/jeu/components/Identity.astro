@@ -21,8 +21,10 @@ const rows = identity
         identity.developers.length > 0 && formatList(identity.developers),
       ],
       [
-        plural(identity.publishers, `Éditeur`, `Éditeurs`),
-        identity.publishers.length > 0 && formatList(identity.publishers),
+        plural(identity.publishers.slice(0, 3), `Éditeur`, `Éditeurs`),
+        // IGDB also lists regional publishers: the first three only
+        identity.publishers.length > 0 &&
+          formatList(identity.publishers.slice(0, 3)),
       ],
       [
         `Plateformes`,

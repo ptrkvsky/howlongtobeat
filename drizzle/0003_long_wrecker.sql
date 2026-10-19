@@ -1,0 +1,1 @@
+ALTER TABLE "igdb_info" ADD COLUMN "cover_image_id" text;

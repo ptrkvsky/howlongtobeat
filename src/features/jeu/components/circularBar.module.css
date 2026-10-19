@@ -1,23 +1,17 @@
 .wrapper {
-  position: absolute;
-  right: 0;
-  top: calc(33vh - 125px);
-  width: 200px;
-  height: 200px;
+  width: 160px;
+  height: 160px;
   padding: var(--space-4);
   background-color: var(--color-background);
   border-radius: 50%;
   box-shadow: var(--shadow-elevation-medium);
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 766px) {
   .wrapper {
     width: 100px;
     height: 100px;
     padding: var(--space-2);
-    right: initial;
-    left: var(--space-4);
-    top: var(--space-4);
   }
 }
 

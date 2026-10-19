@@ -135,6 +135,8 @@ export const igdbInfo = pgTable(`igdb_info`, {
   // PEGI 18, ESRB M or AO
   isMature: boolean(`is_mature`).notNull().default(false),
   summaryEn: text(`summary_en`),
+  // IGDB cover image id: the URL is built with the size each use needs
+  coverImageId: text(`cover_image_id`),
   fetchedAt: fetchedAt(),
 });
 

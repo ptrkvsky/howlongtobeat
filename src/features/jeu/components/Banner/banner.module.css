@@ -32,6 +32,8 @@
   height: 33vh;
   width: 100%;
   filter: blur(5px);
+  /* Fades out instead of cutting the text laid over its bottom edge */
+  mask-image: linear-gradient(#000 40%, transparent);
 }
 
 .wrapper::before {

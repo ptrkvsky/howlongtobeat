@@ -5,6 +5,7 @@ export interface Game {
   hltbId: number;
   name: string;
   slug: string;
+  // IGDB image id, see src/utils/igdbImage.ts
   cover: string | null;
   rating: number | null;
   timeMainStory: number;

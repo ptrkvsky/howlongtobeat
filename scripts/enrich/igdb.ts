@@ -176,12 +176,14 @@ export interface IgdbDetails {
   platformSlugs: string[];
   isMature: boolean;
   summary: string | null;
+  coverImageId: string | null;
 }
 
 interface IgdbDetailsRow {
   id: number;
   first_release_date?: number;
   summary?: string;
+  cover?: { image_id: string };
   platforms?: { slug: string }[];
   involved_companies?: {
     company?: { name: string };
@@ -223,7 +225,7 @@ export async function getIgdbDetails(ids: number[]) {
   for (let i = 0; i < ids.length; i += 500) {
     const chunk = ids.slice(i, i + 500);
     const rows = await igdbQuery<IgdbDetailsRow[]>(
-      `fields first_release_date, summary, platforms.slug, involved_companies.company.name, involved_companies.developer, involved_companies.publisher, age_ratings.organization.name, age_ratings.rating_category.rating, age_ratings.category, age_ratings.rating; where id = (${chunk.join(`,`)}); limit 500;`,
+      `fields first_release_date, summary, cover.image_id, platforms.slug, involved_companies.company.name, involved_companies.developer, involved_companies.publisher, age_ratings.organization.name, age_ratings.rating_category.rating, age_ratings.category, age_ratings.rating; where id = (${chunk.join(`,`)}); limit 500;`,
     );
     for (const row of rows) {
       const companies = row.involved_companies ?? [];
@@ -243,6 +245,7 @@ export async function getIgdbDetails(ids: number[]) {
         platformSlugs: unique((row.platforms ?? []).map(({ slug }) => slug)),
         isMature: (row.age_ratings ?? []).some(isMatureRating),
         summary: row.summary?.trim() || null,
+        coverImageId: row.cover?.image_id ?? null,
       });
     }
   }

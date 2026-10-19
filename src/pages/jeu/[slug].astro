@@ -2,6 +2,7 @@
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import LayoutFront from '@/layouts/LayoutFront.astro';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
 import Markdown from '@/components/Markdown.astro';
 import Banner from '@/features/jeu/components/Banner/Banner.astro';
 import CircularBar from '@/features/jeu/components/CircularBar.astro';
@@ -12,9 +13,18 @@ import ExternalLinks from '@/features/jeu/components/ExternalLinks.astro';
 import Identity from '@/features/jeu/components/Identity.astro';
 import Reviews from '@/features/jeu/components/Reviews.astro';
 import Time from '@/features/jeu/components/Time.astro';
+import enriched from '@/features/jeu/components/enriched.module.css';
 import styles from '@/features/jeu/components/jeu.module.css';
 import { getGames, getRelatedGames } from '@/features/jeu/api';
 import { getAllGenres } from '@/functions/getAllGenres';
+import { igdbImage } from '@/utils/igdbImage';
+import {
+  breadcrumbNode,
+  pageIds,
+  ref,
+  videoGameNode,
+  webPageNode,
+} from '@/utils/structuredData';
 
 export const getStaticPaths = (async () => {
   const [games, allGenres] = await Promise.all([getGames(), getAllGenres()]);
@@ -33,32 +43,37 @@ export const getStaticPaths = (async () => {
 
 const { game, genres, relatedGames } = Astro.props;
 const canonical = `/jeu/${game.slug}`;
-const image = game.cover ? `https:${game.cover}` : undefined;
-const organizations = (names: string[] = []) =>
-  names.length
-    ? names.map((name) => ({ '@type': `Organization`, name }))
-    : undefined;
-
-// F9: only data shown on the page, and no aggregateRating (third-party reviews)
-const jsonLd = {
-  '@context': `https://schema.org`,
-  '@type': `VideoGame`,
-  name: game.name,
-  url: new URL(canonical, Astro.site).href,
-  image,
-  datePublished: game.identity?.releaseDate ?? undefined,
-  genre: genres.length ? genres.map((genre) => genre.name) : undefined,
-  gamePlatform: game.identity?.platforms.length
-    ? game.identity.platforms
-    : undefined,
-  author: organizations(game.identity?.developers),
-  publisher: organizations(game.identity?.publishers),
-};
+const image = game.cover ? igdbImage(game.cover, `cover_big_2x`) : undefined;
+// Long descriptions are folded after a few lines (see .description)
+const isLongDescription = game.descriptionMd.length > 600;
+const [mainGenre] = genres;
+const title = `Combien de temps faut-il pour terminer ${game.name} ?`;
+const description = `Découvrez la durée de vie de ${game.name}. Quel temps vous faudra t-il pour voir la fin.`;
+const breadcrumb = [
+  { name: `Accueil`, path: `/` },
+  ...(mainGenre
+    ? [{ name: mainGenre.name, path: `/genre/${mainGenre.slug}` }]
+    : []),
+  { name: game.name, path: canonical },
+];
+const jsonLd = [
+  webPageNode({
+    path: canonical,
+    name: title,
+    description,
+    extra: {
+      mainEntity: ref(pageIds(canonical).game),
+      primaryImageOfPage: image,
+    },
+  }),
+  breadcrumbNode(canonical, breadcrumb),
+  videoGameNode(game, genres, canonical),
+];
 ---
 
 <BaseLayout
-  title={`Combien de temps faut-il pour terminer ${game.name} ?`}
-  description={`Découvrez la durée de vie de ${game.name}. Quel temps vous faudra t-il pour voir la fin.`}
+  title={title}
+  description={description}
   canonical={canonical}
   ogImage={image}
   jsonLd={jsonLd}
@@ -69,22 +84,44 @@ const jsonLd = {
     <div class:list={[`container`, styles.content]}>
       <div class={styles.cover}>
         {game.cover && <Cover game={game} priority />}
+        {game.rating != null && game.rating > 0 && (
+          <CircularBar percentage={game.rating} />
+        )}
       </div>
-      {game.rating && <CircularBar percentage={game.rating} />}
-      <div>
+      <div class={styles.main}>
+        <Breadcrumb items={breadcrumb} />
         <h1 class={styles.titleMain}>
           Combien de temps faut-il pour terminer <br />
           <span class={styles.name}>{game.name}</span> ?
         </h1>
-        <Identity identity={game.identity} genres={genres} />
-        <div class={styles.description}>
-          <Markdown source={game.descriptionMd} />
-        </div>
         <Time game={game} />
-        {game.completion && (
-          <Completion name={game.name} completion={game.completion} />
+        <Identity identity={game.identity} genres={genres} />
+        {(game.completion || game.reviews) && (
+          <div class={enriched.stats}>
+            {game.completion && (
+              <Completion name={game.name} completion={game.completion} />
+            )}
+            {game.reviews && <Reviews reviews={game.reviews} />}
+          </div>
         )}
-        {game.reviews && <Reviews reviews={game.reviews} />}
+        {game.descriptionMd &&
+          (isLongDescription ? (
+            <>
+              <div class:list={[styles.description, styles.folded]}>
+                <Markdown source={game.descriptionMd} />
+              </div>
+              <details class={styles.more}>
+                <summary>
+                  <span class={styles.open}>Lire la suite</span>
+                  <span class={styles.close}>Réduire</span>
+                </summary>
+              </details>
+            </>
+          ) : (
+            <div class={styles.description}>
+              <Markdown source={game.descriptionMd} />
+            </div>
+          ))}
         <ExternalLinks links={game.links} />
       </div>
     </div>

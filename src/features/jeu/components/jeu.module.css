@@ -1,10 +1,20 @@
 .content {
+  /* .container adds side padding to its 100% width */
+  box-sizing: border-box;
   position: relative;
   z-index: 20;
   padding-top: var(--space-16);
   display: grid;
-  grid-template-columns: 352px auto;
+  grid-template-columns: 352px minmax(0, 1fr);
   grid-gap: var(--space-8);
+  align-items: start;
+}
+
+.cover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
 }
 
 @media screen and (max-width: 1280px) {
@@ -13,34 +23,80 @@
   }
 
   .cover {
-    display: flex;
+    flex-direction: row;
     justify-content: center;
+  }
+}
+
+/* Small cover on phones, so that the times show on the first screen */
+@media screen and (max-width: 766px) {
+  .content {
+    padding-top: var(--space-8);
+  }
+
+  .cover {
+    --cover-width: 140px;
+    gap: var(--space-4);
   }
 }
 
 .titleMain {
   font-size: 36px;
   line-height: 40px;
-  margin-top: 24.3vh;
   margin-bottom: var(--space-8);
 }
 
 .titleMain .name {
   color: var(--color-primary-500);
+  display: inline-block;
+  margin-top: var(--space-2);
   font-size: var(--font-size-7xl);
+  line-height: 1.1;
 }
 
 @media screen and (max-width: 766px) {
   .titleMain {
-    margin-top: var(--space-2);
     margin-bottom: var(--space-4);
+  }
+
+  .titleMain .name {
+    font-size: var(--font-size-5xl);
   }
 }
 
 .description {
   margin-top: var(--space-2);
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-xl);
   line-height: var(--line-height-7);
+}
+
+/* Folded description, unfolded by the <details> right after it (no JS) */
+.folded {
+  max-height: calc(5 * var(--line-height-7));
+  overflow: hidden;
+  mask-image: linear-gradient(#000 50%, transparent);
+}
+
+.folded:has(+ .more[open]) {
+  max-height: none;
+  mask-image: none;
+}
+
+.more summary {
+  margin-top: var(--space-2);
+  color: var(--color-primary-500);
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  list-style: none;
+}
+
+.more summary::-webkit-details-marker {
+  display: none;
+}
+
+.more[open] .open,
+.more:not([open]) .close {
+  display: none;
 }
 
 .titleSecondary {

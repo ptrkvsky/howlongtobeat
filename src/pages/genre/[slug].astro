@@ -2,9 +2,17 @@
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import LayoutFront from '@/layouts/LayoutFront.astro';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
 import HomeTitle from '@/styles/components/titles/HomeTitle.astro';
 import { getAllGenres } from '@/functions/getAllGenres';
 import { getGamesByGenre } from '@/functions/getGamesByGenre';
+import {
+  breadcrumbNode,
+  gameItemListNode,
+  pageIds,
+  ref,
+  webPageNode,
+} from '@/utils/structuredData';
 
 export const getStaticPaths = (async () => {
   const genres = await getAllGenres();
@@ -18,14 +26,34 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const { genre, games } = Astro.props;
+const canonical = `/genre/${genre.slug}`;
+const title = `Durée de vie des jeux ${genre.name}`;
+const description = `Découvrez le temps nécessaire pour terminer les jeux ${genre.name}.`;
+const breadcrumb = [
+  { name: `Accueil`, path: `/` },
+  { name: genre.name, path: canonical },
+];
+const jsonLd = [
+  webPageNode({
+    type: `CollectionPage`,
+    path: canonical,
+    name: title,
+    description,
+    extra: { mainEntity: ref(pageIds(canonical).itemList) },
+  }),
+  breadcrumbNode(canonical, breadcrumb),
+  gameItemListNode(canonical, games),
+];
 ---
 
 <BaseLayout
-  title={`Durée de vie des jeux ${genre.name}`}
-  description={`Découvrez le temps nécessaire pour terminer les jeux ${genre.name}.`}
-  canonical={`/genre/${genre.slug}`}
+  title={title}
+  description={description}
+  canonical={canonical}
+  jsonLd={jsonLd}
 >
   <LayoutFront cloakFooter isCentered>
+    <Breadcrumb items={breadcrumb} />
     <HomeTitle>
       {genre.name}
       <br /> {games.length} jeux

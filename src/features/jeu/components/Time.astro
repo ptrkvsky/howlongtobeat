@@ -1,36 +1,57 @@
 ---
 import type { Game } from '@/types/Game';
-import styles from './jeu.module.css';
+import { formatList } from '@/utils/format';
+import styles from './time.module.css';
 
+// HLTB times in hours. A time at 0 is unknown: its card is hidden
 interface Props {
   game: Game;
 }
 
 const { game } = Astro.props;
+const times = [
+  {
+    label: `Histoire principale`,
+    goal: `l'histoire principale`,
+    hours: game.timeMainStory,
+  },
+  {
+    label: `Histoire + extras`,
+    goal: `l'histoire et quelques extras`,
+    hours: game.timeMainExtras,
+  },
+  { label: `100 %`, goal: `le 100 %`, hours: game.timeCompletionists },
+].filter((time) => time.hours > 0);
+const max = Math.max(...times.map((time) => time.hours));
+const hours = (value: number) => `${value} h`;
+const plural = (value: number) => (value > 1 ? `heures` : `heure`);
+// Text version for search engines: "3 heures pour l'histoire principale…"
+const summary = formatList(
+  times.map((time) => `${time.hours} ${plural(time.hours)} pour ${time.goal}`),
+);
 ---
 
-{game.timeMainStory > 0 && (
-  <div class={styles.description}>
-    Pour terminer <span class="primary-color bold">l'histoire principale</span>{' '}
-    de {game.name} il faut compter environ{' '}
-    <span class="primary-color bold">{game.timeMainStory} heures.</span>
-  </div>
-)}
-
-{game.timeMainExtras > 0 && (
-  <div class={styles.description}>
-    Pour terminer{' '}
-    <span class="primary-color bold">{game.name} et faire quelques extras</span>{' '}
-    c'est environ{' '}
-    <span class="primary-color bold">{game.timeMainExtras} heures</span> qu'il
-    faudra compter
-  </div>
-)}
-
-{game.timeCompletionists > 0 && (
-  <div class={styles.description}>
-    Si vous êtes un acharné de la manette, pour terminer le jeu{' '}
-    <span class="primary-color bold">100%</span> il vous faudra environ{' '}
-    <span class="primary-color bold">{game.timeCompletionists} heures.</span>
-  </div>
+{times.length > 0 && (
+  <section class={styles.times} aria-labelledby="durees">
+    <h2 id="durees" class={styles.heading}>
+      Durée de vie
+    </h2>
+    <ul class={styles.cards}>
+      {times.map((time) => (
+        <li class={styles.card}>
+          <span class={styles.label}>{time.label}</span>
+          <span class={styles.hours}>{hours(time.hours)}</span>
+          <span
+            class={styles.bar}
+            style={`--ratio: ${time.hours / max}`}
+            aria-hidden="true"
+          ></span>
+        </li>
+      ))}
+    </ul>
+    <p class={styles.summary}>
+      Pour terminer {game.name}, comptez environ {summary}.
+    </p>
+    <p class={styles.source}>Source : HowLongToBeat</p>
+  </section>
 )}

@@ -1,0 +1,80 @@
+/* HLTB times, the answer of the page: shown first, as cards */
+
+.times {
+  margin-bottom: var(--space-8);
+}
+
+.heading {
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-xl);
+}
+
+.cards {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: var(--space-4);
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-gray-700);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 0.03);
+}
+
+.label {
+  color: var(--color-gray-300);
+  font-size: var(--font-size-md);
+}
+
+.hours {
+  color: var(--color-primary-500);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-5xl);
+  line-height: 1;
+}
+
+.bar {
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+  background:
+    linear-gradient(var(--color-primary-500), var(--color-primary-500))
+      no-repeat 0 0 / calc(var(--ratio) * 100%) 100%,
+    var(--color-gray-700);
+}
+
+.summary {
+  margin-top: var(--space-4);
+  font-size: var(--font-size-lg);
+}
+
+.source {
+  margin-top: var(--space-1);
+  color: var(--color-gray-400);
+  font-size: var(--font-size-md);
+}
+
+@media screen and (max-width: 766px) {
+  .cards {
+    gap: var(--space-2);
+  }
+
+  .card {
+    padding: var(--space-3);
+  }
+
+  .label {
+    font-size: 0.8125rem;
+  }
+
+  .hours {
+    font-size: var(--font-size-2xl);
+  }
+}

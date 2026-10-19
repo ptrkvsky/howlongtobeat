@@ -1,5 +1,6 @@
 ---
 import { siteInformations } from '@/config/siteInformations';
+import { graph, type JsonLdNode } from '@/utils/structuredData';
 import '@/styles/globals.css';
 
 interface Props {
@@ -10,8 +11,8 @@ interface Props {
   canonical?: string;
   ogImage?: string;
   noindex?: boolean;
-  // schema.org data, rendered as JSON-LD
-  jsonLd?: Record<string, unknown>;
+  // schema.org nodes, rendered as one JSON-LD @graph
+  jsonLd?: JsonLdNode[];
 }
 
 const {
@@ -43,10 +44,10 @@ const gtmSnippet = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':ne
       <link rel="canonical" href={new URL(canonical, Astro.site)} />
     )}
     {ogImage && <meta property="og:image" content={ogImage} />}
-    {jsonLd && (
+    {jsonLd?.length && (
       <script
         type="application/ld+json"
-        set:html={JSON.stringify(jsonLd).replace(/</g, `\\u003c`)}
+        set:html={JSON.stringify(graph(jsonLd)).replace(/</g, `\\u003c`)}
       />
     )}
     <meta name="twitter:site" content={siteInformations.twitter} />

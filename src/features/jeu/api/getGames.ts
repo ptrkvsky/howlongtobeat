@@ -9,6 +9,7 @@ import {
 } from '@/db/schema';
 import type { Game, GameSummary } from '@/types/Game';
 import { steamReviewLabel } from '@/utils/format';
+import { imageIdFromUrl } from '@/utils/igdbImage';
 
 // Data is only shown from confirmed ids (scripts/sync.ts). IGDB data needs no
 // Steam id: console games have none
@@ -87,6 +88,8 @@ async function fetchGames(): Promise<Game[]> {
         : null;
     return {
       ...row,
+      // The confirmed IGDB cover first: the imported ones may be another game's
+      cover: (igdbTrusted && igdb?.coverImageId) || imageIdFromUrl(row.cover),
       identity,
       reviews,
       completion,

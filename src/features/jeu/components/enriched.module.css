@@ -26,9 +26,18 @@
   font-size: var(--font-size-md);
 }
 
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
 .stat {
-  margin-top: var(--space-8);
-  font-size: var(--font-size-2xl);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-gray-700);
+  border-radius: 8px;
+  font-size: var(--font-size-xl);
   line-height: var(--line-height-7);
 }
 

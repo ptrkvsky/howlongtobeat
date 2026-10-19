@@ -245,6 +245,7 @@ async function syncIgdb() {
           platforms: platforms.labels,
           isMature: detail.isMature,
           summaryEn: detail.summary,
+          coverImageId: detail.coverImageId,
           fetchedAt: new Date(),
         },
       ];
@@ -266,6 +267,7 @@ async function syncIgdb() {
               platforms: sql`excluded.platforms`,
               isMature: sql`excluded.is_mature`,
               summaryEn: sql`excluded.summary_en`,
+              coverImageId: sql`excluded.cover_image_id`,
               fetchedAt: sql`excluded.fetched_at`,
             },
           }),

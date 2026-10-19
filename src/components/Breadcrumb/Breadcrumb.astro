@@ -1,0 +1,26 @@
+---
+import type { BreadcrumbItem } from '@/utils/structuredData';
+import styles from './breadcrumb.module.css';
+
+// Same items as the page's BreadcrumbList JSON-LD (see breadcrumbNode)
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+const last = items.length - 1;
+---
+
+<nav aria-label="Fil d'Ariane" class={styles.breadcrumb}>
+  <ol>
+    {items.map((item, index) =>
+      index === last ? (
+        <li aria-current="page">{item.name}</li>
+      ) : (
+        <li>
+          <a href={item.path}>{item.name}</a>
+        </li>
+      ),
+    )}
+  </ol>
+</nav>

@@ -1,5 +1,6 @@
 ---
 import type { GameLinks } from '@/types/Game';
+import { externalLinks } from '@/utils/externalLinks';
 import styles from './enriched.module.css';
 
 // F6: only confirmed ids get a link
@@ -8,16 +9,7 @@ interface Props {
 }
 
 const { links } = Astro.props;
-const items = [
-  links.steamAppId && {
-    label: `Page Steam`,
-    href: `https://store.steampowered.com/app/${links.steamAppId}/`,
-  },
-  links.igdbSlug && {
-    label: `Fiche IGDB`,
-    href: `https://www.igdb.com/games/${links.igdbSlug}`,
-  },
-].filter(Boolean) as { label: string; href: string }[];
+const items = externalLinks(links);
 ---
 
 {items.length > 0 && (

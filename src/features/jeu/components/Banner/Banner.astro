@@ -1,5 +1,6 @@
 ---
 import type { Game } from '@/types/Game';
+import { igdbImage } from '@/utils/igdbImage';
 import styles from './banner.module.css';
 
 interface Props {
@@ -12,9 +13,8 @@ const { game } = Astro.props;
 <div class={styles.hidden}>
   <div class={styles.wrapper}>
     <img
-      alt={game.name}
-      src={`https:${game.cover}`}
-      fetchpriority="high"
+      alt=""
+      src={igdbImage(game.cover!, `cover_big`)}
       decoding="async"
       style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"
     />

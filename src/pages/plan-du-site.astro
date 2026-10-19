@@ -1,18 +1,28 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import LayoutFront from '@/layouts/LayoutFront.astro';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
 import HomeTitle from '@/styles/components/titles/HomeTitle.astro';
 import List from '@/styles/components/titles/List.astro';
 import { getAllGenres } from '@/functions/getAllGenres';
+import { breadcrumbNode, webPageNode } from '@/utils/structuredData';
 
 const genres = await getAllGenres();
+const path = `/plan-du-site`;
+const description = `Decouvrez l'ensemble des pages du site internet`;
+const breadcrumb = [
+  { name: `Accueil`, path: `/` },
+  { name: `Plan du site`, path },
+];
+const jsonLd = [
+  webPageNode({ path, name: `Plan du site`, description }),
+  breadcrumbNode(path, breadcrumb),
+];
 ---
 
-<BaseLayout
-  title="Plan du site"
-  description="Decouvrez l'ensemble des pages du site internet"
->
+<BaseLayout title="Plan du site" description={description} jsonLd={jsonLd}>
   <LayoutFront isCentered>
+    <Breadcrumb items={breadcrumb} />
     <HomeTitle>Plan du site</HomeTitle>
     <List>
       {genres.map((genre) => (

@@ -72,6 +72,8 @@ if [[ -n "${UPDATE_CMD:-}" ]]; then
 fi
 
 log "Building"
+# vercel pull keeps variables removed from Vercel: start from a clean file
+rm -f .vercel/.env.production.local
 vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
 vercel build --prod --token="$VERCEL_TOKEN"
 

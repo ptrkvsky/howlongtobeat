@@ -1,0 +1,1 @@
+ALTER TABLE "game" ADD COLUMN "is_translated" boolean DEFAULT false NOT NULL;

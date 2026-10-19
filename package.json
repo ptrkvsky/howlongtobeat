@@ -21,7 +21,10 @@
     "lint": "eslint src scripts",
     "format": "prettier \"src/**/*.+(ts|js|astro|css)\" --write",
     "prepare": "husky",
-    "commit": "cz"
+    "commit": "cz",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "lint-staged": {
     "./src/**/*.{ts,js,astro}": [
@@ -31,11 +34,11 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.4",
-    "@portabletext/types": "4.0.2",
     "@sanity/client": "8.9.0",
     "astro": "7.3.5",
-    "astro-portabletext": "1.0.1",
-    "get-youtube-id": "1.0.1"
+    "drizzle-orm": "0.45.3",
+    "marked": "18.1.0",
+    "postgres": "3.4.9"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
@@ -44,6 +47,7 @@
     "@types/node": "24.19.2",
     "commitizen": "4.3.2",
     "cz-conventional-changelog": "3.3.0",
+    "drizzle-kit": "0.31.11",
     "eslint": "9.39.5",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-astro": "3.2.1",

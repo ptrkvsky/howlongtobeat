@@ -1,0 +1,31 @@
+# game-over.io database on the VPS, only reachable from the VPS itself
+# (builds, imports) or through an SSH tunnel:
+#   ssh -N -L 5433:127.0.0.1:5433 ubuntu@51.38.191.183
+#
+#   docker compose --env-file ~/.config/game-over/postgres.env up -d
+#
+# ~/.config/game-over/postgres.env (chmod 600): POSTGRES_PASSWORD=...
+name: gameover
+
+services:
+  postgres:
+    image: postgres:17.6
+    container_name: gameover-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: gameover
+      POSTGRES_USER: gameover
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set it in ~/.config/game-over/postgres.env}
+    ports:
+      # Loopback only: never published on the public interface
+      - 127.0.0.1:5433:5432
+    volumes:
+      - data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U gameover -d gameover]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  data:

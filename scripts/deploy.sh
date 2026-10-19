@@ -11,8 +11,11 @@
 #   HEALTHCHECK_URL   optional healthchecks.io ping URL
 #   MIN_PAGE_RATIO    minimum share of the previous page count (default 0.95)
 #   STATE_DIR         where the lock and last page count live
+#   BACKUP_DIR        database dumps, the last 8 are kept
+#                     (default ~/backups/gameover)
 #
-# The build reads .env.local (SANITY_ID, SANITY_DATASET...) like a local build.
+# The build reads .env.local (DATABASE_URL...) like a local build. The
+# database runs in the gameover-postgres container (infra/postgres).
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -25,6 +28,7 @@ export VERCEL_ORG_ID VERCEL_PROJECT_ID
 MIN_PAGE_RATIO="${MIN_PAGE_RATIO:-0.95}"
 STATE_DIR="${STATE_DIR:-${XDG_STATE_HOME:-$HOME/.local/state}/game-over}"
 PAGE_COUNT_FILE="$STATE_DIR/page-count"
+BACKUP_DIR="${BACKUP_DIR:-$HOME/backups/gameover}"
 OUTPUT_DIR=".vercel/output/static"
 
 mkdir -p "$STATE_DIR"
@@ -51,6 +55,16 @@ git pull --ff-only
 
 log "Installing dependencies"
 pnpm install --frozen-lockfile
+
+log "Backing up the database"
+mkdir -p "$BACKUP_DIR"
+backup="$BACKUP_DIR/gameover-$(date '+%F-%H%M').dump"
+docker exec gameover-postgres pg_dump -U gameover -Fc gameover >"$backup.tmp"
+mv "$backup.tmp" "$backup"
+ls -1t "$BACKUP_DIR"/gameover-*.dump | tail -n +9 | xargs -r rm --
+
+log "Applying database migrations"
+pnpm db:migrate
 
 if [[ -n "${UPDATE_CMD:-}" ]]; then
   log "Updating data: $UPDATE_CMD"

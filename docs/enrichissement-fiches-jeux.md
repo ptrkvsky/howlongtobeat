@@ -246,7 +246,7 @@ L'installation et l'exploitation sont décrites dans [scripts/systemd/README.md]
 | D2 | Taux de complétion des jeux sans succès de fin détecté | Saisie manuelle / proposition par IA + relecture / ne rien afficher | IA + relecture, pour les 2 000 jeux les plus populaires |
 | D3 | Prix | Hors périmètre / plus bas historique seul / prix complet daté | Plus bas historique seul |
 | D4 | Afficher Metacritic ? | Oui, via ITAD / non | Oui, avec la source citée |
-| D5 | Base de données | Sanity / Postgres sur Neon / Postgres ou SQLite sur le VPS | Décision séparée, après validation de ce document. La base n'étant lue qu'au build, sur le VPS, une base installée sur le VPS lui-même est une option sans coût ni limite de taille, et elle n'est pas exposée sur Internet |
+| D5 | Base de données | Sanity / Postgres sur Neon / Postgres ou SQLite sur le VPS | **Décidé le 19 octobre 2026 : Postgres sur le VPS**, avec Drizzle ORM. La base, dans le conteneur `gameover-postgres`, n'est lue qu'au build et n'est pas exposée sur Internet. Le schéma est dans [src/db/schema.ts](../src/db/schema.ts), et les corrections manuelles vont dans la table `game_override` |
 
 ## 10. Indicateurs de succès
 

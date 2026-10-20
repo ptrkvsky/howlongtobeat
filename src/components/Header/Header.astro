@@ -1,10 +1,45 @@
 ---
+import urls from '@/config/urls';
+import { siteInformations } from '@/config/siteInformations';
 import styles from './header.module.css';
 
-// Empty for now: the logo, search and dark mode toggle were disabled.
-// Kept so the layout keeps its header row.
+const { pathname } = Astro.url;
+
+// `match` decides which link is current: the genre pages belong to "Genres"
+// since the site map is the list of genres
+const links = [
+  {
+    url: urls.plan,
+    label: `Genres`,
+    match: (path: string) => path === urls.plan || path.startsWith(`/genre/`),
+  },
+  {
+    url: urls.actus,
+    label: `Actus`,
+    match: (path: string) => path.startsWith(urls.actus),
+  },
+];
 ---
 
 <header class={styles.header}>
-  <div class="container"></div>
+  <div class="container">
+    <a href={urls.home} class={styles.logo}>
+      {siteInformations.title}
+    </a>
+    <nav aria-label="Navigation principale">
+      <ul class={styles.links}>
+        {links.map(({ url, label, match }) => (
+          <li>
+            <a
+              href={url}
+              class={styles.link}
+              aria-current={match(pathname) ? `page` : undefined}
+            >
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
 </header>

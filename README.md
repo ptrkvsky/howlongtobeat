@@ -2,7 +2,7 @@
 
 Le temps de jeu de vos jeux favoris : durées pour finir l'histoire, l'histoire et les extras, ou le jeu à 100 %, avec des fiches jeux enrichies (genres, éditeurs, avis Steam, liens externes…).
 
-Site : [game-over.io](https://game-over.io)
+Site : [www.game-over.io](https://www.game-over.io)
 
 ## Stack
 

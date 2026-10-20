@@ -187,7 +187,7 @@ const wordCount = (markdown: string) =>
 
 async function fetchArticles(): Promise<SourceArticle[]> {
   const response = await fetch(FEED_URL, {
-    headers: { 'user-agent': `game-over-news/0.2 (https://game-over.io)` },
+    headers: { 'user-agent': `game-over-news/0.2 (https://www.game-over.io)` },
   });
   if (!response.ok) throw new Error(`HTTP ${response.status} on the feed`);
   const parser = new XMLParser({

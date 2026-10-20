@@ -5,7 +5,7 @@
  */
 import { setTimeout as sleep } from 'node:timers/promises';
 
-export const USER_AGENT = `game-over-enrich-poc/0.1 (https://game-over.io)`;
+export const USER_AGENT = `game-over-enrich-poc/0.1 (https://www.game-over.io)`;
 
 // Minimum delay between two requests to a host (ms)
 const INTERVALS: Record<string, number> = {

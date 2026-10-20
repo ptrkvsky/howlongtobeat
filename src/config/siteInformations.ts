@@ -4,7 +4,7 @@ export const siteInformations = {
   twitter: `@gameoverio`,
   image: ``,
   tagManager: `GTM-TQRKB2Q`,
-  url: `https://game-over.io`,
+  url: `https://www.game-over.io`,
 };
 
 export type TypeSiteInformations = typeof siteInformations;

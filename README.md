@@ -50,6 +50,25 @@ Garde-fous de `scripts/deploy.sh` :
 
 Installation du VPS, du timer et commandes d'exploitation (logs, run manuel, restauration de la base) : **[scripts/systemd/README.md](scripts/systemd/README.md)**.
 
+### Déployer un changement de code sans attendre lundi
+
+⚠️ **`vercel --prod` ne marche pas** : il lance le build chez Vercel, qui n'a pas accès à la base, et échoue sur `DATABASE_URL is not set`. Il faut builder là où la base est joignable, puis envoyer le résultat déjà buildé.
+
+**Depuis le VPS** (recommandé, avec tous les garde-fous et la mise à jour des données) :
+
+```bash
+systemctl --user start game-over-deploy.service
+```
+
+**Depuis ton poste** (le code local, sans `git pull`, sauvegarde, migrations ni contrôle du nombre de pages) :
+
+```bash
+ssh -N -L 5433:127.0.0.1:5433 ubuntu@51.38.191.183   # tunnel vers la base, dans un autre terminal
+vercel build --prod && vercel deploy --prebuilt --prod
+```
+
+Le build part du dossier local : committe et pousse d'abord, pour que le prochain run du VPS ne déploie pas une version différente.
+
 ### Actus
 
 Toutes les heures, le timer `game-over-news` du VPS lance [scripts/publish-news.ts](scripts/publish-news.ts). Le script rédige avec OpenAI un article original à partir d'une actu jeux vidéo en anglais, l'enrichit avec les données du catalogue (durée de vie, avis), l'illustre avec un visuel IGDB ou Steam du jeu, puis le publie en JSON sur Vercel Blob. Les pages `/actus`, `/actus/[slug]` et `/actus/sitemap.xml` sont les seules rendues à la demande (adaptateur `@astrojs/vercel`, `prerender = false`) : aucune reconstruction du site n'est nécessaire.

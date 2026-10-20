@@ -49,7 +49,7 @@ export interface IgdbResult {
 
 let headers: Record<string, string> | undefined;
 
-async function getHeaders() {
+export async function getHeaders() {
   if (headers) return headers;
   const clientId = process.env.IGDB_CLIENT_ID || process.env.CLIENT_ID;
   const clientSecret =

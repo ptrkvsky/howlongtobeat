@@ -182,6 +182,34 @@ export const gameItemListNode = (
   })),
 });
 
+// Article of /actus: written by the site, illustrated with a 16:9 image
+export const newsArticleNode = (
+  path: string,
+  article: {
+    title: string;
+    excerpt: string;
+    date: string;
+    image: { url: string; width: number; height: number };
+  },
+): JsonLdNode => ({
+  '@type': `NewsArticle`,
+  '@id': `${absolute(path)}#article`,
+  mainEntityOfPage: ref(pageIds(path).webpage),
+  headline: article.title,
+  description: article.excerpt,
+  image: {
+    '@type': `ImageObject`,
+    url: absolute(article.image.url),
+    width: article.image.width,
+    height: article.image.height,
+  },
+  datePublished: article.date,
+  dateModified: article.date,
+  inLanguage: LANGUAGE,
+  author: ref(siteIds.organization),
+  publisher: ref(siteIds.organization),
+});
+
 export const graph = (nodes: JsonLdNode[]) => ({
   '@context': `https://schema.org`,
   '@graph': nodes,

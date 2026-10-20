@@ -1,0 +1,100 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import LayoutFront from '@/layouts/LayoutFront.astro';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
+import HomeTitle from '@/styles/components/titles/HomeTitle.astro';
+import { newsCategoryLabels, newsPageUrl } from '@/config/news';
+import { getNewsArticle } from '@/features/actus/api';
+import { formatDayAndTime } from '@/features/actus/format';
+import {
+  breadcrumbNode,
+  newsArticleNode,
+  organizationNode,
+  webPageNode,
+  websiteNode,
+} from '@/utils/structuredData';
+import styles from '@/styles/actus.module.css';
+
+// One news article, published on Vercel Blob by scripts/publish-news.ts:
+// rendered on demand, cached by the CDN (an article never changes)
+export const prerender = false;
+
+const slug = Astro.params.slug!;
+const article = await getNewsArticle(slug);
+if (!article) Astro.response.status = 404;
+Astro.response.headers.set(
+  `Cache-Control`,
+  article
+    ? `public, s-maxage=86400, stale-while-revalidate=604800`
+    : `public, s-maxage=60`,
+);
+
+const path = newsPageUrl(slug);
+const breadcrumb = [
+  { name: `Accueil`, path: `/` },
+  { name: `Actus`, path: `/actus` },
+  { name: article?.title ?? `Article`, path },
+];
+const imageUrl = article && new URL(article.image.url, Astro.site).href;
+---
+
+{article ? (
+  <BaseLayout
+    title={article.title}
+    description={article.excerpt}
+    canonical={path}
+    ogImage={imageUrl!}
+    largeImagePreview
+    jsonLd={[
+      websiteNode(),
+      organizationNode(),
+      webPageNode({
+        path,
+        name: article.title,
+        description: article.excerpt,
+      }),
+      breadcrumbNode(path, breadcrumb),
+      newsArticleNode(path, article),
+    ]}
+  >
+    <LayoutFront isCentered>
+      <Breadcrumb items={breadcrumb} />
+      <article class={styles.article}>
+        <h1 class={styles.articleTitle}>{article.title}</h1>
+        <p class={styles.date}>
+          {newsCategoryLabels[article.category]} · Publié le{` `}
+          <time datetime={article.date}>
+            {formatDayAndTime(new Date(article.date))}
+          </time>
+        </p>
+        <p class={styles.lead}>{article.excerpt}</p>
+        <img
+          class={styles.cover}
+          src={article.image.url}
+          alt={article.image.alt}
+          width={article.image.width}
+          height={article.image.height}
+          fetchpriority="high"
+        />
+        {/* HTML rendered by scripts/publish-news.ts, without raw HTML */}
+        <div class={styles.content} set:html={article.content} />
+        {article.game && (
+          <a class={styles.game} href={`/jeu/${article.game.slug}`}>
+            <span>Combien de temps pour finir {article.game.name} ?</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        )}
+        <a class={styles.back} href="/actus">
+          ← Toutes les actus
+        </a>
+      </article>
+    </LayoutFront>
+  </BaseLayout>
+) : (
+  <BaseLayout title="Article introuvable" noindex>
+    <LayoutFront isCentered>
+      <HomeTitle>Cet article n'existe pas</HomeTitle>
+      <a href="/actus">Toutes les actus</a>
+    </LayoutFront>
+  </BaseLayout>
+)}

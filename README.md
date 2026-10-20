@@ -28,10 +28,10 @@ Le site est buildé **sur un VPS**, pas chez Vercel. Vercel ne sert que les fich
  └───────────────────────┬─────────────────────────────────────────────────┘
                          │ build prêt à servir
                          ▼
-               Vercel : CDN statique game-over.io
+               Vercel : CDN statique game-over.io (+ fonction pour /actus)
                          ▲
-                         │ /actus lit un JSON côté client
-               Vercel Blob ◄── GitHub Action « GameSpot news » (6 h, 11 h 30, 17 h 30)
+                         │ /actus rendu à la demande, mis en cache par le CDN
+               Vercel Blob ◄── timer « game-over-news » du VPS (toutes les heures)
 ```
 
 Pourquoi ce montage :
@@ -50,9 +50,9 @@ Garde-fous de `scripts/deploy.sh` :
 
 Installation du VPS, du timer et commandes d'exploitation (logs, run manuel, restauration de la base) : **[scripts/systemd/README.md](scripts/systemd/README.md)**.
 
-### Actus GameSpot
+### Actus
 
-La page `/actus` est un POC. Le workflow [.github/workflows/gamespot-news.yml](.github/workflows/gamespot-news.yml) lance [scripts/fetch-gamespot.ts](scripts/fetch-gamespot.ts) trois fois par jour. Le script publie les 5 dernières actus GameSpot dans un JSON sur Vercel Blob, et la page le charge côté client : aucune reconstruction du site n'est nécessaire. Le secret GitHub `BLOB_READ_WRITE_TOKEN` doit être défini.
+Toutes les heures, le timer `game-over-news` du VPS lance [scripts/publish-news.ts](scripts/publish-news.ts). Le script rédige avec OpenAI un article original à partir d'une actu jeux vidéo en anglais, l'enrichit avec les données du catalogue (durée de vie, avis), l'illustre avec un visuel IGDB ou Steam du jeu, puis le publie en JSON sur Vercel Blob. Les pages `/actus`, `/actus/[slug]` et `/actus/sitemap.xml` sont les seules rendues à la demande (adaptateur `@astrojs/vercel`, `prerender = false`) : aucune reconstruction du site n'est nécessaire.
 
 ## Développement local
 
@@ -72,16 +72,15 @@ ssh -N -L 5433:127.0.0.1:5433 ubuntu@51.38.191.183
 
 ### Variables d'environnement (`.env.local`)
 
-| Variable                               | Utilisée par                                         |
-| -------------------------------------- | ---------------------------------------------------- |
-| `DATABASE_URL`                         | build du site, scripts, Drizzle                      |
-| `PUBLIC_GAMESPOT_JSON_URL`             | page `/actus` (URL publique du JSON sur Vercel Blob) |
-| `IGDB_CLIENT_ID`, `IGDB_CLIENT_SECRET` | enrichissement IGDB (identifiants Twitch)            |
-| `STEAM_API_KEY`                        | avis et succès Steam                                 |
-| `ITAD_API_KEY`                         | prix IsThereAnyDeal (POC `enrich-games.ts`)          |
-| `OPENAI_API_KEY`, `OPENAI_MODEL`       | traduction des descriptions                          |
-| `BLOB_READ_WRITE_TOKEN`                | publication des actus GameSpot                       |
-| `SANITY_ID`, `SANITY_DATASET`          | migration ponctuelle depuis Sanity uniquement        |
+| Variable                               | Utilisée par                                     |
+| -------------------------------------- | ------------------------------------------------ |
+| `DATABASE_URL`                         | build du site, scripts, Drizzle                  |
+| `IGDB_CLIENT_ID`, `IGDB_CLIENT_SECRET` | enrichissement IGDB (identifiants Twitch)        |
+| `STEAM_API_KEY`                        | avis et succès Steam                             |
+| `ITAD_API_KEY`                         | prix IsThereAnyDeal (POC `enrich-games.ts`)      |
+| `OPENAI_API_KEY`, `OPENAI_MODEL`       | traduction des descriptions, rédaction des actus |
+| `BLOB_READ_WRITE_TOKEN`                | publication des actus                            |
+| `SANITY_ID`, `SANITY_DATASET`          | migration ponctuelle depuis Sanity uniquement    |
 
 Les variables du déploiement (`VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`, `UPDATE_CMD`, `HEALTHCHECK_URL`…) sont décrites dans [scripts/systemd/deploy.env.example](scripts/systemd/deploy.env.example).
 
@@ -110,7 +109,7 @@ Le catalogue vit dans Postgres (schéma : [src/db/schema.ts](src/db/schema.ts)) 
 | [scripts/import-games.ts](scripts/import-games.ts)       | importe les jeux qui passent le seuil de popularité, puis publie ceux qui sont prêts (`--publish`)             |
 | [scripts/sync.ts](scripts/sync.ts)                       | remplit les tables des sources externes (`ids`, `igdb`, `steam`, `summary`), avec reprise après arrêt          |
 | [scripts/translate-games.ts](scripts/translate-games.ts) | traduit les descriptions EN → FR avec OpenAI, dans un fichier relu avant `--write`                             |
-| [scripts/fetch-gamespot.ts](scripts/fetch-gamespot.ts)   | publie les actus GameSpot sur Vercel Blob                                                                      |
+| [scripts/publish-news.ts](scripts/publish-news.ts)       | rédige et publie une actu par heure sur Vercel Blob                                                            |
 | [scripts/deploy.sh](scripts/deploy.sh)                   | build et déploiement (voir plus haut)                                                                          |
 | `scripts/enrich-games.ts`, `scripts/hltb-poc.ts`         | POC : couverture des sources et seuil de popularité. Rien n'est écrit en base                                  |
 | `scripts/migrate-from-sanity.ts`                         | migration ponctuelle Sanity → Postgres                                                                         |
@@ -126,7 +125,7 @@ Le périmètre fonctionnel des fiches jeux et l'étude du seuil de popularité s
 - [`drizzle`](drizzle) : migrations SQL
 - [`infra/postgres`](infra/postgres) : `docker-compose.yml` de la base sur le VPS
 - [`docs`](docs) : documentation fonctionnelle
-- [`.github/workflows`](.github/workflows) : CI des PR et actus GameSpot
+- [`.github/workflows`](.github/workflows) : CI des PR
 
 ## Qualité
 

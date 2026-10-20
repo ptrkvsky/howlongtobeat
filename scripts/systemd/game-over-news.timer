@@ -1,0 +1,9 @@
+[Unit]
+Description=Hourly news article of game-over.io
+
+[Timer]
+OnCalendar=*-*-* *:17:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

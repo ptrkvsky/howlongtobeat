@@ -133,12 +133,6 @@
   font-size: var(--font-size-xl);
 }
 
-.content a,
-.source a {
-  color: var(--color-primary-500);
-  text-decoration: underline;
-}
-
 .content img {
   max-width: 100%;
   height: auto;
@@ -153,15 +147,27 @@
   font-style: italic;
 }
 
-.source {
+.game {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
   margin-top: var(--space-8);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--color-gray-700);
-  color: var(--color-gray-300);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-primary-500);
+  border-radius: var(--space-2);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-lg);
+  color: var(--color-contrast);
+  transition: background-color 0.2s;
+}
+
+.game:hover {
+  background-color: var(--color-primary-500);
 }
 
 .back {
-  display: inline-block;
+  display: block;
+  width: fit-content;
   margin: var(--space-8) 0;
   color: var(--color-white-alpha-800);
 }

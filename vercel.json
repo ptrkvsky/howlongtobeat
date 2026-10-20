@@ -11,6 +11,11 @@
       "source": "/sitemap.xml",
       "destination": "/sitemap-index.xml",
       "permanent": true
+    },
+    {
+      "source": "/actus/article",
+      "destination": "/actus",
+      "permanent": true
     }
   ]
 }

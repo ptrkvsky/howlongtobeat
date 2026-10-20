@@ -55,6 +55,25 @@ Prérequis sur le VPS : Node 24, pnpm, le CLI Vercel (`npm i -g vercel`), git, c
 | Restaurer la base                                         | `docker exec -i gameover-postgres pg_restore -U gameover -d gameover --clean < ~/backups/gameover/<fichier>.dump` |
 | Corriger des données à la main, depuis ton poste          | `ssh -N -L 5433:127.0.0.1:5433 ubuntu@51.38.191.183`, puis `pnpm db:studio`                                       |
 
+## Actus
+
+Toutes les heures (à la 17e minute), `scripts/publish-news.ts` rédige un article à partir de la dernière actu jeux vidéo pas encore traitée et le publie sur Vercel Blob. Les pages `/actus` le lisent à la demande : aucun déploiement n'est nécessaire.
+
+Le `.env.local` du VPS doit contenir `OPENAI_API_KEY` et `BLOB_READ_WRITE_TOKEN`, en plus de `DATABASE_URL` et des identifiants IGDB.
+
+```bash
+cp scripts/systemd/game-over-news.{service,timer} ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now game-over-news.timer
+```
+
+| Besoin                           | Commande                                         |
+| -------------------------------- | ------------------------------------------------ |
+| Publier un article maintenant    | `systemctl --user start game-over-news.service`  |
+| Logs                             | `journalctl --user -u game-over-news.service -e` |
+| Tester sans publier              | `pnpm tsx scripts/publish-news.ts --dry-run`     |
+| Supprimer les fichiers orphelins | `pnpm tsx scripts/publish-news.ts --purge`       |
+
 ## Garde-fous
 
 - **Nombre de pages.** Le script refuse de déployer si le build contient moins de 95 % des pages du déploiement précédent : une API en panne ne vide pas le site.

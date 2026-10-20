@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://game-over.io/sitemap-index.xml
+Sitemap: https://game-over.io/actus/sitemap.xml

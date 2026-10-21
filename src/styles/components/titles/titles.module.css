@@ -9,6 +9,12 @@
   }
 }
 
+.sectionTitle {
+  margin-top: var(--space-12);
+  font-size: var(--font-size-5xl);
+  color: var(--color-white-alpha-800);
+}
+
 .list {
   margin-top: var(--space-12);
 }

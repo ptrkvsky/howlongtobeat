@@ -12,7 +12,7 @@ import type { GameSummary } from '@/types/Game';
 import type { Genre } from '@/types/Genre';
 import {
   breadcrumbNode,
-  gameItemListNode,
+  itemListNode,
   pageIds,
   ref,
   webPageNode,
@@ -62,10 +62,14 @@ const jsonLd = [
     extra: { mainEntity: ref(pageIds(canonical).itemList) },
   }),
   breadcrumbNode(canonical, breadcrumb),
-  gameItemListNode(canonical, page.data, {
-    total: page.total,
-    start: page.start,
-  }),
+  itemListNode(
+    canonical,
+    page.data.map((game) => ({ name: game.name, path: `/jeu/${game.slug}` })),
+    {
+      total: page.total,
+      start: page.start,
+    },
+  ),
 ];
 ---
 

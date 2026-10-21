@@ -18,6 +18,17 @@ interface Props {
   largeImagePreview?: boolean;
   // schema.org nodes, rendered as one JSON-LD @graph
   jsonLd?: JsonLdNode[];
+  // Open Graph type: an /actus article, an author page or any other page
+  ogType?: `website` | `article` | `profile`;
+  // article:* Open Graph tags of an /actus article
+  article?: {
+    publishedTime: string;
+    modifiedTime: string;
+    // Author page URL and name
+    authorUrl: string;
+    authorName: string;
+    section: string;
+  };
 }
 
 const {
@@ -31,6 +42,8 @@ const {
   noindex,
   largeImagePreview,
   jsonLd,
+  ogType = `website`,
+  article,
 } = Astro.props;
 
 const fullTitle =
@@ -56,13 +69,40 @@ const gtmSnippet = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':ne
     )}
     {prev && <link rel="prev" href={new URL(prev, Astro.site)} />}
     {next && <link rel="next" href={new URL(next, Astro.site)} />}
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={siteInformations.title} />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:title" content={absoluteTitle ?? title ?? fullTitle} />
+    {description && <meta property="og:description" content={description} />}
+    {canonical && (
+      <meta property="og:url" content={new URL(canonical, Astro.site)} />
+    )}
     {ogImage && <meta property="og:image" content={ogImage} />}
+    {article && (
+      <>
+        <meta name="author" content={article.authorName} />
+        <meta
+          property="article:published_time"
+          content={article.publishedTime}
+        />
+        <meta property="article:modified_time" content={article.modifiedTime} />
+        <meta
+          property="article:author"
+          content={new URL(article.authorUrl, Astro.site)}
+        />
+        <meta property="article:section" content={article.section} />
+      </>
+    )}
     {jsonLd?.length && (
       <script
         type="application/ld+json"
         set:html={JSON.stringify(graph(jsonLd)).replace(/</g, `\\u003c`)}
       />
     )}
+    <meta
+      name="twitter:card"
+      content={largeImagePreview ? `summary_large_image` : `summary`}
+    />
     <meta name="twitter:site" content={siteInformations.twitter} />
     <meta name="theme-color" content="#6100FF" />
     <meta

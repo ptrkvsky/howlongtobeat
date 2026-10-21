@@ -16,6 +16,7 @@ import { existsSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { list } from '@vercel/blob';
 import { inArray } from 'drizzle-orm';
+import { authorForCategory } from '../src/config/authors';
 import {
   NEWS_CATEGORIES,
   type NewsCategory,
@@ -102,6 +103,7 @@ async function main() {
     excerpt: article.excerpt!,
     contentHtml: article.content,
     category: article.category,
+    author: authorForCategory(article.category),
     image: article.image,
     gameId: article.game ? (gameIds.get(article.game.slug) ?? null) : null,
     publishedAt: new Date(article.date),

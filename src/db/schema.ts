@@ -15,6 +15,7 @@ import {
   text,
   timestamp,
 } from 'drizzle-orm/pg-core';
+import { AUTHOR_SLUGS } from '../config/authors';
 import { NEWS_CATEGORIES, type NewsImage } from '../config/news';
 
 const timestamps = {
@@ -219,6 +220,7 @@ export const hltbStats = pgTable(`hltb_stats`, {
 // ── News: written every hour by scripts/publish-news.ts ────────────────────
 
 export const newsCategory = pgEnum(`news_category`, NEWS_CATEGORIES);
+export const newsAuthor = pgEnum(`news_author`, AUTHOR_SLUGS);
 
 export const newsArticle = pgTable(`news_article`, {
   id: serial(`id`).primaryKey(),
@@ -232,6 +234,8 @@ export const newsArticle = pgTable(`news_article`, {
   // Rendered by the script, without raw HTML from the model
   contentHtml: text(`content_html`).notNull(),
   category: newsCategory(`category`).notNull(),
+  // Signed by the author of the category (src/config/authors.ts)
+  author: newsAuthor(`author`).notNull(),
   image: jsonb(`image`).$type<NewsImage>().notNull(),
   gameId: integer(`game_id`).references(() => game.id, {
     onDelete: `set null`,

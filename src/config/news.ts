@@ -1,3 +1,5 @@
+import type { AuthorSlug } from './authors';
+
 // Video game news shown on /actus: written every hour by
 // scripts/publish-news.ts into the news_article table, built as static pages
 export const newsPageUrl = (slug: string) => `/actus/${slug}`;
@@ -35,6 +37,7 @@ export interface NewsSummary {
   slug: string;
   date: string;
   category: NewsCategory;
+  author: AuthorSlug;
   image: NewsImage;
   title: string;
   excerpt: string;
@@ -43,6 +46,8 @@ export interface NewsSummary {
 }
 
 export interface NewsArticle extends NewsSummary {
+  // dateModified of the structured data
+  updatedAt: string;
   // Rewritten article, as HTML
   content: string;
 }

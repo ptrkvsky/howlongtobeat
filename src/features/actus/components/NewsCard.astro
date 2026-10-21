@@ -1,0 +1,44 @@
+---
+import { authors } from '@/config/authors';
+import {
+  newsCategoryLabels,
+  newsPageUrl,
+  type NewsSummary,
+} from '@/config/news';
+import { formatDate } from '@/features/actus/format';
+import styles from '@/styles/actus.module.css';
+
+interface Props {
+  article: NewsSummary;
+  // Only the first image of the list is loaded right away
+  eager?: boolean;
+}
+
+// One article of /actus and of the author pages. The whole card is a link:
+// the author's name is plain text
+const { article, eager = false } = Astro.props;
+---
+
+<li class={styles.card}>
+  <a class={styles.link} href={newsPageUrl(article.slug)}>
+    <img
+      class={styles.image}
+      src={article.image.url}
+      alt={article.image.alt}
+      loading={eager ? `eager` : `lazy`}
+      width="320"
+      height="180"
+    />
+    <div class={styles.body}>
+      <p class={styles.date}>
+        {newsCategoryLabels[article.category]} ·{` `}
+        <time datetime={article.date}>
+          {formatDate.format(new Date(article.date))}
+        </time>
+        {` `}· par {authors[article.author].name}
+      </p>
+      <h2 class={styles.title}>{article.title}</h2>
+      <p class={styles.excerpt}>{article.excerpt}</p>
+    </div>
+  </a>
+</li>

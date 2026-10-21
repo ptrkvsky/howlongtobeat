@@ -1,0 +1,148 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import LayoutFront from '@/layouts/LayoutFront.astro';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
+import Markdown from '@/components/Markdown.astro';
+import Pagination from '@/components/Pagination/Pagination.astro';
+import {
+  AUTHOR_IMAGE_SIZE,
+  authorPageUrl,
+  authors,
+  type Author,
+} from '@/config/authors';
+import { newsPageUrl, type NewsSummary } from '@/config/news';
+import { NEWS_PAGE_SIZE } from '@/config/pagination';
+import urls from '@/config/urls';
+import { getNewsArticlesByAuthor } from '@/features/actus/api';
+import NewsCard from '@/features/actus/components/NewsCard.astro';
+import {
+  breadcrumbNode,
+  itemListNode,
+  organizationNode,
+  personId,
+  personNode,
+  ref,
+  webPageNode,
+  websiteNode,
+} from '@/utils/structuredData';
+import styles from '@/styles/actus.module.css';
+
+// /auteurs/<slug> for the author and their latest articles, then
+// /auteurs/<slug>/2… An author without article still gets their page
+export const getStaticPaths = (async ({ paginate }) => {
+  const pages = await Promise.all(
+    Object.values(authors).map(async (author) =>
+      paginate(await getNewsArticlesByAuthor(author.slug), {
+        params: { slug: author.slug },
+        props: { author },
+        pageSize: NEWS_PAGE_SIZE,
+      }),
+    ),
+  );
+  return pages.flat();
+}) satisfies GetStaticPaths;
+
+interface Props {
+  author: Author;
+  page: Page<NewsSummary>;
+}
+
+const { author, page } = Astro.props;
+const authorPath = authorPageUrl(author.slug);
+const canonical = page.url.current;
+// Other pages get their own title and description
+const pageSuffix = page.currentPage > 1 ? ` - Page ${page.currentPage}` : ``;
+const title = `${author.name}, ${author.jobTitle.toLowerCase()}${pageSuffix}`;
+const description = `${author.shortBio}${pageSuffix}`;
+const breadcrumb = [
+  { name: `Accueil`, path: `/` },
+  { name: `Actus`, path: urls.actus },
+  { name: author.name, path: authorPath },
+  ...(page.currentPage > 1
+    ? [{ name: `Page ${page.currentPage}`, path: canonical }]
+    : []),
+];
+const articleCount = `${page.total} article${page.total > 1 ? `s` : ``}`;
+---
+
+<BaseLayout
+  {title}
+  {description}
+  {canonical}
+  prev={page.url.prev}
+  next={page.url.next}
+  ogImage={new URL(author.image, Astro.site).href}
+  ogType="profile"
+  jsonLd={[
+    websiteNode(),
+    organizationNode(),
+    webPageNode({
+      type: `ProfilePage`,
+      path: canonical,
+      name: title,
+      description,
+      extra: { mainEntity: ref(personId(author.slug)) },
+    }),
+    breadcrumbNode(canonical, breadcrumb),
+    personNode(author),
+    itemListNode(
+      canonical,
+      page.data.map((article) => ({
+        name: article.title,
+        path: newsPageUrl(article.slug),
+      })),
+      { total: page.total, start: page.start },
+    ),
+  ]}
+>
+  <LayoutFront isCentered>
+    <Breadcrumb items={breadcrumb} />
+    <header class={styles.profile}>
+      <img
+        class={styles.profileAvatar}
+        src={author.image}
+        alt={`Avatar illustré de ${author.name}`}
+        width={AUTHOR_IMAGE_SIZE}
+        height={AUTHOR_IMAGE_SIZE}
+        fetchpriority="high"
+      />
+      <div>
+        <h1 class={styles.articleTitle}>{author.name}</h1>
+        <p class={styles.profileJob}>{author.jobTitle}</p>
+        <p class={styles.date}>
+          Dans le jeu vidéo depuis {author.since} · {articleCount}
+        </p>
+      </div>
+    </header>
+    {page.currentPage === 1 && (
+      <>
+        <div class={styles.content}>
+          <Markdown source={author.bio} />
+        </div>
+        <ul class={styles.chips} aria-label="Spécialités">
+          {author.knowsAbout.map((topic) => (
+            <li>{topic}</li>
+          ))}
+        </ul>
+      </>
+    )}
+    <h2 class={styles.sectionTitle}>Ses derniers articles</h2>
+    {page.total > 0 ? (
+      <>
+        <ol class={styles.list}>
+          {page.data.map((article, position) => (
+            <NewsCard {article} eager={position === 0} />
+          ))}
+        </ol>
+        <Pagination
+          baseUrl={authorPath}
+          currentPage={page.currentPage}
+          lastPage={page.lastPage}
+        />
+      </>
+    ) : (
+      <p class={styles.meta}>Ses premiers articles arrivent bientôt.</p>
+    )}
+  </LayoutFront>
+</BaseLayout>

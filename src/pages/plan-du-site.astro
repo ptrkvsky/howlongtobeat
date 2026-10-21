@@ -4,8 +4,10 @@ import LayoutFront from '@/layouts/LayoutFront.astro';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
 import HomeTitle from '@/styles/components/titles/HomeTitle.astro';
 import List from '@/styles/components/titles/List.astro';
+import { authorPageUrl, authors } from '@/config/authors';
 import { getAllGenres } from '@/functions/getAllGenres';
 import { breadcrumbNode, webPageNode } from '@/utils/structuredData';
+import titles from '@/styles/components/titles/titles.module.css';
 
 const genres = await getAllGenres();
 const path = `/plan-du-site`;
@@ -28,6 +30,14 @@ const jsonLd = [
       {genres.map((genre) => (
         <li>
           <a href={`/genre/${genre.slug}`}>{genre.name}</a>
+        </li>
+      ))}
+    </List>
+    <h2 class={titles.sectionTitle}>Auteurs</h2>
+    <List>
+      {Object.values(authors).map((author) => (
+        <li>
+          <a href={authorPageUrl(author.slug)}>{author.name}</a>
         </li>
       ))}
     </List>

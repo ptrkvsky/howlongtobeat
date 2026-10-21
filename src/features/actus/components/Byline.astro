@@ -1,0 +1,25 @@
+---
+import { authorPageUrl, authors } from '@/config/authors';
+import { newsCategoryLabels, type NewsArticle } from '@/config/news';
+import { formatDayAndTime } from '@/features/actus/format';
+import styles from '@/styles/actus.module.css';
+
+interface Props {
+  article: NewsArticle;
+}
+
+// "Sortie · Par Léa Moreau · le 21 octobre 2026 à 09:01", under the title
+const { article } = Astro.props;
+const author = authors[article.author];
+---
+
+<p class={styles.byline}>
+  {newsCategoryLabels[article.category]} · Par{` `}
+  <a href={authorPageUrl(author.slug)} rel="author">
+    {author.name}
+  </a>
+  {` `}· le{` `}
+  <time datetime={article.date}>
+    {formatDayAndTime(new Date(article.date))}
+  </time>
+</p>

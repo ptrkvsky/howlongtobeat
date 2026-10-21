@@ -55,6 +55,20 @@ Le détail est dans les prompts `GAME_PROMPT` et `WRITER_PROMPT` de `publish-new
 
 Choisie par [scripts/news/image.ts](../scripts/news/image.ts) : un visuel IGDB ou Steam du jeu, sinon un visuel générique de la catégorie de l'actu.
 
+### Auteur
+
+Chaque actu est signée par l'un des trois auteurs de [src/config/authors.ts](../src/config/authors.ts), choisi selon sa catégorie :
+
+| Auteur         | Catégories                      |
+| -------------- | ------------------------------- |
+| Léa Moreau     | `sortie`, `annonce`             |
+| Thomas Ferrand | `materiel`, `industrie`         |
+| Inès Bakri     | `mise-a-jour`, `promo`, `autre` |
+
+Ce sont des personas : leur bio est inventée et leur avatar est une illustration générée une seule fois (`public/auteurs/`). Chacun a sa page `/auteurs/<slug>` avec sa bio et ses articles. La signature en haut de l'article, l'encadré en bas et les données structurées (`Person`, `ProfilePage`) renvoient tous vers cette page.
+
+Pour changer la répartition, il faut modifier `categories` dans `authors.ts`. Seuls les nouveaux articles sont concernés : les anciens gardent leur colonne `author`.
+
 ## 3. Données
 
 Table `news_article` ([src/db/schema.ts](../src/db/schema.ts)) :
@@ -65,6 +79,7 @@ Table `news_article` ([src/db/schema.ts](../src/db/schema.ts)) :
 | `source_key`, `source_url`         | actu d'origine (l'URL n'est jamais affichée)                                    |
 | `title`, `excerpt`, `content_html` | article ; le HTML est produit par le script, sans HTML brut venant du modèle    |
 | `category`                         | `sortie`, `mise-a-jour`, `annonce`, `materiel`, `industrie`, `promo` ou `autre` |
+| `author`                           | auteur qui signe l'article, d'après sa catégorie (voir « Auteur »)              |
 | `image`                            | `{ url, width, height, alt }`                                                   |
 | `game_id`                          | jeu du catalogue ; le lien n'est affiché que si le jeu est publié               |
 | `is_published`                     | `false` pour retirer un article du site                                         |

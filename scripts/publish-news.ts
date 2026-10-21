@@ -26,6 +26,7 @@ import { Marked } from 'marked';
 import { NodeHtmlMarkdown } from 'node-html-markdown';
 import OpenAI from 'openai';
 import { inArray } from 'drizzle-orm';
+import { authorForCategory } from '../src/config/authors';
 import { NEWS_CATEGORIES, type NewsCategory } from '../src/config/news';
 import { closeDb, getDb } from '../src/db/client';
 import { newsArticle } from '../src/db/schema';
@@ -292,6 +293,7 @@ async function write(
     sourceUrl: source.url,
     publishedAt: new Date(),
     category: result.category,
+    author: authorForCategory(result.category),
     image: await newsImage({
       igdb: game?.igdb ?? null,
       steamAppId: game?.steamAppId ?? null,

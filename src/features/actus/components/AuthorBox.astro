@@ -1,0 +1,41 @@
+---
+import {
+  AUTHOR_IMAGE_SIZE,
+  authorPageUrl,
+  authors,
+  type AuthorSlug,
+} from '@/config/authors';
+import styles from '@/styles/actus.module.css';
+
+interface Props {
+  slug: AuthorSlug;
+}
+
+// Under the article: who wrote it, with a link to their page
+const author = authors[Astro.props.slug];
+const url = authorPageUrl(author.slug);
+---
+
+<aside class={styles.authorBox} aria-label="À propos de l'auteur">
+  <div class={styles.authorBar} aria-hidden="true"></div>
+  <div class={styles.authorBody}>
+    <img
+      class={styles.authorAvatar}
+      src={author.image}
+      alt={`Avatar illustré de ${author.name}`}
+      width={AUTHOR_IMAGE_SIZE}
+      height={AUTHOR_IMAGE_SIZE}
+      loading="lazy"
+    />
+    <div class={styles.authorText}>
+      <a class={styles.authorName} href={url} rel="author">
+        {author.name}
+      </a>
+      <p class={styles.authorJob}>{author.jobTitle}</p>
+      <p>{author.shortBio}</p>
+      <a class={styles.authorMore} href={url}>
+        Tous ses articles →
+      </a>
+    </div>
+  </div>
+</aside>

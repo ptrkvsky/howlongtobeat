@@ -3,6 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import LayoutFront from '@/layouts/LayoutFront.astro';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
 import type { GetStaticPaths } from 'astro';
+import { authorPageUrl, authors } from '@/config/authors';
 import {
   newsCategoryLabels,
   newsPageUrl,
@@ -10,11 +11,13 @@ import {
 } from '@/config/news';
 import urls from '@/config/urls';
 import { getNewsArticles } from '@/features/actus/api';
-import { formatDayAndTime } from '@/features/actus/format';
+import AuthorBox from '@/features/actus/components/AuthorBox.astro';
+import Byline from '@/features/actus/components/Byline.astro';
 import {
   breadcrumbNode,
   newsArticleNode,
   organizationNode,
+  personNode,
   webPageNode,
   websiteNode,
 } from '@/utils/structuredData';
@@ -39,6 +42,7 @@ const breadcrumb = [
   { name: article.title, path },
 ];
 const imageUrl = new URL(article.image.url, Astro.site).href;
+const author = authors[article.author];
 ---
 
 <BaseLayout
@@ -47,6 +51,14 @@ const imageUrl = new URL(article.image.url, Astro.site).href;
   canonical={path}
   ogImage={imageUrl}
   largeImagePreview
+  ogType="article"
+  article={{
+    publishedTime: article.date,
+    modifiedTime: article.updatedAt,
+    authorUrl: authorPageUrl(author.slug),
+    authorName: author.name,
+    section: newsCategoryLabels[article.category],
+  }}
   jsonLd={[
     websiteNode(),
     organizationNode(),
@@ -57,18 +69,14 @@ const imageUrl = new URL(article.image.url, Astro.site).href;
     }),
     breadcrumbNode(path, breadcrumb),
     newsArticleNode(path, article),
+    personNode(author),
   ]}
 >
   <LayoutFront isCentered>
     <Breadcrumb items={breadcrumb} />
     <article class={styles.article}>
       <h1 class={styles.articleTitle}>{article.title}</h1>
-      <p class={styles.date}>
-        {newsCategoryLabels[article.category]} · Publié le{` `}
-        <time datetime={article.date}>
-          {formatDayAndTime(new Date(article.date))}
-        </time>
-      </p>
+      <Byline {article} />
       <p class={styles.lead}>{article.excerpt}</p>
       <img
         class={styles.cover}
@@ -86,6 +94,7 @@ const imageUrl = new URL(article.image.url, Astro.site).href;
           <span aria-hidden="true">→</span>
         </a>
       )}
+      <AuthorBox slug={article.author} />
       <a class={styles.back} href={urls.actus}>
         ← Toutes les actus
       </a>

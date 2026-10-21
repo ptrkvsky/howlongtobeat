@@ -3,6 +3,7 @@
  * pages.
  */
 import { desc, eq } from 'drizzle-orm';
+import type { AuthorSlug } from '@/config/authors';
 import type { NewsArticle } from '@/config/news';
 import { getDb } from '@/db/client';
 import { newsArticle } from '@/db/schema';
@@ -26,7 +27,9 @@ async function fetchNewsArticles(): Promise<NewsArticle[]> {
     return {
       slug: row.slug,
       date: row.publishedAt.toISOString(),
+      updatedAt: row.updatedAt.toISOString(),
       category: row.category,
+      author: row.author,
       image: row.image,
       title: row.title,
       excerpt: row.excerpt,
@@ -42,4 +45,9 @@ let newsPromise: Promise<NewsArticle[]> | undefined;
 export function getNewsArticles() {
   newsPromise ??= fetchNewsArticles();
   return newsPromise;
+}
+
+// Articles of an author page, from the same build cache
+export async function getNewsArticlesByAuthor(slug: AuthorSlug) {
+  return (await getNewsArticles()).filter((article) => article.author === slug);
 }

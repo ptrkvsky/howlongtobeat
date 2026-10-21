@@ -5,18 +5,18 @@ import LayoutFront from '@/layouts/LayoutFront.astro';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
 import Pagination from '@/components/Pagination/Pagination.astro';
 import HomeTitle from '@/styles/components/titles/HomeTitle.astro';
-import {
-  newsCategoryLabels,
-  newsPageUrl,
-  type NewsSummary,
-} from '@/config/news';
+import { newsPageUrl, type NewsSummary } from '@/config/news';
 import { NEWS_PAGE_SIZE } from '@/config/pagination';
 import urls from '@/config/urls';
 import { getNewsArticles } from '@/features/actus/api';
-import { formatDate, formatDayAndTime } from '@/features/actus/format';
+import NewsCard from '@/features/actus/components/NewsCard.astro';
+import { formatDayAndTime } from '@/features/actus/format';
 import {
   breadcrumbNode,
+  itemListNode,
   organizationNode,
+  pageIds,
+  ref,
   webPageNode,
   websiteNode,
 } from '@/utils/structuredData';
@@ -63,8 +63,17 @@ const latest = page.currentPage === 1 ? page.data[0] : undefined;
       path: canonical,
       name: title,
       description,
+      extra: { mainEntity: ref(pageIds(canonical).itemList) },
     }),
     breadcrumbNode(canonical, breadcrumb),
+    itemListNode(
+      canonical,
+      page.data.map((article) => ({
+        name: article.title,
+        path: newsPageUrl(article.slug),
+      })),
+      { total: page.total, start: page.start },
+    ),
   ]}
 >
   <LayoutFront isCentered>
@@ -79,28 +88,7 @@ const latest = page.currentPage === 1 ? page.data[0] : undefined;
         )}
         <ol class={styles.list}>
           {page.data.map((article, position) => (
-            <li class={styles.card}>
-              <a class={styles.link} href={newsPageUrl(article.slug)}>
-                <img
-                  class={styles.image}
-                  src={article.image.url}
-                  alt={article.image.alt}
-                  loading={position === 0 ? `eager` : `lazy`}
-                  width="320"
-                  height="180"
-                />
-                <div class={styles.body}>
-                  <p class={styles.date}>
-                    {newsCategoryLabels[article.category]} ·{` `}
-                    <time datetime={article.date}>
-                      {formatDate.format(new Date(article.date))}
-                    </time>
-                  </p>
-                  <h2 class={styles.title}>{article.title}</h2>
-                  <p class={styles.excerpt}>{article.excerpt}</p>
-                </div>
-              </a>
-            </li>
+            <NewsCard {article} eager={position === 0} />
           ))}
         </ol>
         <Pagination

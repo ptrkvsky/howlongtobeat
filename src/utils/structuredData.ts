@@ -4,8 +4,16 @@
  * no FAQPage or SearchAction (no longer shown by Google).
  */
 import { marked } from 'marked';
+import {
+  AUTHOR_IMAGE_SIZE,
+  authorPageUrl,
+  authors,
+  type Author,
+  type AuthorSlug,
+} from '@/config/authors';
+import { newsCategoryLabels, type NewsArticle } from '@/config/news';
 import { siteInformations } from '@/config/siteInformations';
-import type { Game, GameSummary } from '@/types/Game';
+import type { Game } from '@/types/Game';
 import type { Genre } from '@/types/Genre';
 import { externalLinks } from '@/utils/externalLinks';
 import { igdbImage } from '@/utils/igdbImage';
@@ -34,6 +42,10 @@ export const pageIds = (path: string) => ({
   game: `${absolute(path)}#game`,
   itemList: `${absolute(path)}#itemlist`,
 });
+
+// The Person of an author, defined on their page and on their articles
+export const personId = (slug: AuthorSlug) =>
+  `${absolute(authorPageUrl(slug))}#person`;
 
 export const ref = (id: string) => ({ '@id': id });
 
@@ -86,7 +98,7 @@ export const organizationNode = (): JsonLdNode => ({
 });
 
 interface WebPageOptions {
-  type?: `WebPage` | `CollectionPage`;
+  type?: `WebPage` | `CollectionPage` | `ProfilePage`;
   path: string;
   name: string;
   description?: string;
@@ -165,50 +177,89 @@ export function videoGameNode(
   };
 }
 
-// A paginated list gives the whole list size and the first game's index
-export const gameItemListNode = (
+// A paginated list gives the whole list size and the first item's index
+export const itemListNode = (
   path: string,
-  games: GameSummary[],
-  { total = games.length, start = 0 } = {},
+  items: BreadcrumbItem[],
+  { total = items.length, start = 0 } = {},
 ): JsonLdNode => ({
   '@type': `ItemList`,
   '@id': pageIds(path).itemList,
   numberOfItems: total,
-  itemListElement: games.map((game, index) => ({
+  itemListElement: items.map((item, index) => ({
     '@type': `ListItem`,
     position: start + index + 1,
-    url: absolute(`/jeu/${game.slug}`),
-    name: game.name,
+    url: absolute(item.path),
+    name: item.name,
   })),
 });
 
-// Article of /actus: written by the site, illustrated with a 16:9 image
-export const newsArticleNode = (
-  path: string,
-  article: {
-    title: string;
-    excerpt: string;
-    date: string;
-    image: { url: string; width: number; height: number };
-  },
-): JsonLdNode => ({
-  '@type': `NewsArticle`,
-  '@id': `${absolute(path)}#article`,
-  mainEntityOfPage: ref(pageIds(path).webpage),
-  headline: article.title,
-  description: article.excerpt,
+// Author of the /actus articles. No sameAs: they have no other profile
+export const personNode = (author: Author): JsonLdNode => ({
+  '@type': `Person`,
+  '@id': personId(author.slug),
+  name: author.name,
+  url: absolute(authorPageUrl(author.slug)),
+  description: author.shortBio,
+  jobTitle: author.jobTitle,
   image: {
     '@type': `ImageObject`,
-    url: absolute(article.image.url),
-    width: article.image.width,
-    height: article.image.height,
+    url: absolute(author.image),
+    width: AUTHOR_IMAGE_SIZE,
+    height: AUTHOR_IMAGE_SIZE,
   },
-  datePublished: article.date,
-  dateModified: article.date,
-  inLanguage: LANGUAGE,
-  author: ref(siteIds.organization),
-  publisher: ref(siteIds.organization),
+  knowsAbout: author.knowsAbout,
+  knowsLanguage: LANGUAGE,
+  worksFor: ref(siteIds.organization),
+  mainEntityOfPage: ref(pageIds(authorPageUrl(author.slug)).webpage),
 });
+
+const wordCount = (html: string) =>
+  html
+    .replace(/<[^>]+>/g, ` `)
+    .split(/\s+/)
+    .filter(Boolean).length;
+
+// Article of /actus: signed by its author, illustrated with a 16:9 image.
+// The author's name and url are repeated, as Google recommends
+export function newsArticleNode(
+  path: string,
+  article: NewsArticle,
+): JsonLdNode {
+  const author = authors[article.author];
+  const image = absolute(article.image.url);
+  return {
+    '@type': `NewsArticle`,
+    '@id': `${absolute(path)}#article`,
+    mainEntityOfPage: ref(pageIds(path).webpage),
+    headline: article.title,
+    description: article.excerpt,
+    image: {
+      '@type': `ImageObject`,
+      url: image,
+      width: article.image.width,
+      height: article.image.height,
+    },
+    thumbnailUrl: image,
+    datePublished: article.date,
+    dateModified: article.updatedAt,
+    inLanguage: LANGUAGE,
+    articleSection: newsCategoryLabels[article.category],
+    wordCount: wordCount(article.content),
+    isAccessibleForFree: true,
+    // Only the games with a page are linked (src/features/actus/api.ts)
+    about: article.game
+      ? ref(pageIds(`/jeu/${article.game.slug}`).game)
+      : undefined,
+    author: {
+      '@type': `Person`,
+      '@id': personId(author.slug),
+      name: author.name,
+      url: absolute(authorPageUrl(author.slug)),
+    },
+    publisher: ref(siteIds.organization),
+  };
+}
 
 export const graph = (nodes: JsonLdNode[]) => ({
   '@context': `https://schema.org`,

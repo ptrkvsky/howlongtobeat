@@ -3,3 +3,6 @@ export const GENRE_PAGE_SIZE = 48;
 
 // Pages per pagination block: the current ten, then jumps by ten
 export const PAGINATION_BLOCK = 10;
+
+// News per /actus page
+export const NEWS_PAGE_SIZE = 20;

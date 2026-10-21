@@ -10,7 +10,7 @@ Site : [www.game-over.io](https://www.game-over.io)
 - TypeScript, CSS Modules
 - PostgreSQL 17 + [Drizzle ORM](https://orm.drizzle.team) (lu au build uniquement)
 - Node 24, pnpm 10
-- Hébergement : Vercel (CDN statique + Blob), build sur un VPS
+- Hébergement : Vercel (CDN statique), build sur un VPS
 
 ## Hébergement et déploiement
 
@@ -28,10 +28,10 @@ Le site est buildé **sur un VPS**, pas chez Vercel. Vercel ne sert que les fich
  └───────────────────────┬─────────────────────────────────────────────────┘
                          │ build prêt à servir
                          ▼
-               Vercel : CDN statique game-over.io (+ fonction pour /actus)
+               Vercel : CDN statique game-over.io
                          ▲
-                         │ /actus rendu à la demande, mis en cache par le CDN
-               Vercel Blob ◄── timer « game-over-news » du VPS (toutes les heures)
+                         │ build + deploy --prebuilt, s'il y a de nouvelles actus
+               timer « game-over-news » du VPS (toutes les heures, scripts/news.sh)
 ```
 
 Pourquoi ce montage :
@@ -69,9 +69,13 @@ vercel build --prod && vercel deploy --prebuilt --prod
 
 Le build part du dossier local : committe et pousse d'abord, pour que le prochain run du VPS ne déploie pas une version différente.
 
+⚠️ Le déploiement des actus, toutes les heures, rebuild **le code présent sur le VPS** : un déploiement fait depuis ton poste est écrasé dans l'heure si ce code n'est pas aussi sur le VPS. Pour livrer du code, préfère pousser sur `main` puis lancer le déploiement depuis le VPS.
+
 ### Actus
 
-Toutes les heures, le timer `game-over-news` du VPS lance [scripts/publish-news.ts](scripts/publish-news.ts). Le script rédige avec OpenAI un article original à partir d'une actu jeux vidéo en anglais, l'enrichit avec les données du catalogue (durée de vie, avis), l'illustre avec un visuel IGDB ou Steam du jeu, puis le publie en JSON sur Vercel Blob. Les pages `/actus`, `/actus/[slug]` et `/actus/sitemap.xml` sont les seules rendues à la demande (adaptateur `@astrojs/vercel`, `prerender = false`) : aucune reconstruction du site n'est nécessaire.
+Toutes les heures, le timer `game-over-news` du VPS lance [scripts/news.sh](scripts/news.sh) : [scripts/publish-news.ts](scripts/publish-news.ts) rédige avec OpenAI les actus jeux vidéo qui manquent et les enregistre dans la table `news_article`, puis `deploy.sh --news` rebuild et redéploie le site s'il y a du nouveau. Les pages `/actus` sont statiques, comme le reste du site.
+
+Fonctionnement détaillé, exploitation et dépannage : **[docs/actus.md](docs/actus.md)**.
 
 ## Développement local
 
@@ -98,7 +102,6 @@ ssh -N -L 5433:127.0.0.1:5433 ubuntu@51.38.191.183
 | `STEAM_API_KEY`                        | avis et succès Steam                             |
 | `ITAD_API_KEY`                         | prix IsThereAnyDeal (POC `enrich-games.ts`)      |
 | `OPENAI_API_KEY`, `OPENAI_MODEL`       | traduction des descriptions, rédaction des actus |
-| `BLOB_READ_WRITE_TOKEN`                | publication des actus                            |
 | `SANITY_ID`, `SANITY_DATASET`          | migration ponctuelle depuis Sanity uniquement    |
 
 Les variables du déploiement (`VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`, `UPDATE_CMD`, `HEALTHCHECK_URL`…) sont décrites dans [scripts/systemd/deploy.env.example](scripts/systemd/deploy.env.example).
@@ -128,12 +131,14 @@ Le catalogue vit dans Postgres (schéma : [src/db/schema.ts](src/db/schema.ts)) 
 | [scripts/import-games.ts](scripts/import-games.ts)       | importe les jeux qui passent le seuil de popularité, puis publie ceux qui sont prêts (`--publish`)             |
 | [scripts/sync.ts](scripts/sync.ts)                       | remplit les tables des sources externes (`ids`, `igdb`, `steam`, `summary`), avec reprise après arrêt          |
 | [scripts/translate-games.ts](scripts/translate-games.ts) | traduit les descriptions EN → FR avec OpenAI, dans un fichier relu avant `--write`                             |
-| [scripts/publish-news.ts](scripts/publish-news.ts)       | rédige et publie une actu par heure sur Vercel Blob                                                            |
+| [scripts/publish-news.ts](scripts/publish-news.ts)       | rédige les actus manquantes dans `news_article`, lancé toutes les heures par `scripts/news.sh`                 |
+| [scripts/news.sh](scripts/news.sh)                       | passage horaire des actus : rédaction, puis `deploy.sh --news` s'il y a du nouveau                             |
 | [scripts/deploy.sh](scripts/deploy.sh)                   | build et déploiement (voir plus haut)                                                                          |
 | `scripts/enrich-games.ts`, `scripts/hltb-poc.ts`         | POC : couverture des sources et seuil de popularité. Rien n'est écrit en base                                  |
 | `scripts/migrate-from-sanity.ts`                         | migration ponctuelle Sanity → Postgres                                                                         |
+| `scripts/import-news-from-blob.ts`                       | migration ponctuelle des actus de Vercel Blob vers `news_article`                                              |
 
-Le périmètre fonctionnel des fiches jeux et l'étude du seuil de popularité sont dans [docs/enrichissement-fiches-jeux.md](docs/enrichissement-fiches-jeux.md).
+Le périmètre fonctionnel des fiches jeux et l'étude du seuil de popularité sont dans [docs/enrichissement-fiches-jeux.md](docs/enrichissement-fiches-jeux.md). Les actus sont décrites dans [docs/actus.md](docs/actus.md).
 
 ## Structure du dépôt
 
@@ -160,6 +165,7 @@ Le périmètre fonctionnel des fiches jeux et l'étude du seuil de popularité s
 3. **Migration vers Astro**, site entièrement statique.
 4. **Build sur VPS** et déploiement `--prebuilt` sur Vercel, à la place des builds Vercel au push.
 5. **Postgres + Drizzle** à la place de Sanity, enrichissement des fiches (IGDB, Steam, HLTB) et import automatique des jeux connus.
+6. **Actus** rédigées toutes les heures, d'abord publiées sur Vercel Blob, puis stockées en base et construites en pages statiques.
 
 ## Licence
 

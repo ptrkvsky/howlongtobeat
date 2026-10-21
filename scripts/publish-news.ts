@@ -1,46 +1,34 @@
 /**
  * Writes original French video game news from an English news feed with the
- * OpenAI API, and publishes them on Vercel Blob, read server-side by /actus
- * and /actus/[slug]. Run every hour on the VPS by
- * scripts/systemd/game-over-news.timer.
+ * OpenAI API, into the news_article table. The /actus pages are built from
+ * it: scripts/news.sh, run every hour on the VPS by
+ * scripts/systemd/game-over-news.timer, then redeploys the site. See
+ * docs/actus.md.
  *
- *   pnpm tsx scripts/publish-news.ts           write one article and publish
- *   pnpm tsx scripts/publish-news.ts --all     every missing latest article
- *   pnpm tsx scripts/publish-news.ts --dry-run write, print, no upload
- *   pnpm tsx scripts/publish-news.ts --purge   delete the article files the
- *                                              sitemap does not list
+ *   pnpm tsx scripts/publish-news.ts           write the missing articles,
+ *                                              three at most
+ *   pnpm tsx scripts/publish-news.ts --all     every missing article
+ *   pnpm tsx scripts/publish-news.ts --dry-run write, print, no insert
  *
  * The articles never name nor link the feed: they are rewritten from its
  * facts, with the catalog's data on the game, and illustrated with the game's
- * IGDB or Steam visuals (scripts/news/image.ts). Each run writes one article
- * at most, the latest one not written yet.
+ * IGDB or Steam visuals (scripts/news/image.ts). Only the feed articles of
+ * the last 48 hours are written, latest first: older news is not worth it.
  *
  * Env (read from .env.local when present): OPENAI_API_KEY, OPENAI_MODEL
- * (default gpt-6-luna), BLOB_READ_WRITE_TOKEN (not needed with --dry-run),
- * DATABASE_URL, IGDB_CLIENT_ID and IGDB_CLIENT_SECRET.
+ * (default gpt-6-luna), DATABASE_URL, IGDB_CLIENT_ID and IGDB_CLIENT_SECRET.
  */
 import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import { parseArgs } from 'node:util';
-import { del, list, put } from '@vercel/blob';
 import { XMLParser } from 'fast-xml-parser';
 import { Marked } from 'marked';
 import { NodeHtmlMarkdown } from 'node-html-markdown';
 import OpenAI from 'openai';
-import {
-  NEWS_ARTICLES_PREFIX,
-  NEWS_CATEGORIES,
-  NEWS_INDEX_PATH,
-  NEWS_SITEMAP_PATH,
-  NEWS_SITEMAP_URL,
-  newsArticlePath,
-  type NewsArticle,
-  type NewsCategory,
-  type NewsIndex,
-  type NewsSitemap,
-  type NewsSummary,
-} from '../src/config/news';
-import { closeDb } from '../src/db/client';
+import { inArray } from 'drizzle-orm';
+import { NEWS_CATEGORIES, type NewsCategory } from '../src/config/news';
+import { closeDb, getDb } from '../src/db/client';
+import { newsArticle } from '../src/db/schema';
 import { slugify } from '../src/utils/slugify';
 import { findNewsGame, gameFacts } from './news/game';
 import { newsImage } from './news/image';
@@ -50,21 +38,18 @@ for (const file of [`.env.local`, `.env`]) {
 }
 
 const FEED_URL = `https://www.gamespot.com/feeds/news`;
-// Articles shown on /actus, the only ones worth writing
-const ARTICLE_COUNT = 5;
-// Latest feed articles read, to fill /actus with already written ones
+// Latest feed articles read
 const FEED_DEPTH = 20;
-// Articles written per run
-const WRITES_PER_RUN = 1;
-// Articles listed by the sitemap file
-const SITEMAP_LENGTH = 1000;
+// Older feed articles are not written: Google News only lists 48 hours
+const SOURCE_MAX_AGE = 48 * 3600 * 1000;
+// Articles written per run, without --all: the feed publishes up to four an
+// hour, the next run catches up
+const MAX_WRITES_PER_RUN = 3;
 const DEFAULT_MODEL = `gpt-6-luna`;
 const SLUG_LENGTH = 80;
 // Google Discover: long enough to be an article, not padded
 const MIN_WORDS = 350;
 const MAX_WORDS = 1000;
-// Legacy files, before the rewrite: translations of the feed
-const LEGACY_INDEX_PATH = `news/gamespot.json`;
 
 const GAME_PROMPT = `Tu reçois un article d'actualité jeux vidéo en anglais. Donne le nom officiel complet du jeu principal dont parle l'article, tel qu'il est commercialisé (par exemple « Call of Duty: Modern Warfare 4 », pas « MW4 »), ou une chaîne vide si l'article ne porte pas sur un jeu précis (matériel, industrie, plusieurs jeux à égalité).`;
 
@@ -124,9 +109,12 @@ interface SourceArticle {
   // Short hash of the URL, at the end of the slug: finds the written articles
   key: string;
   url: string;
+  date: Date;
   title: string;
   markdown: string;
 }
+
+type NewsRow = typeof newsArticle.$inferInsert;
 
 // Raw HTML, links and images are dropped: the content comes from a model, and
 // the page injects it as HTML
@@ -205,50 +193,10 @@ async function fetchArticles(): Promise<SourceArticle[]> {
     .map((item) => ({
       key: urlKey(item.link),
       url: item.link,
+      date: new Date(item.pubDate),
       title: decodeEntities(String(item.title)),
       markdown: toMarkdown(item.description ?? ``),
     }));
-}
-
-function toSummary(article: NewsArticle): NewsSummary {
-  const { slug, date, category, image, title, excerpt, game } = article;
-  return { slug, date, category, image, title, excerpt, game };
-}
-
-// Articles already written, by key. Read with the Blob API, not from the CDN
-// that can serve an outdated index
-async function fetchWritten(
-  sources: SourceArticle[],
-): Promise<Map<string, NewsSummary>> {
-  const blobs = new Map<string, { url: string; uploadedAt: Date }>();
-  let cursor: string | undefined;
-  do {
-    const page = await list({ prefix: NEWS_ARTICLES_PREFIX, cursor });
-    for (const blob of page.blobs) {
-      const key = blob.pathname.match(/-([0-9a-f]{8})\.json$/)?.[1];
-      // Several files for a key: the latest one
-      if (!key) continue;
-      const previous = blobs.get(key);
-      if (!previous || previous.uploadedAt < blob.uploadedAt) {
-        blobs.set(key, blob);
-      }
-    }
-    cursor = page.cursor;
-  } while (cursor);
-
-  const written = new Map<string, NewsSummary>();
-  await Promise.all(
-    sources.map(async (source) => {
-      const url = blobs.get(source.key)?.url;
-      if (!url) return;
-      // An article file is never rewritten, the CDN copy is up to date. The
-      // listing can lag behind a deletion: the article is written again
-      const response = await fetch(url);
-      if (!response.ok) return;
-      written.set(source.key, toSummary(await response.json()));
-    }),
-  );
-  return written;
 }
 
 // French title cut between two words, then the key that keeps it unique
@@ -295,7 +243,7 @@ async function write(
   openai: OpenAI,
   model: string,
   source: SourceArticle,
-): Promise<NewsArticle> {
+): Promise<NewsRow> {
   const article = { title: source.title, content: source.markdown };
   const { result: identified } = await complete<{ game: string }>(
     openai,
@@ -340,7 +288,9 @@ async function write(
   );
   return {
     slug: articleSlug(title, source.key),
-    date: new Date().toISOString(),
+    sourceKey: source.key,
+    sourceUrl: source.url,
+    publishedAt: new Date(),
     category: result.category,
     image: await newsImage({
       igdb: game?.igdb ?? null,
@@ -350,54 +300,9 @@ async function write(
     }),
     title,
     excerpt,
-    game: game?.catalog
-      ? { name: game.catalog.name, slug: game.catalog.slug }
-      : null,
-    content: html,
+    gameId: game?.catalog?.id ?? null,
+    contentHtml: html,
   };
-}
-
-async function upload(path: string, data: unknown) {
-  return put(path, JSON.stringify(data), {
-    access: `public`,
-    addRandomSuffix: false,
-    allowOverwrite: true,
-    cacheControlMaxAge: 60,
-    contentType: `application/json`,
-  });
-}
-
-// Bypasses the CDN cache: the file changes every hour
-async function fetchSitemap(): Promise<NewsSitemap[`articles`]> {
-  const response = await fetch(`${NEWS_SITEMAP_URL}?t=${Date.now()}`, {
-    cache: `no-store`,
-  });
-  if (response.status === 404) return [];
-  if (!response.ok) throw new Error(`HTTP ${response.status} on the sitemap`);
-  return ((await response.json()) as NewsSitemap).articles;
-}
-
-// Deletes the article files the sitemap does not list (failed runs, legacy
-// translations) and the legacy index
-async function purge() {
-  const listed = new Set((await fetchSitemap()).map(({ slug }) => slug));
-  if (listed.size === 0) throw new Error(`Empty sitemap, nothing purged`);
-  const orphans: string[] = [];
-  let cursor: string | undefined;
-  do {
-    const page = await list({ prefix: NEWS_ARTICLES_PREFIX, cursor });
-    for (const blob of page.blobs) {
-      const slug = blob.pathname
-        .slice(NEWS_ARTICLES_PREFIX.length)
-        .replace(/\.json$/, ``);
-      if (!listed.has(slug)) orphans.push(blob.url);
-    }
-    cursor = page.cursor;
-  } while (cursor);
-  const legacy = await list({ prefix: LEGACY_INDEX_PATH });
-  orphans.push(...legacy.blobs.map((blob) => blob.url));
-  if (orphans.length) await del(orphans);
-  console.log(`${orphans.length} files deleted`);
 }
 
 async function main() {
@@ -405,88 +310,61 @@ async function main() {
     options: {
       all: { type: `boolean`, default: false },
       'dry-run': { type: `boolean`, default: false },
-      purge: { type: `boolean`, default: false },
     },
   });
   const dryRun = values[`dry-run`];
-  if (values.purge) return purge();
 
   if (!process.env.OPENAI_API_KEY) throw new Error(`Missing OPENAI_API_KEY`);
   const model = process.env.OPENAI_MODEL || DEFAULT_MODEL;
   const openai = new OpenAI();
+  const { db } = getDb();
 
-  const sources = await fetchArticles();
-  // Without a Blob token (--dry-run), no article is written yet
-  const known = process.env.BLOB_READ_WRITE_TOKEN
-    ? await fetchWritten(sources)
-    : new Map<string, NewsSummary>();
-  const missing = sources
-    .slice(0, ARTICLE_COUNT)
-    .filter((source) => !known.has(source.key));
-  const toWrite = values.all ? missing : missing.slice(0, WRITES_PER_RUN);
+  const since = Date.now() - SOURCE_MAX_AGE;
+  const sources = (await fetchArticles()).filter(
+    (source) => source.date.getTime() >= since,
+  );
+  const known = new Set(
+    sources.length
+      ? (
+          await db
+            .select({ key: newsArticle.sourceKey })
+            .from(newsArticle)
+            .where(
+              inArray(
+                newsArticle.sourceKey,
+                sources.map((source) => source.key),
+              ),
+            )
+        ).map((row) => row.key)
+      : [],
+  );
+  const missing = sources.filter((source) => !known.has(source.key));
+  const toWrite = values.all ? missing : missing.slice(0, MAX_WRITES_PER_RUN);
   console.log(
     `${missing.length} new articles, ${toWrite.length} to write with ${model}`,
   );
 
-  // One at a time: the catalog and IGDB are shared. A failed article is left
-  // out of this run, and retried by the next one
-  const written = new Map<string, NewsArticle>();
+  // One at a time: the catalog and IGDB are shared. Each article is saved as
+  // soon as written; a failed one is retried by the next run
+  let saved = 0;
   for (const source of toWrite) {
     try {
-      written.set(source.key, await write(openai, model, source));
+      const article = await write(openai, model, source);
+      if (dryRun) {
+        console.log(JSON.stringify(article, null, 2));
+        continue;
+      }
+      await db
+        .insert(newsArticle)
+        .values(article)
+        .onConflictDoNothing({ target: newsArticle.sourceKey });
+      saved++;
     } catch (error) {
       console.error(`  ${source.url}: ${String(error)}`);
       process.exitCode = 1;
     }
   }
-
-  const updatedAt = new Date().toISOString();
-  const index: NewsIndex = {
-    updatedAt,
-    articles: sources
-      .flatMap((source) => {
-        const article = written.get(source.key);
-        const summary = article ? toSummary(article) : known.get(source.key);
-        return summary ? [summary] : [];
-      })
-      .slice(0, ARTICLE_COUNT),
-  };
-  if (index.articles.length === 0) throw new Error(`No article to publish`);
-
-  if (dryRun) {
-    console.log(JSON.stringify([...written.values()], null, 2));
-    console.log(JSON.stringify(index, null, 2));
-    return;
-  }
-
-  // Articles first: the index never points to a missing file
-  await Promise.all(
-    [...written.values()].map((article) =>
-      upload(newsArticlePath(article.slug), article),
-    ),
-  );
-  if (written.size > 0) {
-    const previous = await fetchSitemap();
-    const added = [...written.values()].map(({ slug, date, title }) => ({
-      slug,
-      date,
-      title,
-    }));
-    const sitemap: NewsSitemap = {
-      updatedAt,
-      articles: [
-        ...added,
-        ...previous.filter(
-          ({ slug }) => !added.some((article) => article.slug === slug),
-        ),
-      ].slice(0, SITEMAP_LENGTH),
-    };
-    await upload(NEWS_SITEMAP_PATH, sitemap);
-  }
-  const blob = await upload(NEWS_INDEX_PATH, index);
-  console.log(
-    `${index.articles.length} articles published (${written.size} new): ${blob.url}`,
-  );
+  if (!dryRun) console.log(`${saved} articles saved`);
 }
 
 main()

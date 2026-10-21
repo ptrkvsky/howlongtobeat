@@ -1,5 +1,5 @@
 [Unit]
-Description=Hourly news article of game-over.io
+Description=Hourly news run of game-over.io
 
 [Timer]
 OnCalendar=*-*-* *:17:00

@@ -15,6 +15,7 @@ import {
   text,
   timestamp,
 } from 'drizzle-orm/pg-core';
+import { NEWS_CATEGORIES, type NewsImage } from '../config/news';
 
 const timestamps = {
   createdAt: timestamp(`created_at`, { withTimezone: true })
@@ -213,4 +214,30 @@ export const hltbStats = pgTable(`hltb_stats`, {
   publisher: text(`publisher`),
   releaseWorld: text(`release_world`),
   fetchedAt: fetchedAt(),
+});
+
+// ── News: written every hour by scripts/publish-news.ts ────────────────────
+
+export const newsCategory = pgEnum(`news_category`, NEWS_CATEGORIES);
+
+export const newsArticle = pgTable(`news_article`, {
+  id: serial(`id`).primaryKey(),
+  slug: text(`slug`).notNull().unique(),
+  // Short hash of the source URL: a source is written once
+  sourceKey: text(`source_key`).notNull().unique(),
+  // For traceability only, never shown nor linked
+  sourceUrl: text(`source_url`).notNull(),
+  title: text(`title`).notNull(),
+  excerpt: text(`excerpt`).notNull(),
+  // Rendered by the script, without raw HTML from the model
+  contentHtml: text(`content_html`).notNull(),
+  category: newsCategory(`category`).notNull(),
+  image: jsonb(`image`).$type<NewsImage>().notNull(),
+  gameId: integer(`game_id`).references(() => game.id, {
+    onDelete: `set null`,
+  }),
+  // Unpublished by hand: left out of the next build
+  isPublished: boolean(`is_published`).notNull().default(true),
+  publishedAt: timestamp(`published_at`, { withTimezone: true }).notNull(),
+  ...timestamps,
 });

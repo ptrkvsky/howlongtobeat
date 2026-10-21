@@ -57,9 +57,9 @@ Prérequis sur le VPS : Node 24, pnpm, le CLI Vercel (`npm i -g vercel`), git, c
 
 ## Actus
 
-Toutes les heures (à la 17e minute), `scripts/publish-news.ts` rédige un article à partir de la dernière actu jeux vidéo pas encore traitée et le publie sur Vercel Blob. Les pages `/actus` le lisent à la demande : aucun déploiement n'est nécessaire.
+Toutes les heures (à la 17e minute), `scripts/news.sh` rédige les actus manquantes dans la table `news_article`, puis lance `scripts/deploy.sh --news` : build et déploiement du code déjà présent, seulement si les actus publiées ont changé. Détails : [docs/actus.md](../../docs/actus.md).
 
-Le `.env.local` du VPS doit contenir `OPENAI_API_KEY` et `BLOB_READ_WRITE_TOKEN`, en plus de `DATABASE_URL` et des identifiants IGDB.
+Le service lit `~/.config/game-over/deploy.env` (variables Vercel, `NEWS_HEALTHCHECK_URL` optionnel) et le `.env.local` (`OPENAI_API_KEY`, `DATABASE_URL`, identifiants IGDB).
 
 ```bash
 cp scripts/systemd/game-over-news.{service,timer} ~/.config/systemd/user/
@@ -67,17 +67,17 @@ systemctl --user daemon-reload
 systemctl --user enable --now game-over-news.timer
 ```
 
-| Besoin                           | Commande                                         |
-| -------------------------------- | ------------------------------------------------ |
-| Publier un article maintenant    | `systemctl --user start game-over-news.service`  |
-| Logs                             | `journalctl --user -u game-over-news.service -e` |
-| Tester sans publier              | `pnpm tsx scripts/publish-news.ts --dry-run`     |
-| Supprimer les fichiers orphelins | `pnpm tsx scripts/publish-news.ts --purge`       |
+| Besoin                               | Commande                                                             |
+| ------------------------------------ | -------------------------------------------------------------------- |
+| Rédiger et déployer maintenant       | `systemctl --user start game-over-news.service`                      |
+| Logs                                 | `journalctl --user -u game-over-news.service -e`                     |
+| Tester la rédaction sans enregistrer | `pnpm tsx scripts/publish-news.ts --dry-run`                         |
+| Redéployer les actus sans changement | `FORCE=1 scripts/deploy.sh --news` (après avoir chargé `deploy.env`) |
 
 ## Garde-fous
 
 - **Nombre de pages.** Le script refuse de déployer si le build contient moins de 95 % des pages du déploiement précédent : une API en panne ne vide pas le site.
-- **Un seul run à la fois**, grâce à un verrou `flock`.
+- **Un seul run à la fois**, grâce à un verrou `flock`. Un déploiement d'actus qui tombe pendant le run hebdomadaire est reporté.
 - **Sauvegarde de la base** avant chaque run (`pg_dump`). Les 8 dernières sont gardées dans `~/backups/gameover/`.
 - **Alerte.** Avec `HEALTHCHECK_URL`, healthchecks.io prévient quand un run échoue, ou quand aucun run n'a eu lieu dans la semaine.
 - **Pas de build Vercel au push.** `vercel.json` désactive les déploiements Git (`git.deploymentEnabled: false`) : seul ce script déploie.

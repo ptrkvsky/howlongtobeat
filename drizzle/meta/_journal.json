@@ -43,6 +43,13 @@
       "when": 1792440448173,
       "tag": "0005_handy_psylocke",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792600345903,
+      "tag": "0006_supreme_microbe",
+      "breakpoints": true
     }
   ]
 }

@@ -1,14 +1,13 @@
 /**
  * Google News sitemap of the articles published in the last 48 hours
  * (https://developers.google.com/search/docs/crawling-indexing/sitemaps/news-sitemap),
- * rendered on demand from the list kept by scripts/publish-news.ts.
+ * built with the site: the 48 hours are counted from the build, rerun every
+ * time scripts/publish-news.ts writes an article.
  */
 import type { APIRoute } from 'astro';
 import { siteInformations } from '@/config/siteInformations';
 import { newsPageUrl } from '@/config/news';
-import { getNewsSitemap } from '@/features/actus/api';
-
-export const prerender = false;
+import { getNewsArticles } from '@/features/actus/api';
 
 const MAX_AGE = 48 * 3600 * 1000;
 
@@ -20,9 +19,8 @@ const escapeXml = (text: string) =>
     .replace(/"/g, `&quot;`);
 
 export const GET: APIRoute = async ({ site }) => {
-  const sitemap = await getNewsSitemap();
   const since = Date.now() - MAX_AGE;
-  const urls = (sitemap?.articles ?? [])
+  const urls = (await getNewsArticles())
     .filter((article) => Date.parse(article.date) >= since)
     .map(
       (article) => `  <url>
@@ -43,9 +41,6 @@ ${urls.join(`\n`)}
 </urlset>
 `;
   return new Response(xml, {
-    headers: {
-      'Content-Type': `application/xml; charset=utf-8`,
-      'Cache-Control': `public, s-maxage=600, stale-while-revalidate=3600`,
-    },
+    headers: { 'Content-Type': `application/xml; charset=utf-8` },
   });
 };

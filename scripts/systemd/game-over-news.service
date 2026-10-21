@@ -1,15 +1,17 @@
-# Hourly news article of game-over.io (user unit, see README.md here)
+# Hourly news run of game-over.io (user unit, see README.md here)
 [Unit]
-Description=Write and publish one game-over.io news article
+Description=Write the game-over.io news and deploy them
 Wants=network-online.target
 After=network-online.target
 
 [Service]
 Type=oneshot
 WorkingDirectory=%h/howlongtobeat
-# Login shell so node and pnpm are on the PATH (nvm, corepack...). The
-# script reads .env.local: OPENAI_API_KEY, BLOB_READ_WRITE_TOKEN,
-# DATABASE_URL, IGDB_CLIENT_ID, IGDB_CLIENT_SECRET
-ExecStart=/bin/bash -lc 'pnpm tsx scripts/publish-news.ts'
-TimeoutStartSec=15min
+# VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID, NEWS_HEALTHCHECK_URL
+EnvironmentFile=%h/.config/game-over/deploy.env
+# Login shell so node, pnpm and vercel are on the PATH (nvm, corepack...).
+# publish-news.ts reads .env.local: OPENAI_API_KEY, DATABASE_URL,
+# IGDB_CLIENT_ID, IGDB_CLIENT_SECRET
+ExecStart=/bin/bash -lc 'scripts/news.sh'
+TimeoutStartSec=30min
 Nice=10

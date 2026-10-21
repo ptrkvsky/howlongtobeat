@@ -1,30 +1,45 @@
 /**
- * News published on Vercel Blob by scripts/publish-news.ts, read by the
- * on-demand /actus pages.
+ * News written by scripts/publish-news.ts, read at build time by the /actus
+ * pages.
  */
-import {
-  NEWS_INDEX_URL,
-  NEWS_SITEMAP_URL,
-  newsArticleUrl,
-  type NewsArticle,
-  type NewsIndex,
-  type NewsSitemap,
-} from '@/config/news';
+import { desc, eq } from 'drizzle-orm';
+import type { NewsArticle } from '@/config/news';
+import { getDb } from '@/db/client';
+import { newsArticle } from '@/db/schema';
+import { getGames } from '@/features/jeu/api';
 
-async function fetchNews<T>(url: string): Promise<T | null> {
-  const response = await fetch(url);
-  // A missing file reads as a 403 or a 404 on Vercel Blob
-  if (response.status === 403 || response.status === 404) return null;
-  if (!response.ok) throw new Error(`HTTP ${response.status} on ${url}`);
-  return response.json() as Promise<T>;
+async function fetchNewsArticles(): Promise<NewsArticle[]> {
+  const { db } = getDb();
+  const [rows, games] = await Promise.all([
+    db
+      .select()
+      .from(newsArticle)
+      .where(eq(newsArticle.isPublished, true))
+      .orderBy(desc(newsArticle.publishedAt), desc(newsArticle.id)),
+    getGames(),
+  ]);
+  // Only published games have a page to link to
+  const byId = new Map(games.map((game) => [game.id, game]));
+
+  return rows.map((row) => {
+    const game = row.gameId ? byId.get(row.gameId) : undefined;
+    return {
+      slug: row.slug,
+      date: row.publishedAt.toISOString(),
+      category: row.category,
+      image: row.image,
+      title: row.title,
+      excerpt: row.excerpt,
+      game: game ? { name: game.name, slug: game.slug } : null,
+      content: row.contentHtml,
+    };
+  });
 }
 
-export const getNewsIndex = () => fetchNews<NewsIndex>(NEWS_INDEX_URL);
+// Published articles, latest first: fetched once per build worker
+let newsPromise: Promise<NewsArticle[]> | undefined;
 
-export const getNewsSitemap = () => fetchNews<NewsSitemap>(NEWS_SITEMAP_URL);
-
-// Slugs are written by the script: anything else is not an article
-export const getNewsArticle = (slug: string) =>
-  /^[a-z0-9-]{1,120}$/.test(slug)
-    ? fetchNews<NewsArticle>(newsArticleUrl(slug))
-    : Promise.resolve(null);
+export function getNewsArticles() {
+  newsPromise ??= fetchNewsArticles();
+  return newsPromise;
+}

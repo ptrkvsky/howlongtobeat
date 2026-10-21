@@ -1,0 +1,118 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import LayoutFront from '@/layouts/LayoutFront.astro';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
+import Pagination from '@/components/Pagination/Pagination.astro';
+import HomeTitle from '@/styles/components/titles/HomeTitle.astro';
+import {
+  newsCategoryLabels,
+  newsPageUrl,
+  type NewsSummary,
+} from '@/config/news';
+import { NEWS_PAGE_SIZE } from '@/config/pagination';
+import urls from '@/config/urls';
+import { getNewsArticles } from '@/features/actus/api';
+import { formatDate, formatDayAndTime } from '@/features/actus/format';
+import {
+  breadcrumbNode,
+  organizationNode,
+  webPageNode,
+  websiteNode,
+} from '@/utils/structuredData';
+import styles from '@/styles/actus.module.css';
+
+// /actus for the latest news, then /actus/2… The articles are written every
+// hour by scripts/publish-news.ts, which redeploys the site
+export const getStaticPaths = (async ({ paginate }) =>
+  paginate(await getNewsArticles(), {
+    pageSize: NEWS_PAGE_SIZE,
+  })) satisfies GetStaticPaths;
+
+interface Props {
+  page: Page<NewsSummary>;
+}
+
+const { page } = Astro.props;
+const canonical = page.url.current;
+// Other pages get their own title and description
+const pageSuffix = page.currentPage > 1 ? ` - Page ${page.currentPage}` : ``;
+const title = `Actus jeux vidéo${pageSuffix}`;
+const description = `Les dernières actus jeux vidéo : sorties, mises à jour et annonces, avec le temps qu'il faut pour finir les jeux concernés.${pageSuffix}`;
+const breadcrumb = [
+  { name: `Accueil`, path: `/` },
+  { name: `Actus`, path: urls.actus },
+  ...(page.currentPage > 1
+    ? [{ name: `Page ${page.currentPage}`, path: canonical }]
+    : []),
+];
+const latest = page.currentPage === 1 ? page.data[0] : undefined;
+---
+
+<BaseLayout
+  {title}
+  {description}
+  {canonical}
+  prev={page.url.prev}
+  next={page.url.next}
+  jsonLd={[
+    websiteNode(),
+    organizationNode(),
+    webPageNode({
+      type: `CollectionPage`,
+      path: canonical,
+      name: title,
+      description,
+    }),
+    breadcrumbNode(canonical, breadcrumb),
+  ]}
+>
+  <LayoutFront isCentered>
+    <Breadcrumb items={breadcrumb} />
+    <HomeTitle>Actus</HomeTitle>
+    {page.total > 0 ? (
+      <>
+        {latest && (
+          <p class={styles.meta}>
+            Mis à jour le {formatDayAndTime(new Date(latest.date))}.
+          </p>
+        )}
+        <ol class={styles.list}>
+          {page.data.map((article, position) => (
+            <li class={styles.card}>
+              <a class={styles.link} href={newsPageUrl(article.slug)}>
+                <img
+                  class={styles.image}
+                  src={article.image.url}
+                  alt={article.image.alt}
+                  loading={position === 0 ? `eager` : `lazy`}
+                  width="320"
+                  height="180"
+                />
+                <div class={styles.body}>
+                  <p class={styles.date}>
+                    {newsCategoryLabels[article.category]} ·{` `}
+                    <time datetime={article.date}>
+                      {formatDate.format(new Date(article.date))}
+                    </time>
+                  </p>
+                  <h2 class={styles.title}>{article.title}</h2>
+                  <p class={styles.excerpt}>{article.excerpt}</p>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ol>
+        <Pagination
+          baseUrl={urls.actus}
+          currentPage={page.currentPage}
+          lastPage={page.lastPage}
+        />
+      </>
+    ) : (
+      <p class={styles.meta}>
+        Les actus ne sont pas disponibles pour le moment.
+      </p>
+    )}
+  </LayoutFront>
+</BaseLayout>

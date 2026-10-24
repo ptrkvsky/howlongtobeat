@@ -33,7 +33,15 @@ async function fetchNewsArticles(): Promise<NewsArticle[]> {
       image: row.image,
       title: row.title,
       excerpt: row.excerpt,
-      game: game ? { name: game.name, slug: game.slug } : null,
+      game: game
+        ? {
+            name: game.name,
+            slug: game.slug,
+            cover: game.cover,
+            timeMainStory: game.timeMainStory,
+            timeCompletionists: game.timeCompletionists,
+          }
+        : null,
       content: row.contentHtml,
     };
   });

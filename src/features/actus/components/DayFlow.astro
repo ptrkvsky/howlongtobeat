@@ -1,0 +1,68 @@
+---
+import {
+  newsCategoryLabels,
+  newsPageUrl,
+  type NewsSummary,
+} from '@/config/news';
+import type { DayGroup } from '@/features/actus/data';
+import { dayHeading, formatClock } from '@/features/actus/format';
+import home from '@/features/home/components/home.module.css';
+import styles from './news.module.css';
+
+// The chronological flow: one block per day, compact rows with a thumbnail
+interface Props {
+  groups: DayGroup<NewsSummary>[];
+  // Number of images loaded right away (the first rows)
+  eager?: number;
+}
+
+const { groups, eager = 0 } = Astro.props;
+let position = 0;
+---
+
+<div class={home.frame}>
+  <div class={styles.flow}>
+    {groups.map((group) => {
+      const heading = dayHeading(new Date(group.date));
+      return (
+        <section class={styles.day}>
+          <h2 class={styles.dayLabel}>
+            <strong>{heading.day}</strong>
+            {heading.weekday}
+          </h2>
+          <ol class={styles.rows}>
+            {group.articles.map((article) => {
+              const isEager = position++ < eager;
+              return (
+                <li class={styles.row}>
+                  <a href={newsPageUrl(article.slug)}>
+                    <div>
+                      <p class={styles.tag}>
+                        <b>{newsCategoryLabels[article.category]}</b>
+                        <time datetime={article.date}>
+                          {formatClock(new Date(article.date))}
+                        </time>
+                        {article.game && <span>{article.game.name}</span>}
+                      </p>
+                      <h3 class={styles.rowTitle}>{article.title}</h3>
+                      <p class={styles.rowExcerpt}>{article.excerpt}</p>
+                    </div>
+                    <img
+                      class={styles.rowImage}
+                      src={article.image.url}
+                      alt={article.image.alt}
+                      width="320"
+                      height="180"
+                      loading={isEager ? `eager` : `lazy`}
+                      decoding="async"
+                    />
+                  </a>
+                </li>
+              );
+            })}
+          </ol>
+        </section>
+      );
+    })}
+  </div>
+</div>

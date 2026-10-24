@@ -1,0 +1,42 @@
+---
+import { newsCategoryLabels, type NewsCategory } from '@/config/news';
+import urls from '@/config/urls';
+import { newsCategoryUrl } from '@/features/actus/urls';
+import styles from './news.module.css';
+
+// Filters of /actus: each category is a page of its own, so the links work
+// without JavaScript and can be crawled
+interface Props {
+  categories: { category: NewsCategory; count: number }[];
+  total: number;
+  current?: NewsCategory;
+}
+
+const { categories, total, current } = Astro.props;
+---
+
+<nav aria-label="Catégories d'actus">
+  <ul class={styles.categories}>
+    <li>
+      <a
+        class={styles.category}
+        href={urls.actus}
+        aria-current={current ? undefined : `page`}
+      >
+        Toutes <span class={styles.categoryCount}>{total}</span>
+      </a>
+    </li>
+    {categories.map(({ category, count }) => (
+      <li>
+        <a
+          class={styles.category}
+          href={newsCategoryUrl(category)}
+          aria-current={current === category ? `page` : undefined}
+        >
+          {newsCategoryLabels[category]}
+          <span class={styles.categoryCount}>{count}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>

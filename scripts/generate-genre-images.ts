@@ -32,6 +32,7 @@ const SCENES: Record<string, string> = {
   platform: `Floating cream platforms and a pink crescent bridge over a bottomless black void, stepped like a staircase, with small spikes and a distant goal flag shape.`,
   puzzle: `An abstract arrangement of interlocking cream blocks and one pink piece, a half-solved geometric mechanism on a dark grid.`,
   'hack-and-slash-beat-em-up': `A cream arc of a huge sword slash cutting across a dark ruined arena with shattered pillars, pink sparks flying from the impact.`,
+  'visual-novel': `A quiet empty room at night seen from the doorway: a cream desk with an open book and a small lamp, a large window framing a huge pink moon, a single branching path of light on the floor splitting in two.`,
 };
 
 const { values, positionals } = parseArgs({

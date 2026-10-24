@@ -1,0 +1,664 @@
+/*
+ * /actus and the news pages: the listing (header, lead, games, flow by day)
+ * and the reading page. Built on the shared look of the redesign
+ * (src/features/home/components/home.module.css: frame, kicker, paper, and the
+ * --cream/--muted/--line/--pink variables of its .page wrapper).
+ */
+
+/* Header of the listing */
+.header {
+  padding-top: clamp(2.5rem, 6vw, 5rem);
+  padding-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+
+.meta {
+  margin-top: var(--space-4);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+/* Categories: real links, one page each */
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-8);
+  padding: 0;
+  list-style: none;
+}
+
+.category {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--line);
+  font-size: var(--font-size-md);
+  transition:
+    border-color 0.2s,
+    color 0.2s;
+}
+
+.category:hover {
+  border-color: var(--pink);
+  color: var(--pink);
+}
+
+.category[aria-current='page'] {
+  border-color: var(--pink);
+  background: var(--pink);
+  color: var(--color-background);
+}
+
+.categoryCount {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+/* Lead: one large story and two smaller ones, not a grid of equals */
+.lead {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--space-8) var(--space-12);
+  padding-bottom: var(--section-space);
+}
+
+.leadMain a,
+.leadSide a {
+  display: block;
+  color: inherit;
+}
+
+.leadImage,
+.rowImage,
+.relatedImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--faint);
+  object-fit: cover;
+}
+
+.leadImage {
+  aspect-ratio: 16 / 9;
+}
+
+.tag {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  margin-bottom: var(--space-2);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tag b {
+  color: var(--pink);
+  font-weight: normal;
+}
+
+.leadMain .tag,
+.leadSide .tag,
+.relatedList .tag {
+  margin-top: var(--space-4);
+  margin-bottom: 0;
+}
+
+.leadTitle {
+  margin-top: var(--space-2);
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 3.2vw, 2.75rem);
+  line-height: 1;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  transition: color 0.2s;
+}
+
+.leadMain a:hover .leadTitle,
+.leadSide a:hover .sideTitle,
+.row a:hover .rowTitle {
+  color: var(--pink);
+}
+
+.leadExcerpt {
+  max-width: 40rem;
+  margin-top: var(--space-4);
+  color: var(--muted);
+  font-family: var(--font-body-slim);
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.leadSide {
+  display: grid;
+  align-content: start;
+  gap: var(--space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.leadSide li + li {
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--line);
+}
+
+.sideImage {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  background: var(--faint);
+}
+
+.sideTitle {
+  margin-top: var(--space-2);
+  font-family: var(--font-heading);
+  font-size: clamp(1.05rem, 1.8vw, 1.4rem);
+  line-height: 1.1;
+  text-transform: uppercase;
+  text-wrap: balance;
+  transition: color 0.2s;
+}
+
+/* Games the news talk about: the way to the play time */
+.games {
+  padding-bottom: var(--section-space);
+}
+
+.gameList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gameLink {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-2);
+  border: 1px solid var(--line);
+  color: inherit;
+  transition: border-color 0.2s;
+}
+
+.gameLink:hover {
+  border-color: var(--pink);
+}
+
+.gameCover {
+  width: 3rem;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  background: var(--faint);
+}
+
+.gameName {
+  display: block;
+  overflow: hidden;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+}
+
+.gameFacts {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+
+/* Flow: one block per day, the date on the left on large screens */
+.flow {
+  padding-bottom: var(--section-space);
+}
+
+.day {
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 1fr);
+  gap: var(--space-4) var(--space-8);
+  padding-block: var(--space-5);
+  border-top: 1px solid var(--line);
+}
+
+.dayLabel {
+  position: sticky;
+  top: calc(var(--header-height) + var(--space-4));
+  align-self: start;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.dayLabel strong {
+  display: block;
+  color: var(--cream);
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: normal;
+  line-height: 1;
+}
+
+.rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row + .row {
+  border-top: 1px solid var(--faint);
+}
+
+.row a {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 10rem;
+  gap: var(--space-5);
+  padding-block: var(--space-4);
+  color: inherit;
+}
+
+.rowTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+  line-height: 1.1;
+  text-transform: uppercase;
+  text-wrap: balance;
+  transition: color 0.2s;
+}
+
+.rowExcerpt {
+  display: -webkit-box;
+  margin-top: var(--space-2);
+  overflow: hidden;
+  color: var(--muted);
+  font-family: var(--font-body-slim);
+  font-size: var(--font-size-md);
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.rowImage {
+  aspect-ratio: 16 / 9;
+  align-self: start;
+}
+
+.empty {
+  padding-block: var(--space-12);
+  color: var(--muted);
+}
+
+/* Reading page: a single column, nothing beside the text */
+.article {
+  padding-top: clamp(1.5rem, 4vw, 3rem);
+  padding-bottom: var(--section-space);
+}
+
+.articleHead {
+  max-width: 52rem;
+  margin-top: var(--space-8);
+}
+
+.articleHead .byline {
+  margin-bottom: 0;
+}
+
+.articleTitle {
+  margin-top: var(--space-4);
+  font-family: var(--font-heading);
+  font-size: clamp(1.9rem, 5vw, 3.75rem);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.byline {
+  margin-top: var(--space-5);
+  color: var(--muted);
+  font-size: var(--font-size-md);
+}
+
+.byline a {
+  color: var(--cream);
+  border-bottom: 1px solid var(--pink);
+}
+
+.articleLead {
+  max-width: 42rem;
+  margin-top: var(--space-8);
+  font-family: var(--font-body-slim);
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.cover {
+  display: block;
+  width: 100%;
+  max-width: 64rem;
+  height: auto;
+  margin-top: var(--space-8);
+  aspect-ratio: 16 / 9;
+  background: var(--faint);
+  object-fit: cover;
+}
+
+.reading {
+  max-width: 42.5rem;
+  margin-top: var(--space-12);
+}
+
+.content {
+  font-family: var(--font-body-slim);
+  font-size: clamp(1.1rem, 1.5vw, 1.25rem);
+  line-height: 1.7;
+}
+
+.content p,
+.content ul,
+.content ol,
+.content blockquote {
+  margin-bottom: var(--space-5);
+}
+
+.content ul,
+.content ol {
+  padding-left: var(--space-5);
+}
+
+.content ul {
+  list-style: disc;
+}
+
+.content ol {
+  list-style: decimal;
+}
+
+.content li + li {
+  margin-top: var(--space-2);
+}
+
+.content h2,
+.content h3 {
+  margin: var(--space-12) 0 var(--space-4);
+  font-family: var(--font-heading);
+  line-height: 1.05;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.content h2 {
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+}
+
+.content h3 {
+  font-size: clamp(1.15rem, 2vw, 1.4rem);
+}
+
+.content strong {
+  font-family: var(--font-body);
+  font-weight: normal;
+}
+
+.content em {
+  font-style: italic;
+}
+
+.content a {
+  border-bottom: 1px solid var(--pink);
+}
+
+.content blockquote {
+  padding-left: var(--space-5);
+  border-left: 2px solid var(--pink);
+  font-size: 1.1em;
+}
+
+.content img {
+  max-width: 100%;
+  height: auto;
+}
+
+.content iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin-bottom: var(--space-5);
+  border: 0;
+}
+
+/* The game of the article: its play time, and the way to its page */
+.gameCard {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr) auto;
+  gap: var(--space-5);
+  align-items: center;
+  margin-top: var(--space-12);
+  padding: var(--space-4);
+  border: 1px solid var(--pink);
+  color: inherit;
+  transition: background-color 0.2s;
+}
+
+.gameCard:hover {
+  background: rgb(255 0 138 / 0.12);
+}
+
+.gameCardCover {
+  width: 5rem;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  background: var(--faint);
+}
+
+.gameCardName {
+  font-family: var(--font-heading);
+  font-size: clamp(1.05rem, 2vw, 1.4rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.gameCardTimes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-5);
+  margin-top: var(--space-2);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.gameCardTimes b {
+  color: var(--cream);
+  font-size: 1rem;
+  font-weight: normal;
+}
+
+.gameCardGo {
+  color: var(--pink);
+  font-size: var(--font-size-md);
+  white-space: nowrap;
+}
+
+/* Further reading */
+.after {
+  padding-block: var(--section-space);
+  border-top: 1px solid var(--line);
+}
+
+.afterTitle {
+  margin-bottom: var(--space-5);
+  font-family: var(--font-heading);
+  font-size: clamp(1.4rem, 3vw, 2.1rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.relatedList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--space-8) var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.relatedList a {
+  display: block;
+  color: inherit;
+}
+
+.relatedImage {
+  aspect-ratio: 16 / 9;
+}
+
+.relatedTitle {
+  margin-top: var(--space-2);
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  line-height: 1.1;
+  text-transform: uppercase;
+  text-wrap: balance;
+  transition: color 0.2s;
+}
+
+.relatedList a:hover .relatedTitle,
+.step:hover .stepTitle {
+  color: var(--pink);
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5);
+  margin-top: var(--space-12);
+}
+
+.step {
+  display: block;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+  color: inherit;
+}
+
+.step[data-side='older'] {
+  grid-column: 2;
+  text-align: right;
+}
+
+.stepLabel {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.stepTitle {
+  display: block;
+  margin-top: var(--space-2);
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  line-height: 1.15;
+  text-transform: uppercase;
+  text-wrap: balance;
+  transition: color 0.2s;
+}
+
+.backLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin-top: var(--space-12);
+}
+
+@media screen and (max-width: 1024px) {
+  .lead {
+    grid-template-columns: 1fr;
+  }
+
+  .leadSide {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+  }
+
+  .leadSide li + li {
+    padding-top: 0;
+    border-top: 0;
+  }
+}
+
+@media screen and (max-width: 766px) {
+  .day {
+    grid-template-columns: 1fr;
+  }
+
+  .dayLabel {
+    position: static;
+  }
+
+  .dayLabel strong {
+    display: inline;
+    margin-right: var(--space-2);
+    font-size: 1.1rem;
+  }
+
+  .row a {
+    grid-template-columns: minmax(0, 1fr) 6rem;
+    gap: var(--space-4);
+  }
+
+  .rowExcerpt {
+    display: none;
+  }
+
+  .leadSide {
+    grid-template-columns: 1fr;
+  }
+
+  .leadSide li + li {
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--line);
+  }
+
+  .gameCard {
+    grid-template-columns: 4rem minmax(0, 1fr);
+  }
+
+  .gameCardCover {
+    width: 4rem;
+  }
+
+  .gameCardGo {
+    grid-column: 1 / -1;
+  }
+
+  .steps {
+    grid-template-columns: 1fr;
+  }
+
+  .step[data-side='older'] {
+    grid-column: auto;
+    text-align: left;
+  }
+}

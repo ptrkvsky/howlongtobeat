@@ -2,7 +2,7 @@
 import { authorPageUrl, authors } from '@/config/authors';
 import { newsCategoryLabels, type NewsArticle } from '@/config/news';
 import { formatDayAndTime } from '@/features/actus/format';
-import styles from '@/styles/actus.module.css';
+import styles from './news.module.css';
 
 interface Props {
   article: NewsArticle;
@@ -11,6 +11,9 @@ interface Props {
 // "Sortie · Par Léa Moreau · le 21 octobre 2026 à 09:01", under the title
 const { article } = Astro.props;
 const author = authors[article.author];
+// Only when the article really changed after its publication
+const updated =
+  Date.parse(article.updatedAt) - Date.parse(article.date) > 60 * 60 * 1000;
 ---
 
 <p class={styles.byline}>
@@ -22,4 +25,12 @@ const author = authors[article.author];
   <time datetime={article.date}>
     {formatDayAndTime(new Date(article.date))}
   </time>
+  {updated && (
+    <>
+      {` `}· mis à jour le{` `}
+      <time datetime={article.updatedAt}>
+        {formatDayAndTime(new Date(article.updatedAt))}
+      </time>
+    </>
+  )}
 </p>

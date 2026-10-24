@@ -1,0 +1,53 @@
+---
+import home from '@/features/home/components/home.module.css';
+import type { Game } from '@/types/Game';
+import genres from '@/features/genres/components/genres.module.css';
+
+// The games that take the least and the most time to finish
+interface Props {
+  shortest: Game[];
+  longest: Game[];
+  label: string;
+}
+
+const { shortest, longest, label } = Astro.props;
+const columns = [
+  { title: `Se terminent le plus vite`, games: shortest },
+  { title: `Demandent le plus de temps`, games: longest },
+];
+---
+
+<section class={home.section} aria-labelledby="extremes">
+  <div class={home.frame}>
+    <div class={home.head}>
+      <p class={home.kicker}>Les extrêmes</p>
+      <h2 id="extremes" class={home.title}>
+        Du sprint au marathon
+      </h2>
+      <p class={home.lede}>
+        Les histoires principales les plus courtes et les plus longues parmi les
+        jeux {label.toLowerCase()} chronométrés.
+      </p>
+    </div>
+    <div class={genres.extremes}>
+      {columns.map(({ title, games }) => (
+        <div>
+          <h3 class={genres.extremesTitle}>{title}</h3>
+          <ol class={genres.extremesList}>
+            {games.map((game) => (
+              <li>
+                <a class={genres.extreme} href={`/jeu/${game.slug}`}>
+                  <span class={genres.hours}>
+                    {game.timeMainStory}
+                    <small>h</small>
+                  </span>
+                  <span class={genres.extremeName}>{game.name}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

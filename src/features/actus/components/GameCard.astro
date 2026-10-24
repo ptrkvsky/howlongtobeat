@@ -1,0 +1,44 @@
+---
+import type { NewsGame } from '@/config/news';
+import { igdbImage } from '@/utils/igdbImage';
+import styles from './news.module.css';
+
+// The game of an article, with its play times: the link from the news to the
+// game page. Only shown when the article is about a game of the catalog
+interface Props {
+  game: NewsGame;
+}
+
+const { game } = Astro.props;
+---
+
+<a class={styles.gameCard} href={`/jeu/${game.slug}`}>
+  {game.cover ? (
+    <img
+      class={styles.gameCardCover}
+      src={igdbImage(game.cover, `cover_small_2x`)}
+      alt=""
+      width="80"
+      height="107"
+      loading="lazy"
+    />
+  ) : (
+    <span class={styles.gameCardCover} aria-hidden="true" />
+  )}
+  <span>
+    <span class={styles.gameCardName}>
+      Combien de temps pour finir {game.name} ?
+    </span>
+    <span class={styles.gameCardTimes}>
+      <span>
+        <b>{game.timeMainStory} h</b> histoire principale
+      </span>
+      <span>
+        <b>{game.timeCompletionists} h</b> à 100 %
+      </span>
+    </span>
+  </span>
+  <span class={styles.gameCardGo} aria-hidden="true">
+    Voir la fiche →
+  </span>
+</a>

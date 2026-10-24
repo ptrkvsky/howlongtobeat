@@ -1,0 +1,111 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import LayoutFront from '@/layouts/LayoutFront.astro';
+import {
+  NEWS_CATEGORIES,
+  newsCategoryLabels,
+  newsPageUrl,
+  type NewsCategory,
+  type NewsSummary,
+} from '@/config/news';
+import { NEWS_PAGE_SIZE } from '@/config/pagination';
+import urls from '@/config/urls';
+import { getNewsArticles } from '@/features/actus/api';
+import NewsListing from '@/features/actus/components/NewsListing.astro';
+import { categoriesWithCount } from '@/features/actus/data';
+import { newsCategoryUrl } from '@/features/actus/urls';
+import {
+  breadcrumbNode,
+  itemListNode,
+  organizationNode,
+  pageIds,
+  ref,
+  webPageNode,
+  websiteNode,
+} from '@/utils/structuredData';
+
+// /actus/categorie/sortie, then /actus/categorie/sortie/2…: only categories
+// with at least one article get a page
+export const getStaticPaths = (async ({ paginate }) => {
+  const all = await getNewsArticles();
+  const categories = categoriesWithCount(all);
+  return NEWS_CATEGORIES.filter((category) =>
+    all.some((article) => article.category === category),
+  ).flatMap((category) =>
+    paginate(
+      all.filter((article) => article.category === category),
+      {
+        params: { category },
+        pageSize: NEWS_PAGE_SIZE,
+        props: { category, categories, total: all.length },
+      },
+    ),
+  );
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: Page<NewsSummary>;
+  category: NewsCategory;
+  categories: { category: NewsCategory; count: number }[];
+  total: number;
+}
+
+const { page, category, categories, total } = Astro.props;
+const label = newsCategoryLabels[category];
+const baseUrl = newsCategoryUrl(category);
+const canonical = page.url.current;
+const first = page.currentPage === 1;
+const pageSuffix = first ? `` : ` - Page ${page.currentPage}`;
+const title = `Actus jeux vidéo : ${label}${pageSuffix}`;
+const description = `Toutes les actus jeux vidéo de la catégorie « ${label} », les plus récentes d'abord, avec le temps qu'il faut pour finir les jeux concernés.${pageSuffix}`;
+const breadcrumb = [
+  { name: `Accueil`, path: `/` },
+  { name: `Actus`, path: urls.actus },
+  { name: label, path: baseUrl },
+  ...(first ? [] : [{ name: `Page ${page.currentPage}`, path: canonical }]),
+];
+---
+
+<BaseLayout
+  {title}
+  {description}
+  {canonical}
+  prev={page.url.prev}
+  next={page.url.next}
+  jsonLd={[
+    websiteNode(),
+    organizationNode(),
+    webPageNode({
+      type: `CollectionPage`,
+      path: canonical,
+      name: title,
+      description,
+      extra: { mainEntity: ref(pageIds(canonical).itemList) },
+    }),
+    breadcrumbNode(canonical, breadcrumb),
+    itemListNode(
+      canonical,
+      page.data.map((article) => ({
+        name: article.title,
+        path: newsPageUrl(article.slug),
+      })),
+      { total: page.total, start: page.start },
+    ),
+  ]}
+>
+  <LayoutFront>
+    <NewsListing
+      {page}
+      {breadcrumb}
+      {categories}
+      {total}
+      current={category}
+      latest={page.data[0]}
+      kicker="Actus"
+      heading={label}
+      lede={`Les actus de la catégorie « ${label} », les plus récentes d'abord.`}
+      {baseUrl}
+    />
+  </LayoutFront>
+</BaseLayout>

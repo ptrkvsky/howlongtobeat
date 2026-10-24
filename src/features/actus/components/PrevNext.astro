@@ -1,0 +1,34 @@
+---
+import { newsPageUrl, type NewsSummary } from '@/config/news';
+import styles from './news.module.css';
+
+// Newer and older article of the flow
+interface Props {
+  newer?: NewsSummary;
+  older?: NewsSummary;
+}
+
+const { newer, older } = Astro.props;
+---
+
+{(newer || older) && (
+  <nav class={styles.steps} aria-label="Autres actus">
+    {newer && (
+      <a class={styles.step} href={newsPageUrl(newer.slug)} rel="next">
+        <span class={styles.stepLabel}>← Plus récent</span>
+        <span class={styles.stepTitle}>{newer.title}</span>
+      </a>
+    )}
+    {older && (
+      <a
+        class={styles.step}
+        href={newsPageUrl(older.slug)}
+        rel="prev"
+        data-side="older"
+      >
+        <span class={styles.stepLabel}>Plus ancien →</span>
+        <span class={styles.stepTitle}>{older.title}</span>
+      </a>
+    )}
+  </nav>
+)}

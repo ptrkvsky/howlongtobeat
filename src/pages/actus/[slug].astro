@@ -21,7 +21,13 @@ import {
   webPageNode,
   websiteNode,
 } from '@/utils/structuredData';
-import styles from '@/styles/actus.module.css';
+import { adjacentArticles, relatedArticles } from '@/features/actus/data';
+import { newsCategoryUrl } from '@/features/actus/urls';
+import GameCard from '@/features/actus/components/GameCard.astro';
+import PrevNext from '@/features/actus/components/PrevNext.astro';
+import Related from '@/features/actus/components/Related.astro';
+import home from '@/features/home/components/home.module.css';
+import styles from '@/features/actus/components/news.module.css';
 
 // One page per news article written by scripts/publish-news.ts
 export const getStaticPaths = (async () =>
@@ -43,6 +49,9 @@ const breadcrumb = [
 ];
 const imageUrl = new URL(article.image.url, Astro.site).href;
 const author = authors[article.author];
+const all = await getNewsArticles();
+const related = relatedArticles(article, all);
+const { newer, older } = adjacentArticles(article, all);
 ---
 
 <BaseLayout
@@ -72,32 +81,45 @@ const author = authors[article.author];
     personNode(author),
   ]}
 >
-  <LayoutFront isCentered>
-    <Breadcrumb items={breadcrumb} />
-    <article class={styles.article}>
-      <h1 class={styles.articleTitle}>{article.title}</h1>
-      <Byline {article} />
-      <p class={styles.lead}>{article.excerpt}</p>
-      <img
-        class={styles.cover}
-        src={article.image.url}
-        alt={article.image.alt}
-        width={article.image.width}
-        height={article.image.height}
-        fetchpriority="high"
-      />
-      {/* HTML rendered by scripts/publish-news.ts, without raw HTML */}
-      <div class={styles.content} set:html={article.content} />
-      {article.game && (
-        <a class={styles.game} href={`/jeu/${article.game.slug}`}>
-          <span>Combien de temps pour finir {article.game.name} ?</span>
-          <span aria-hidden="true">→</span>
-        </a>
-      )}
-      <AuthorBox slug={article.author} />
-      <a class={styles.back} href={urls.actus}>
-        ← Toutes les actus
-      </a>
-    </article>
+  <LayoutFront>
+    <div class={home.page}>
+      <article class:list={[home.frame, styles.article]}>
+        <Breadcrumb items={breadcrumb} />
+        <header class={styles.articleHead}>
+          <p class={home.kicker}>{newsCategoryLabels[article.category]}</p>
+          <h1 class={styles.articleTitle}>{article.title}</h1>
+          <Byline {article} />
+          <p class={styles.articleLead}>{article.excerpt}</p>
+        </header>
+        <img
+          class={styles.cover}
+          src={article.image.url}
+          alt={article.image.alt}
+          width={article.image.width}
+          height={article.image.height}
+          fetchpriority="high"
+        />
+        <div class={styles.reading}>
+          {/* HTML rendered by scripts/publish-news.ts, without raw HTML */}
+          <div class={styles.content} set:html={article.content} />
+          {article.game && <GameCard game={article.game} />}
+          <AuthorBox slug={article.author} />
+        </div>
+      </article>
+      <aside class={styles.after} aria-label="Pour continuer">
+        <div class={home.frame}>
+          <Related articles={related} gameName={article.game?.name} />
+          <PrevNext {newer} {older} />
+          <p class={styles.backLinks}>
+            <a class={home.more} href={urls.actus}>
+              ← Toutes les actus
+            </a>
+            <a class={home.more} href={newsCategoryUrl(article.category)}>
+              Plus de « {newsCategoryLabels[article.category]} »
+            </a>
+          </p>
+        </div>
+      </aside>
+    </div>
   </LayoutFront>
 </BaseLayout>

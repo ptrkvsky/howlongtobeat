@@ -1,0 +1,47 @@
+---
+import urls from '@/config/urls';
+import home from '@/features/home/components/home.module.css';
+import genres from '@/features/genres/components/genres.module.css';
+import type { GenrePageData } from '../data';
+import { isReliable } from '../data';
+
+// Genres of a similar length, and the way back to /genres
+interface Props {
+  similar: GenrePageData['similar'];
+  reliable: boolean;
+}
+
+const { similar, reliable } = Astro.props;
+---
+
+{similar.length > 0 && (
+  <section class={home.section} aria-labelledby="voisins">
+    <div class={home.frame}>
+      <div class={home.head}>
+        <p class={home.kicker}>Et aussi</p>
+        <h2 id="voisins" class={home.title}>
+          {reliable ? `Des genres de la même durée` : `D'autres genres`}
+        </h2>
+      </div>
+      <ul class={genres.all}>
+        {similar.map((genre) => (
+          <li>
+            <a class={genres.row} href={`/genre/${genre.slug}`}>
+              <span class={genres.rowName}>{genre.label}</span>
+              <span class={genres.rowFact}>
+                {genre.count.toLocaleString(`fr-FR`)} jeux
+              </span>
+              <span class={genres.rowFact}>
+                {isReliable(genre) ? `${genre.median} h` : ``}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a class={home.more} href={urls.genres}>
+        Tous les genres
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+)}

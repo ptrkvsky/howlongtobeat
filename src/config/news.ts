@@ -33,6 +33,16 @@ export interface NewsImage {
   alt: string;
 }
 
+// What the news pages show of a game: its cover and play times (hours)
+export interface NewsGame {
+  name: string;
+  slug: string;
+  // IGDB image id, see src/utils/igdbImage.ts
+  cover: string | null;
+  timeMainStory: number;
+  timeCompletionists: number;
+}
+
 export interface NewsSummary {
   slug: string;
   date: string;
@@ -42,7 +52,7 @@ export interface NewsSummary {
   title: string;
   excerpt: string;
   // Game of the catalog the article is about, linked to its page
-  game: { name: string; slug: string } | null;
+  game: NewsGame | null;
 }
 
 export interface NewsArticle extends NewsSummary {

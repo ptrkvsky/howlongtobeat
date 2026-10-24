@@ -1,0 +1,98 @@
+---
+import DurationBar from '@/features/home/components/DurationBar.astro';
+import home from '@/features/home/components/home.module.css';
+import rows from '@/features/jeu/components/RelatedGames/relatedGames.module.css';
+import { timeAxis } from '@/features/jeu/utils/timeAxis';
+import type { Game } from '@/types/Game';
+import { igdbImage } from '@/utils/igdbImage';
+import styles from './genre.module.css';
+
+// The games of the page, most popular first, on one hour scale: the length
+// of each one can be compared at a glance
+interface Props {
+  games: Game[];
+  // Rank of the first game, over the whole genre
+  start: number;
+  label: string;
+}
+
+const { games, start, label } = Astro.props;
+const scale =
+  timeAxis(
+    Math.max(
+      0,
+      ...games.flatMap((game) => [
+        game.timeMainStory,
+        game.timeMainExtras,
+        game.timeCompletionists,
+      ]),
+    ),
+  ).max || 1;
+const hours = (game: Game) =>
+  game.timeMainStory || game.timeMainExtras || game.timeCompletionists;
+const year = (game: Game) => game.identity?.releaseDate?.slice(0, 4);
+---
+
+<section class={home.section} aria-labelledby="jeux">
+  <div class={home.frame}>
+    <div class={home.head}>
+      <p class={home.kicker}>Du plus populaire au moins connu</p>
+      <h2 id="jeux" class={home.title}>
+        Les jeux {label.toLowerCase()}
+      </h2>
+      <p class={home.lede}>
+        Chaque barre est la durée de l'histoire principale, sur une même échelle
+        : <strong>plus elle est longue, plus il faut de temps</strong>.
+      </p>
+    </div>
+    <p class={styles.legend}>
+      <span>
+        <i class={styles.keyMain}></i>histoire principale
+      </span>
+      <span>
+        <i class={styles.keyPlus}></i>avec les extras
+      </span>
+      <span>
+        <i class={styles.keyFull}></i>100 %
+      </span>
+    </p>
+    <div class={rows.chart}>
+      <ol class={rows.list} start={start + 1}>
+        {games.map((game, index) => (
+          <li class={rows.row}>
+            <a class={rows.game} href={`/jeu/${game.slug}`}>
+              <span class={styles.rank} aria-hidden="true">
+                {String(start + index + 1).padStart(2, `0`)}
+              </span>
+              <span class={rows.chip}>
+                {game.cover && (
+                  <img
+                    src={igdbImage(game.cover, `cover_small_2x`)}
+                    alt=""
+                    width="45"
+                    height="64"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                )}
+              </span>
+              <span class={rows.name}>{game.name}</span>
+              {year(game) && <span class={styles.year}>{year(game)}</span>}
+            </a>
+            <span class={rows.track}>
+              <DurationBar
+                main={game.timeMainStory}
+                plus={game.timeMainExtras}
+                full={game.timeCompletionists}
+                scale={scale}
+              />
+            </span>
+            <span class={rows.hours}>
+              {hours(game) > 0 ? `${hours(game)} h` : `–`}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>

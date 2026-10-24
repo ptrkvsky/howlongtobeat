@@ -1,0 +1,30 @@
+---
+import { GENRE_BINS } from '@/features/home/data';
+import styles from './genre.module.css';
+
+// How long the games of the genre are: one bar per bin of the home, with
+// its count above and its range below
+interface Props {
+  bins: number[];
+}
+
+const { bins } = Astro.props;
+const max = Math.max(...bins);
+const short = [`< 5 h`, `5-10 h`, `10-20 h`, `20-40 h`, `40-80 h`, `> 80 h`];
+const description = GENRE_BINS.map(
+  (bin, index) => `${bins[index]} jeux de ${bin.label}`,
+).join(`, `);
+---
+
+<ol class={styles.distribution} aria-label={description}>
+  {bins.map((count, index) => (
+    <li class={styles.bar}>
+      <span class={styles.barCount}>{count}</span>
+      <span
+        class={styles.barFill}
+        style={`--height: ${max ? (count / max) * 100 : 0}%`}
+      />
+      <span class={styles.barLabel}>{short[index]}</span>
+    </li>
+  ))}
+</ol>

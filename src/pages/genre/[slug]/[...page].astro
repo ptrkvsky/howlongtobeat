@@ -2,13 +2,17 @@
 import type { GetStaticPaths, Page } from 'astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import LayoutFront from '@/layouts/LayoutFront.astro';
-import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
 import Pagination from '@/components/Pagination/Pagination.astro';
-import HomeTitle from '@/styles/components/titles/HomeTitle.astro';
 import { GENRE_PAGE_SIZE } from '@/config/pagination';
 import { getAllGenres } from '@/functions/getAllGenres';
-import { getGamesByGenre } from '@/functions/getGamesByGenre';
-import type { GameSummary } from '@/types/Game';
+import Extremes from '@/features/genre/components/Extremes.astro';
+import GameList from '@/features/genre/components/GameList.astro';
+import GenreHero from '@/features/genre/components/GenreHero.astro';
+import SimilarGenres from '@/features/genre/components/SimilarGenres.astro';
+import { getGenreGames, getGenrePageData } from '@/features/genre/data';
+import home from '@/features/home/components/home.module.css';
+import { genreLabels } from '@/features/home/genres';
+import type { Game } from '@/types/Game';
 import type { Genre } from '@/types/Genre';
 import {
   breadcrumbNode,
@@ -24,7 +28,7 @@ export const getStaticPaths = (async ({ paginate }) => {
 
   const pages = await Promise.all(
     genres.map(async (genre) =>
-      paginate(await getGamesByGenre(genre.id), {
+      paginate(await getGenreGames(genre.id), {
         params: { slug: genre.slug },
         props: { genre },
         pageSize: GENRE_PAGE_SIZE,
@@ -36,7 +40,7 @@ export const getStaticPaths = (async ({ paginate }) => {
 
 interface Props {
   genre: Genre;
-  page: Page<GameSummary>;
+  page: Page<Game>;
 }
 
 const { genre, page } = Astro.props;
@@ -45,7 +49,13 @@ const canonical = page.url.current;
 // Other pages get their own title and description
 const pageSuffix = page.currentPage > 1 ? ` - Page ${page.currentPage}` : ``;
 const title = `Durée de vie des jeux ${genre.name}${pageSuffix}`;
-const description = `Découvrez le temps nécessaire pour terminer les jeux ${genre.name}.${pageSuffix}`;
+const label = genreLabels[genre.slug] ?? genre.name;
+const data = await getGenrePageData(genre.slug, await getGenreGames(genre.id));
+const median =
+  data.reliable && data.stat
+    ? ` Durée médiane : ${data.stat.median} h pour ${data.stat.timed} jeux chronométrés.`
+    : ``;
+const description = `Découvrez le temps nécessaire pour terminer les jeux ${genre.name}.${median}${pageSuffix}`;
 const breadcrumb = [
   { name: `Accueil`, path: `/` },
   { name: genre.name, path: genrePath },
@@ -79,25 +89,44 @@ const jsonLd = [
   canonical={canonical}
   prev={page.url.prev}
   next={page.url.next}
+  ogImage={
+    data.art
+      ? new URL(`/genres/${genre.slug}-1200.webp`, Astro.site).href
+      : undefined
+  }
   jsonLd={jsonLd}
+  preloadFonts={[
+    `/fonts/MonumentExtended-Black.woff2`,
+    `/fonts/PolySans-Slim.woff2`,
+  ]}
 >
-  <LayoutFront isCentered>
-    <Breadcrumb items={breadcrumb} />
-    <HomeTitle>
-      {genre.name}
-      <br /> {page.total} jeux
-    </HomeTitle>
-    <ul>
-      {page.data.map((game) => (
-        <li>
-          <a href={`/jeu/${game.slug}`}>{game.name}</a>
-        </li>
-      ))}
-    </ul>
-    <Pagination
-      baseUrl={genrePath}
-      currentPage={page.currentPage}
-      lastPage={page.lastPage}
-    />
+  <LayoutFront>
+    <div class={home.page}>
+      <GenreHero
+        label={label}
+        slug={genre.slug}
+        count={page.total}
+        page={page.currentPage}
+        lastPage={page.lastPage}
+        breadcrumb={breadcrumb}
+        data={data}
+      />
+      <GameList games={page.data} start={page.start} label={label} />
+      <div class={home.frame}>
+        <Pagination
+          baseUrl={genrePath}
+          currentPage={page.currentPage}
+          lastPage={page.lastPage}
+        />
+      </div>
+      {page.currentPage === 1 && data.extremes && (
+        <Extremes
+          shortest={data.extremes.shortest}
+          longest={data.extremes.longest}
+          label={label}
+        />
+      )}
+      <SimilarGenres similar={data.similar} reliable={data.reliable} />
+    </div>
   </LayoutFront>
 </BaseLayout>

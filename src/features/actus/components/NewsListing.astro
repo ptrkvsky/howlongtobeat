@@ -1,0 +1,92 @@
+---
+import type { Page } from 'astro';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
+import Pagination from '@/components/Pagination/Pagination.astro';
+import type { NewsCategory, NewsSummary } from '@/config/news';
+import { groupByDay, type TopGame } from '@/features/actus/data';
+import { formatDayAndTime } from '@/features/actus/format';
+import home from '@/features/home/components/home.module.css';
+import CategoryNav from './CategoryNav.astro';
+import DayFlow from './DayFlow.astro';
+import GameStrip from './GameStrip.astro';
+import Lead from './Lead.astro';
+import styles from './news.module.css';
+
+// Content shared by /actus and the category pages: header, categories, then
+// (first page of /actus only) the lead and the games, then the flow by day
+interface Props {
+  page: Page<NewsSummary>;
+  breadcrumb: { name: string; path: string }[];
+  kicker: string;
+  heading: string;
+  lede: string;
+  baseUrl: string;
+  categories: { category: NewsCategory; count: number }[];
+  total: number;
+  current?: NewsCategory;
+  lead?: NewsSummary[];
+  games?: TopGame[];
+  latest?: NewsSummary;
+}
+
+const {
+  page,
+  breadcrumb,
+  kicker,
+  heading,
+  lede,
+  baseUrl,
+  categories,
+  total,
+  current,
+  lead = [],
+  games = [],
+  latest,
+} = Astro.props;
+const first = page.currentPage === 1;
+---
+
+<div class:list={[home.page]}>
+  <header class:list={[home.paper, styles.header]}>
+    <div class={home.frame}>
+      <Breadcrumb items={breadcrumb} />
+      <div
+        class={home.head}
+        style="margin-top: var(--space-8); margin-bottom: 0"
+      >
+        <p class={home.kicker}>{kicker}</p>
+        <h1 class={home.title}>{heading}</h1>
+        <p class={home.lede}>{lede}</p>
+      </div>
+      {latest && (
+        <p class={styles.meta}>
+          Dernière actu le {formatDayAndTime(new Date(latest.date))}
+        </p>
+      )}
+      <CategoryNav {categories} {total} {current} />
+    </div>
+  </header>
+  {page.total > 0 ? (
+    <>
+      {first && <Lead articles={lead} />}
+      {first && <GameStrip {games} />}
+      <DayFlow
+        groups={groupByDay(page.data)}
+        eager={first && !lead.length ? 2 : 0}
+      />
+      <div class={home.frame}>
+        <Pagination
+          {baseUrl}
+          currentPage={page.currentPage}
+          lastPage={page.lastPage}
+        />
+      </div>
+    </>
+  ) : (
+    <div class={home.frame}>
+      <p class={styles.empty}>
+        Aucune actu dans cette catégorie pour le moment.
+      </p>
+    </div>
+  )}
+</div>

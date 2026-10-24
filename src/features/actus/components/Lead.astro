@@ -1,0 +1,76 @@
+---
+import {
+  newsCategoryLabels,
+  newsPageUrl,
+  type NewsSummary,
+} from '@/config/news';
+import { formatDate } from '@/features/actus/format';
+import home from '@/features/home/components/home.module.css';
+import styles from './news.module.css';
+
+// The top of /actus: one large story and two smaller ones
+interface Props {
+  articles: NewsSummary[];
+}
+
+const [main, ...side] = Astro.props.articles;
+---
+
+{main && (
+  <section class={home.frame} aria-labelledby="une">
+    <h2 id="une" class={home.srOnly}>
+      À la une
+    </h2>
+    <div class={styles.lead}>
+      <article class={styles.leadMain}>
+        <a href={newsPageUrl(main.slug)}>
+          <img
+            class={styles.leadImage}
+            src={main.image.url}
+            alt={main.image.alt}
+            width={main.image.width}
+            height={main.image.height}
+            fetchpriority="high"
+            decoding="async"
+          />
+          <p class={styles.tag}>
+            <b>{newsCategoryLabels[main.category]}</b>
+            <time datetime={main.date}>
+              {formatDate.format(new Date(main.date))}
+            </time>
+          </p>
+          <h3 class={styles.leadTitle}>{main.title}</h3>
+          <p class={styles.leadExcerpt}>{main.excerpt}</p>
+        </a>
+      </article>
+      {side.length > 0 && (
+        <ul class={styles.leadSide}>
+          {side.map((article) => (
+            <li>
+              <article>
+                <a href={newsPageUrl(article.slug)}>
+                  <img
+                    class={styles.sideImage}
+                    src={article.image.url}
+                    alt={article.image.alt}
+                    width="640"
+                    height="360"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <p class={styles.tag}>
+                    <b>{newsCategoryLabels[article.category]}</b>
+                    <time datetime={article.date}>
+                      {formatDate.format(new Date(article.date))}
+                    </time>
+                  </p>
+                  <h3 class={styles.sideTitle}>{article.title}</h3>
+                </a>
+              </article>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </section>
+)}

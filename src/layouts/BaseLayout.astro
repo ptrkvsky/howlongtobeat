@@ -75,6 +75,12 @@ const gtmSnippet = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':ne
     )}
     {prev && <link rel="prev" href={new URL(prev, Astro.site)} />}
     {next && <link rel="next" href={new URL(next, Astro.site)} />}
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`Actus ${siteInformations.title}`}
+      href={new URL(`/actus/rss.xml`, Astro.site)}
+    />
     <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={siteInformations.title} />
     <meta property="og:locale" content="fr_FR" />

@@ -1,0 +1,85 @@
+---
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
+import home from '@/features/home/components/home.module.css';
+import type { BreadcrumbItem } from '@/utils/structuredData';
+import type { GenrePageData } from '../data';
+import Distribution from './Distribution.astro';
+import styles from './genre.module.css';
+
+// Top of a genre page: the name, what the genre means in hours, and its
+// artwork when it has one. Pages after the first keep a short heading
+interface Props {
+  label: string;
+  slug: string;
+  count: number;
+  page: number;
+  lastPage: number;
+  breadcrumb: BreadcrumbItem[];
+  data: GenrePageData;
+}
+
+const { label, slug, count, page, lastPage, breadcrumb, data } = Astro.props;
+const { stat, reliable, shares, art } = data;
+const plural = (n: number) => (n > 1 ? `jeux` : `jeu`);
+---
+
+<section class:list={[home.paper, styles.hero]}>
+  <div class={home.frame}>
+    <Breadcrumb items={breadcrumb} />
+    {page > 1 ? (
+      <div class={styles.compact}>
+        <p class={home.kicker}>
+          Page {page} sur {lastPage}
+        </p>
+        <h1 class={styles.compactTitle}>{label}</h1>
+      </div>
+    ) : (
+      <>
+        <div class:list={[styles.banner, art && styles.hasArt]}>
+          {art && (
+            <img
+              class={styles.art}
+              src={`/genres/${slug}-1200.webp`}
+              srcset={`/genres/${slug}-600.webp 600w, /genres/${slug}-1200.webp 1200w`}
+              sizes="(max-width: 766px) 100vw, 1300px"
+              width="1200"
+              height="800"
+              alt=""
+              decoding="async"
+            />
+          )}
+          <div class={styles.bannerText}>
+            <p class={home.kicker}>
+              {count.toLocaleString(`fr-FR`)} {plural(count)}
+            </p>
+            <h1 class={styles.title}>{label}</h1>
+            {reliable && stat && (
+              <p class={styles.median}>
+                <span class={styles.medianValue}>{stat.median} h</span>
+                <span class={styles.medianLabel}>
+                  durée médiane de l'histoire
+                </span>
+              </p>
+            )}
+          </div>
+        </div>
+        {reliable && stat && shares ? (
+          <div class={styles.facts}>
+            <p class={home.lede}>
+              La moitié des <strong>{stat.timed} jeux</strong> chronométrés se
+              termine en moins de <strong>{stat.median} h</strong>.{` `}
+              <strong>{shares.underTen} %</strong> tiennent en 10 h ou moins,
+              {` `}
+              <strong>{shares.overForty} %</strong> dépassent 40 h.
+            </p>
+            <Distribution bins={stat.bins} />
+          </div>
+        ) : (
+          <p class={styles.thin}>
+            Pas assez de jeux chronométrés pour en tirer une durée typique.
+          </p>
+        )}
+      </>
+    )}
+  </div>
+</section>

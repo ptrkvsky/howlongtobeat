@@ -1,0 +1,45 @@
+---
+import {
+  newsCategoryLabels,
+  newsPageUrl,
+  type NewsSummary,
+} from '@/config/news';
+import styles from './news.module.css';
+
+// Under an article: the articles about the same game, then the same category
+interface Props {
+  articles: NewsSummary[];
+  gameName?: string;
+}
+
+const { articles, gameName } = Astro.props;
+---
+
+{articles.length > 0 && (
+  <section aria-labelledby="a-lire">
+    <h2 id="a-lire" class={styles.afterTitle}>
+      {gameName ? `Autour de ${gameName}` : `À lire aussi`}
+    </h2>
+    <ul class={styles.relatedList}>
+      {articles.map((article) => (
+        <li>
+          <a href={newsPageUrl(article.slug)}>
+            <img
+              class={styles.relatedImage}
+              src={article.image.url}
+              alt={article.image.alt}
+              width="640"
+              height="360"
+              loading="lazy"
+              decoding="async"
+            />
+            <p class={styles.tag}>
+              <b>{newsCategoryLabels[article.category]}</b>
+            </p>
+            <p class={styles.relatedTitle}>{article.title}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}

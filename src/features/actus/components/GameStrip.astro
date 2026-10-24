@@ -1,0 +1,53 @@
+---
+import { igdbImage } from '@/utils/igdbImage';
+import home from '@/features/home/components/home.module.css';
+import type { TopGame } from '@/features/actus/data';
+import styles from './news.module.css';
+
+// "Jeux dans l'actu": the games of the catalog the latest news talk about,
+// each with its play time and the way to its page
+interface Props {
+  games: TopGame[];
+}
+
+const { games } = Astro.props;
+---
+
+{games.length > 0 && (
+  <section class={home.frame} aria-labelledby="jeux-actu">
+    <div class={styles.games}>
+      <p class={home.kicker}>Dans l'actu ce mois-ci</p>
+      <h2 id="jeux-actu" class={styles.afterTitle}>
+        Jeux dont on parle
+      </h2>
+      <ul class={styles.gameList}>
+        {games.map((game) => (
+          <li>
+            <a class={styles.gameLink} href={`/jeu/${game.slug}`}>
+              {game.cover ? (
+                <img
+                  class={styles.gameCover}
+                  src={igdbImage(game.cover, `cover_small_2x`)}
+                  alt=""
+                  width="48"
+                  height="64"
+                  loading="lazy"
+                />
+              ) : (
+                <span class={styles.gameCover} aria-hidden="true" />
+              )}
+              <span>
+                <span class={styles.gameName}>{game.name}</span>
+                <span class={styles.gameFacts}>
+                  {game.timeMainStory} h pour finir · {game.count}
+                  {` `}
+                  {game.count > 1 ? `actus` : `actu`}
+                </span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}

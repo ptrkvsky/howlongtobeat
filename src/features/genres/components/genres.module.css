@@ -1,0 +1,313 @@
+/*
+ * /genres: the featured genres, the extremes, the index. The frame, the
+ * headings and the colors come from home.module.css (--cream, --pink…).
+ */
+
+/* Featured: 12 columns, a banner, pairs of unequal widths, a banner */
+.featured {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--space-8) var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  grid-column: span 12;
+}
+
+.card {
+  position: relative;
+  display: block;
+  height: 100%;
+  border: 1px solid var(--faint);
+  background: var(--color-background);
+  transition: border-color 0.2s;
+}
+
+.card:hover {
+  border-color: var(--pink);
+}
+
+.art {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  object-position: right center;
+}
+
+.body {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-4) var(--space-5);
+}
+
+.name {
+  font-family: var(--font-heading);
+  font-size: clamp(1.4rem, 3.4vw, 2.4rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  transition: color 0.2s;
+}
+
+.card:hover .name {
+  color: var(--pink);
+}
+
+.facts {
+  display: flex;
+  gap: var(--space-8);
+}
+
+.fact {
+  display: grid;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.factLabel {
+  color: var(--muted);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.histogram {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  align-items: end;
+  gap: 3px;
+  height: 2.25rem;
+  max-width: 12rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.bin {
+  height: max(1px, var(--height));
+  background: var(--pink);
+}
+
+.card:hover .bin {
+  background: var(--cream);
+}
+
+@media screen and (min-width: 767px) {
+  .item[data-slot='1'],
+  .item[data-slot='4'],
+  .item[data-slot='5'] {
+    grid-column: span 7;
+  }
+
+  .item[data-slot='2'],
+  .item[data-slot='3'],
+  .item[data-slot='6'] {
+    grid-column: span 5;
+  }
+
+  /* Square crop: as tall as the wide card beside it, and it trims the
+     empty left third of the artwork */
+  .item[data-slot='2'] .art,
+  .item[data-slot='3'] .art,
+  .item[data-slot='6'] .art {
+    aspect-ratio: 1;
+  }
+
+  .item[data-slot='0'] .art,
+  .item[data-slot='7'] .art {
+    aspect-ratio: 21 / 9;
+  }
+
+  /* Banners: the text sits on the empty left third of the artwork */
+  .item[data-slot='0'] .body,
+  .item[data-slot='7'] .body {
+    position: absolute;
+    inset: auto auto 0 0;
+    width: min(100%, 26rem);
+    padding: var(--space-8);
+  }
+
+  .item[data-slot='0'] .name,
+  .item[data-slot='7'] .name {
+    font-size: clamp(2rem, 4.4vw, 3.6rem);
+  }
+}
+
+/* Extremes: the hours first, as big as the title */
+.extremes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-12);
+}
+
+.extremesTitle {
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--cream);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.extremesList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.extreme {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-5);
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--faint);
+}
+
+.hours {
+  min-width: 4.5ch;
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, 3.75rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--pink);
+}
+
+.hours small {
+  margin-left: 2px;
+  font-size: 0.4em;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+.extremeName {
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  transition: color 0.2s;
+}
+
+.extreme:hover .extremeName {
+  color: var(--pink);
+}
+
+/* Index and filter */
+.search {
+  display: grid;
+  gap: var(--space-2);
+  align-self: end;
+  max-width: 28rem;
+}
+
+.search[hidden] {
+  display: none;
+}
+
+.searchLabel {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.searchInput {
+  width: 100%;
+  padding: var(--space-3) 0;
+  border: 0;
+  border-bottom: 1px solid var(--cream);
+  border-radius: 0;
+  background: transparent;
+  color: var(--cream);
+  font: inherit;
+  font-size: 1.25rem;
+}
+
+.searchInput::placeholder {
+  color: var(--muted);
+}
+
+.searchCount {
+  min-height: 1.2em;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.all {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 var(--space-12);
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--cream);
+  list-style: none;
+}
+
+.all > li[hidden] {
+  display: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 6.5rem 4rem;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--faint);
+}
+
+.rowName {
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  line-height: 1.2;
+  transition: color 0.2s;
+}
+
+.row:hover .rowName {
+  color: var(--pink);
+}
+
+.rowFact {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.empty {
+  margin-top: var(--space-8);
+  color: var(--muted);
+}
+
+.empty[hidden] {
+  display: none;
+}
+
+.empty button {
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--pink);
+  background: none;
+  color: var(--cream);
+  font: inherit;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 900px) {
+  .extremes,
+  .all {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr) 5.5rem 3rem;
+  }
+}

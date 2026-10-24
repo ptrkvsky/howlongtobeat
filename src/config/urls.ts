@@ -1,6 +1,7 @@
 const urls = {
   home: `/`,
   actus: `/actus`,
+  genres: `/genres`,
   mentions: `/mentions-legales`,
   politique: `/politique-de-confidentialite`,
   plan: `/plan-du-site`,

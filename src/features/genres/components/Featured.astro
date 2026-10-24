@@ -1,0 +1,62 @@
+---
+import home from '@/features/home/components/home.module.css';
+import type { GenresData } from '../data';
+import Histogram from './Histogram.astro';
+import styles from './genres.module.css';
+
+// The main genres, each with its own artwork: a banner, then pairs of
+// unequal widths, then a banner (the layout is in genres.module.css)
+interface Props {
+  genres: GenresData['featured'];
+}
+
+const { genres } = Astro.props;
+---
+
+<section class={home.section} aria-labelledby="principaux">
+  <div class={home.frame}>
+    <div class={home.head}>
+      <p class={home.kicker}>Les grands genres</p>
+      <h2 id="principaux" class={home.title}>
+        Huit façons de jouer
+      </h2>
+      <p class={home.lede}>
+        Les genres qui comptent le plus de jeux, avec la durée médiane de leur
+        histoire principale.
+      </p>
+    </div>
+    <ul class={styles.featured}>
+      {genres.map((genre, index) => (
+        <li class={styles.item} data-slot={index}>
+          <a class={styles.card} href={`/genre/${genre.slug}`}>
+            <img
+              class={styles.art}
+              src={`/genres/${genre.slug}-1200.webp`}
+              srcset={`/genres/${genre.slug}-600.webp 600w, /genres/${genre.slug}-1200.webp 1200w`}
+              sizes="(max-width: 766px) 100vw, (max-width: 1440px) 60vw, 860px"
+              width="1200"
+              height="800"
+              alt=""
+              loading={index < 1 ? `eager` : `lazy`}
+              decoding="async"
+            />
+            <span class={styles.body}>
+              <h3 class={styles.name}>{genre.label}</h3>
+              <span class={styles.facts}>
+                <span class={styles.fact}>
+                  <span class={styles.factLabel}>jeux</span>
+                  {genre.count.toLocaleString(`fr-FR`)}
+                </span>
+                <span class={styles.fact}>
+                  <span class={styles.factLabel}>médiane</span>
+                  {genre.median} h
+                </span>
+              </span>
+              <Histogram bins={genre.bins} />
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

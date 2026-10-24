@@ -1,0 +1,52 @@
+---
+import home from '@/features/home/components/home.module.css';
+import type { GenresData } from '../data';
+import styles from './genres.module.css';
+
+// The quickest and the longest genres to finish, by median main story
+interface Props {
+  shortest: GenresData['shortest'];
+  longest: GenresData['longest'];
+}
+
+const { shortest, longest } = Astro.props;
+const columns = [
+  { title: `Pour finir ce week-end`, genres: shortest },
+  { title: `Pour s'installer longtemps`, genres: longest },
+];
+---
+
+<section class={home.section} aria-labelledby="extremes">
+  <div class={home.frame}>
+    <div class={home.head}>
+      <p class={home.kicker}>Court ou long ?</p>
+      <h2 id="extremes" class={home.title}>
+        Le temps d'abord
+      </h2>
+      <p class={home.lede}>
+        Durée médiane de l'histoire principale, parmi les genres qui ont assez
+        de jeux chronométrés pour qu'elle soit fiable.
+      </p>
+    </div>
+    <div class={styles.extremes}>
+      {columns.map(({ title, genres }) => (
+        <div>
+          <h3 class={styles.extremesTitle}>{title}</h3>
+          <ol class={styles.extremesList}>
+            {genres.map((genre) => (
+              <li>
+                <a class={styles.extreme} href={`/genre/${genre.slug}`}>
+                  <span class={styles.hours}>
+                    {genre.median}
+                    <small>h</small>
+                  </span>
+                  <span class={styles.extremeName}>{genre.label}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

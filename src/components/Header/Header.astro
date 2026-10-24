@@ -1,17 +1,29 @@
 ---
 import urls from '@/config/urls';
-import { siteInformations } from '@/config/siteInformations';
+import Flag from '@/features/home/components/Flag.astro';
+import home from '@/features/home/components/home.module.css';
 import styles from './header.module.css';
 
+// Header of every page. The search is the field of the hero: on the home
+// the button gives it the focus (scripts/search.ts), elsewhere it is a link
+// to the home
 const { pathname } = Astro.url;
+const isHome = pathname === urls.home;
+const SearchTag = isHome ? `button` : `a`;
+const searchProps = isHome
+  ? {
+      type: `button` as const,
+      'aria-keyshortcuts': `/`,
+      'data-search-open': true,
+    }
+  : { href: `${urls.home}#calcul` };
 
 // `match` decides which link is current: the genre pages belong to "Genres"
-// since the site map is the list of genres
 const links = [
   {
-    url: urls.plan,
+    url: urls.genres,
     label: `Genres`,
-    match: (path: string) => path === urls.plan || path.startsWith(`/genre/`),
+    match: (path: string) => path === urls.genres || path.startsWith(`/genre/`),
   },
   {
     url: urls.actus,
@@ -21,10 +33,11 @@ const links = [
 ];
 ---
 
-<header class={styles.header}>
-  <div class="container">
-    <a href={urls.home} class={styles.logo}>
-      {siteInformations.title}
+<header class:list={[home.page, home.paper, styles.header]}>
+  <div class:list={[home.frame, styles.inner]}>
+    <a href={urls.home} class={styles.logo} aria-label="Game Over, accueil">
+      <Flag class={styles.flag} />
+      <span>Game Over</span>
     </a>
     <nav aria-label="Navigation principale">
       <ul class={styles.links}>
@@ -41,5 +54,32 @@ const links = [
         ))}
       </ul>
     </nav>
+    <SearchTag
+      class={styles.search}
+      aria-label="Rechercher un jeu"
+      {...searchProps}
+    >
+      <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+        <circle
+          cx="6.5"
+          cy="6.5"
+          r="5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+        ></circle>
+        <path
+          d="M10.5 10.5 15 15"
+          stroke="currentColor"
+          stroke-width="1.5"
+        ></path>
+      </svg>
+      <span class={styles.searchLabel}>Rechercher un jeu</span>
+      {isHome && (
+        <kbd class={styles.key} aria-hidden="true">
+          /
+        </kbd>
+      )}
+    </SearchTag>
   </div>
 </header>

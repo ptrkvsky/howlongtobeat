@@ -1,0 +1,72 @@
+---
+import home from '@/features/home/components/home.module.css';
+import type { GenresData } from '../data';
+import styles from './genres.module.css';
+
+// Every genre, A to Z. The list is complete in the HTML; the field only
+// hides the lines that do not match (scripts below)
+interface Props {
+  genres: GenresData['all'];
+  timedMin: number;
+}
+
+const { genres, timedMin } = Astro.props;
+const normalize = (text: string) =>
+  text.normalize(`NFD`).replace(/[̀-ͯ]/g, ``).toLowerCase();
+---
+
+<section
+  class={home.section}
+  aria-labelledby="tous"
+  data-genre-filter
+  data-total={genres.length}
+>
+  <div class={home.frame}>
+    <div class={home.head}>
+      <p class={home.kicker}>L'index</p>
+      <h2 id="tous" class={home.title}>
+        Tous les genres
+      </h2>
+      <div class={styles.search} hidden data-filter-field>
+        <label class={styles.searchLabel} for="genre-search">
+          Chercher un genre
+        </label>
+        <input
+          id="genre-search"
+          class={styles.searchInput}
+          type="search"
+          autocomplete="off"
+          placeholder="Tir, stratégie, rôle…"
+          data-filter-input
+        />
+        <p class={styles.searchCount} role="status" data-filter-status></p>
+      </div>
+    </div>
+    <ul class={styles.all} data-filter-list>
+      {genres.map((genre) => (
+        <li data-name={normalize(genre.label)}>
+          <a class={styles.row} href={`/genre/${genre.slug}`}>
+            <span class={styles.rowName}>{genre.label}</span>
+            <span class={styles.rowFact}>
+              {genre.count.toLocaleString(`fr-FR`)}
+              {genre.count > 1 ? ` jeux` : ` jeu`}
+            </span>
+            <span class={styles.rowFact}>
+              {genre.timed >= timedMin ? `${genre.median} h` : ``}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class={styles.empty} hidden data-filter-empty>
+      Aucun genre ne correspond.{' '}
+      <button type="button" data-filter-reset>
+        Voir tous les genres
+      </button>
+    </p>
+  </div>
+</section>
+
+<script>
+  import '../scripts/filter';
+</script>

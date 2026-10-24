@@ -1,0 +1,82 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import LayoutFront from '@/layouts/LayoutFront.astro';
+import Extremes from '@/features/genres/components/Extremes.astro';
+import Featured from '@/features/genres/components/Featured.astro';
+import GenreList from '@/features/genres/components/GenreList.astro';
+import { getGenresData } from '@/features/genres/data';
+import { GENRE_MIN_TIMES } from '@/features/home/data';
+import home from '@/features/home/components/home.module.css';
+import urls from '@/config/urls';
+import {
+  breadcrumbNode,
+  itemListNode,
+  pageIds,
+  ref,
+  webPageNode,
+} from '@/utils/structuredData';
+
+const data = await getGenresData();
+const path = urls.genres;
+const title = `Genres de jeux vidéo : combien de temps pour les finir ?`;
+const description = `${data.genresCount} genres et ${data.gamesCount.toLocaleString(`fr-FR`)} jeux vidéo, classés par durée de vie : aventure, rôle, stratégie, tir… Trouvez le genre qui tient dans votre temps libre.`;
+const breadcrumb = [
+  { name: `Accueil`, path: urls.home },
+  { name: `Genres`, path },
+];
+const listed = [...data.featured, ...data.rest, ...data.others].map(
+  (genre) => ({ name: genre.label, path: `/genre/${genre.slug}` }),
+);
+const jsonLd = [
+  webPageNode({
+    type: `CollectionPage`,
+    path,
+    name: title,
+    description,
+    extra: { mainEntity: ref(pageIds(path).itemList) },
+  }),
+  breadcrumbNode(path, breadcrumb),
+  itemListNode(path, listed),
+];
+const [lead] = data.featured;
+const quickest = data.shortest[0];
+const longest = data.longest[0];
+---
+
+<BaseLayout
+  absoluteTitle={title}
+  description={description}
+  canonical={path}
+  ogImage={new URL(`/genres/${lead.slug}-1200.webp`, Astro.site).href}
+  jsonLd={jsonLd}
+  preloadFonts={[
+    `/fonts/MonumentExtended-Black.woff2`,
+    `/fonts/PolySans-Slim.woff2`,
+  ]}
+>
+  <LayoutFront>
+    <div class={home.page}>
+      <section class:list={[home.section, home.paper]}>
+        <div class={home.frame}>
+          <div class={home.head}>
+            <p class={home.kicker}>{data.genresCount} genres</p>
+            <h1 class={home.title}>
+              Choisissez votre jeu au temps qu'il vous faut
+            </h1>
+            <p class={home.lede}>
+              <strong>{data.gamesCount.toLocaleString(`fr-FR`)} jeux</strong>
+              {` `}rangés par genre. La durée médiane de l'histoire va de{` `}
+              <strong>{quickest.median} h</strong> (
+              {quickest.label.toLowerCase()}) à{` `}
+              <strong>{longest.median} h</strong> ({longest.label.toLowerCase()}
+              ).
+            </p>
+          </div>
+        </div>
+      </section>
+      <Featured genres={data.featured} />
+      <Extremes shortest={data.shortest} longest={data.longest} />
+      <GenreList genres={data.all} timedMin={GENRE_MIN_TIMES} />
+    </div>
+  </LayoutFront>
+</BaseLayout>

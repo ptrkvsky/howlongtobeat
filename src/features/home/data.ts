@@ -146,9 +146,9 @@ export const GENRE_BINS = [
   { max: 80, label: `40 à 80 h` },
   { max: Infinity, label: `plus de 80 h` },
 ];
-const GENRE_MIN_TIMES = 10;
+export const GENRE_MIN_TIMES = 10;
 
-async function genreStats(games: Game[]) {
+export async function genreStats(games: Game[]) {
   const genres = await getAllGenres();
   const stats = genres.map((genre) => {
     const inGenre = games.filter((game) => game.genreIds.includes(genre.id));

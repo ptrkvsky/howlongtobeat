@@ -1,36 +1,108 @@
 ---
-import type { GameSummary } from '@/types/Game';
-import Cover from '../Cover.astro';
-import jeuStyles from '../jeu.module.css';
+import DurationBar from '@/features/home/components/DurationBar.astro';
+import home from '@/features/home/components/home.module.css';
+import { genreLabels } from '@/features/home/genres';
+import type { Game, RelatedGame } from '@/types/Game';
+import type { Genre } from '@/types/Genre';
+import { timeAxis } from '@/features/jeu/utils/timeAxis';
+import { igdbImage } from '@/utils/igdbImage';
 import styles from './relatedGames.module.css';
 
+// Games to finish next, on one hour scale with a line at the main story of
+// this game: which ones are shorter, which ones longer
 interface Props {
-  relatedGames: GameSummary[];
+  game: Game;
+  genre: Genre | undefined;
+  relatedGames: RelatedGame[];
 }
 
-const { relatedGames } = Astro.props;
+const { game, genre, relatedGames } = Astro.props;
+// Every known time fits on the scale, rounded as the times of the hero
+const scale =
+  timeAxis(
+    Math.max(
+      game.timeMainStory,
+      ...relatedGames.flatMap((item) => [
+        item.timeMainStory,
+        item.timeMainExtras,
+        item.timeCompletionists,
+      ]),
+    ),
+    // No time at all: any scale, the bars are empty
+  ).max || 1;
+const here = game.timeMainStory;
+const hours = (item: RelatedGame) =>
+  item.timeMainStory || item.timeMainExtras || item.timeCompletionists;
 ---
 
-<div class="container">
-  <h2 class={jeuStyles.titleSecondary}>D'autres jeux à terminer</h2>
-</div>
-<nav class={styles.menu}>
-  {relatedGames.map((relatedGame) => (
-    <div class={styles.item}>
-      <div class={styles.link}>
-        <a href={`/jeu/${relatedGame.slug}`}>{relatedGame.name}</a>
+{relatedGames.length > 0 && (
+  <section class={home.section} aria-labelledby="autres-jeux">
+    <div class={home.frame}>
+      <div class={home.head}>
+        <p class={home.kicker}>Et ensuite</p>
+        <h2 id="autres-jeux" class={home.title}>
+          D'autres jeux à terminer
+        </h2>
+        {here > 0 && (
+          <p class={home.lede}>
+            Sur la même échelle, la ligne marque les{` `}
+            <strong>{here} h</strong> de l'histoire de {game.name}.
+          </p>
+        )}
       </div>
-      <div class={styles.img}>
-        {relatedGame.cover && <Cover game={relatedGame} />}
+
+      <div
+        class={styles.chart}
+        style={`--here: ${(here / scale) * 100}%`}
+        data-here={here > 0 ? `` : undefined}
+      >
+        {here > 0 && (
+          <p class={styles.here} aria-hidden="true">
+            <span>
+              {game.name} · {here} h
+            </span>
+          </p>
+        )}
+        <ol class={styles.list}>
+          {relatedGames.map((relatedGame) => (
+            <li class={styles.row}>
+              <a class={styles.game} href={`/jeu/${relatedGame.slug}`}>
+                <span class={styles.chip}>
+                  {relatedGame.cover && (
+                    <img
+                      src={igdbImage(relatedGame.cover, `cover_small_2x`)}
+                      alt=""
+                      width="45"
+                      height="64"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
+                </span>
+                <span class={styles.name}>{relatedGame.name}</span>
+              </a>
+              <span class={styles.track}>
+                <DurationBar
+                  main={relatedGame.timeMainStory}
+                  plus={relatedGame.timeMainExtras}
+                  full={relatedGame.timeCompletionists}
+                  scale={scale}
+                />
+              </span>
+              <span class={styles.hours}>
+                {hours(relatedGame) > 0 ? `${hours(relatedGame)} h` : `–`}
+              </span>
+            </li>
+          ))}
+        </ol>
       </div>
-      <div class={styles.marquee}>
-        <div class={styles.marqueeInner} aria-hidden="true">
-          <span>{relatedGame.name}</span>
-          <span>{relatedGame.name}</span>
-          <span>{relatedGame.name}</span>
-          <span>{relatedGame.name}</span>
-        </div>
-      </div>
+
+      {genre && (
+        <a class={home.more} href={`/genre/${genre.slug}`}>
+          Tous les jeux {genreLabels[genre.slug] ?? genre.name}
+          <span aria-hidden="true">→</span>
+        </a>
+      )}
     </div>
-  ))}
-</nav>
+  </section>
+)}

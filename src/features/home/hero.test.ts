@@ -41,6 +41,20 @@ describe(`heroView`, () => {
     assert.equal(view.year, 2027);
   });
 
+  it(`ends the chosen goal on the flag`, () => {
+    const view = heroView(game, 7, day, `full`);
+    assert.equal(view.target.key, `full`);
+    assert.equal(view.dateLong, `13 mars 2027`);
+    const [main, plus, full] = view.goals;
+    assert.ok(Math.abs(full.length - FINISH_AT * 100) < 1e-9);
+    assert.ok(main.length < plus.length && plus.length < full.length);
+  });
+
+  it(`ignores a chosen goal the game has no time for`, () => {
+    const view = heroView({ ...game, plus: 0 }, 7, day, `plus`);
+    assert.equal(view.target.key, `main`);
+  });
+
   it(`falls back on the first known goal`, () => {
     const view = heroView({ ...game, main: 0, plus: 0 }, 7, day);
     assert.equal(view.goals.length, 1);

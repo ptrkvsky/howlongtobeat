@@ -52,7 +52,8 @@ export function getGameTimes(game: Game): GameTime[] {
       `l'histoire et quelques extras`,
       game.timeMainExtras,
     ),
-    time(`full`, `100 %`, `le 100 %`, game.timeCompletionists),
+    // No break inside "100 %"
+    time(`full`, `100\u00a0%`, `le 100\u00a0%`, game.timeCompletionists),
   ].filter(({ hours }) => hours > 0);
 }
 

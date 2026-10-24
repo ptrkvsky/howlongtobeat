@@ -169,7 +169,7 @@ export function videoGameNode(
       : undefined,
     author: organizations(game.identity?.developers),
     publisher: organizations(game.identity?.publishers),
-    // Main story time, the first HLTB time shown (see Time.astro)
+    // Main story time, the first HLTB time shown (see TimesRuler.astro)
     timeRequired:
       game.timeMainStory > 0 ? isoDuration(game.timeMainStory) : undefined,
     sameAs: sameAs.length ? sameAs : undefined,

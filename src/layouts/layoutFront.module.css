@@ -10,7 +10,7 @@
   grid-area: main;
   /* A grid item grows to its widest child (100vw marquee) without it */
   min-width: 0;
-  min-height: calc(100vh - 170px);
+  min-height: calc(100vh - 80px);
 }
 
 .layout header {

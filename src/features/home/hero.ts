@@ -65,7 +65,16 @@ export function calendarTicks(from: Date, days: number): Tick[] {
   return ticks;
 }
 
-export function heroView(game: HeroGame, perWeek: number, from: Date) {
+export type GoalKey = (typeof GOALS)[number][`key`];
+
+// `targetKey`: the goal that ends on the flag (the game pages let the
+// visitor pick it), the main story by default
+export function heroView(
+  game: HeroGame,
+  perWeek: number,
+  from: Date,
+  targetKey?: GoalKey,
+) {
   const goals = GOALS.map((goal) => {
     const hours = game[goal.key];
     const end = finishDate(hours, perWeek, from);
@@ -77,9 +86,10 @@ export function heroView(game: HeroGame, perWeek: number, from: Date) {
       endLabel: end ? formatDay(end, from, `short`) : null,
     };
   }).filter((goal) => goal.end);
-  // The date of the hero: the main story, else the first known goal
-  const [target] = goals;
-  // Fractional: the main story ends exactly on the flag
+  // The date of the hero: the chosen goal, else the main story, else the
+  // first known goal
+  const target = goals.find((goal) => goal.key === targetKey) ?? goals[0];
+  // Fractional: the target ends exactly on the flag
   const axisDays = target.days / FINISH_AT;
   const end = target.end!;
   return {

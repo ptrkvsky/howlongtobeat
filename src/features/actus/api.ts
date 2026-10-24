@@ -51,3 +51,10 @@ export function getNewsArticles() {
 export async function getNewsArticlesByAuthor(slug: AuthorSlug) {
   return (await getNewsArticles()).filter((article) => article.author === slug);
 }
+
+// Articles about a game, latest first, for its page
+export async function getNewsArticlesByGame(slug: string) {
+  return (await getNewsArticles()).filter(
+    (article) => article.game?.slug === slug,
+  );
+}

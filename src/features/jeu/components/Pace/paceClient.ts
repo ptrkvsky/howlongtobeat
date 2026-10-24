@@ -1,8 +1,16 @@
-// Client side of Pace.astro: updates the result on every change and adds
-// the end date
-import { DEFAULT_PACE, formatPace, paceDays } from './pace';
+// Client side of Pace.astro: redraws the end date from the visitor's day on
+// every change, with the dates and rules of the home (finishDate.ts, hero.ts)
+import { today } from '../../../home/finishDate';
+import {
+  type GoalKey,
+  type HeroGame,
+  heroView,
+  paceHint,
+} from '../../../home/hero';
+import { DEFAULT_PACE, PACES } from './pace';
 
-// Last choice, kept from one game to the next
+// Last choice, kept from one game to the next and shared with the home
+// (src/features/home/scripts/home.ts)
 const STORAGE_KEY = `pace`;
 const load = () => {
   try {
@@ -22,22 +30,27 @@ const save = (value: { goal: string; perWeek: number }) => {
   }
 };
 
-const dateFormat = new Intl.DateTimeFormat(`fr-FR`, {
-  day: `numeric`,
-  month: `long`,
-});
-const yearFormat = new Intl.DateTimeFormat(`fr-FR`, {
-  day: `numeric`,
-  month: `long`,
-  year: `numeric`,
-});
+const reducedMotion = matchMedia(`(prefers-reduced-motion: reduce)`);
+const day = today();
+
+const element = (tag: string, attributes: Record<string, string> = {}) => {
+  const node = document.createElement(tag);
+  for (const [name, value] of Object.entries(attributes))
+    node.setAttribute(name, value);
+  return node;
+};
+const strong = (text: string) => {
+  const node = element(`strong`);
+  node.textContent = text;
+  return node;
+};
 
 for (const section of document.querySelectorAll<HTMLElement>(`[data-pace]`)) {
-  const hours: Record<string, number> = JSON.parse(section.dataset.hours!);
+  const game: HeroGame = JSON.parse(section.dataset.game!);
   const goals: Record<string, string> = JSON.parse(section.dataset.goals!);
+  const [firstGoal] = Object.keys(goals);
   const form = section.querySelector(`form`)!;
-  const result = section.querySelector<HTMLElement>(`[data-pace-result]`)!;
-  const firstGoal = Object.keys(hours)[0];
+  const $ = (selector: string) => section.querySelector<HTMLElement>(selector)!;
 
   const checked = (name: string) =>
     form.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`)
@@ -49,31 +62,77 @@ for (const section of document.querySelectorAll<HTMLElement>(`[data-pace]`)) {
     if (input) input.checked = true;
   };
 
-  const render = () => {
-    const goal = checked(`goal`) ?? firstGoal;
+  const draw = () => {
+    const goal = (checked(`goal`) ?? firstGoal) as GoalKey;
     const perWeek = Number(checked(`perWeek`) ?? DEFAULT_PACE);
-    const days = paceDays(hours[goal], perWeek);
-    const end = new Date(Date.now() + days * 86_400_000);
-    const format =
-      end.getFullYear() === new Date().getFullYear() ? dateFormat : yearFormat;
-    const strong = (text: string) => {
-      const element = document.createElement(`strong`);
-      element.textContent = text;
-      return element;
-    };
-    result.replaceChildren(
-      `À ${perWeek} h par semaine, comptez `,
-      strong(formatPace(days)),
-      ` pour ${goals[goal]}, soit une fin vers le `,
-      strong(format.format(end)),
+    const view = heroView(game, perWeek, day, goal);
+    const [dayNumber, ...month] = view.date.split(` `);
+
+    const date = $(`[data-pace-date]`);
+    date.firstElementChild!.textContent = dayNumber;
+    date.lastElementChild!.textContent = month.join(` `);
+    const year = $(`[data-pace-year]`);
+    year.hidden = !view.year;
+    year.textContent = String(view.year ?? ``);
+    $(`[data-pace-today]`).textContent = view.today;
+
+    $(`[data-pace-ticks]`).replaceChildren(
+      ...view.ticks.map((tick) => {
+        const li = element(`li`, { style: `--at: ${tick.at}%` });
+        li.textContent = tick.label ?? ``;
+        return li;
+      }),
+    );
+    $(`[data-pace-bars]`).replaceChildren(
+      ...view.goals.map((item) =>
+        element(`span`, {
+          'data-goal': item.key,
+          style: `width: ${Math.min(100, item.length)}%`,
+          ...(item.length > 100 ? { 'data-over': `` } : {}),
+        }),
+      ),
+    );
+    $(`[data-pace-legend]`).replaceChildren(
+      ...view.goals.map((item) => {
+        const row = element(`div`);
+        const term = element(`dt`);
+        term.append(element(`span`, { 'data-goal': item.key }), item.label);
+        const value = element(`dd`);
+        const arrow = element(`span`);
+        arrow.textContent = `→`;
+        value.append(`${item.hours} h `, arrow, ` ${item.endLabel}`);
+        row.append(term, value);
+        return row;
+      }),
+    );
+    $(`[data-pace-result]`).replaceChildren(
+      `À ${perWeek} h par semaine (${paceHint(perWeek)}), comptez `,
+      strong(view.pace),
+      ` pour ${goals[view.target.key]}, soit une fin vers le `,
+      strong(view.dateLong),
       `.`,
     );
-    return { goal, perWeek };
+    return { goal: view.target.key, perWeek };
+  };
+
+  // The flag is planted again on each new date
+  const plant = () => {
+    if (reducedMotion.matches) return;
+    section.removeAttribute(`data-planted`);
+    void section.offsetWidth;
+    section.setAttribute(`data-planted`, ``);
   };
 
   const saved = load();
-  if (saved.goal) check(`goal`, saved.goal);
-  if (saved.perWeek) check(`perWeek`, String(saved.perWeek));
-  render();
-  form.addEventListener(`change`, () => save(render()));
+  if (saved.goal && saved.goal in goals) check(`goal`, saved.goal);
+  if (saved.perWeek && PACES.includes(saved.perWeek))
+    check(`perWeek`, String(saved.perWeek));
+  draw();
+
+  form.addEventListener(`change`, () => {
+    if (document.startViewTransition && !reducedMotion.matches)
+      document.startViewTransition(() => save(draw()));
+    else save(draw());
+    plant();
+  });
 }

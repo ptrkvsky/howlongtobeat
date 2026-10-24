@@ -1,0 +1,132 @@
+---
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
+import home from '@/features/home/components/home.module.css';
+import { genreLabels } from '@/features/home/genres';
+import type { Game } from '@/types/Game';
+import type { Genre } from '@/types/Genre';
+import type { BreadcrumbItem } from '@/utils/structuredData';
+import { getGameTimes, timesSummary } from '@/features/jeu/utils/gameTimes';
+import { verdict } from '@/features/jeu/utils/verdict';
+import { formatList } from '@/utils/format';
+import { igdbImage } from '@/utils/igdbImage';
+import TimesRuler from './TimesRuler.astro';
+import styles from './gameHero.module.css';
+
+// The first screen of a game page: the question, the verdict on the length,
+// the sentence answer and the times on their ruler; the cover and its
+// credits beside them
+interface Props {
+  game: Game;
+  genres: Genre[];
+  breadcrumb: BreadcrumbItem[];
+}
+
+const { game, genres, breadcrumb } = Astro.props;
+const times = getGameTimes(game);
+const { length, outcome } = verdict(game);
+const [mainGenre] = genres;
+const genreLabel = mainGenre && (genreLabels[mainGenre.slug] ?? mainGenre.name);
+const year = game.identity?.releaseDate?.slice(0, 4);
+const developers = game.identity?.developers.slice(0, 2) ?? [];
+const platforms = game.identity?.platforms.length ?? 0;
+// The name is the visual: long ones get a smaller size
+const nameLength =
+  game.name.length > 48 ? `long` : game.name.length > 22 ? `medium` : `short`;
+const credits = [
+  developers.length > 0 && {
+    label: developers.length > 1 ? `Studios` : `Studio`,
+    value: formatList(developers),
+  },
+  year && { label: `Sortie`, value: year },
+  platforms > 0 && {
+    label: `Plateformes`,
+    value: `${platforms}`,
+  },
+  game.rating != null &&
+    game.rating > 0 && { label: `Note`, value: `${game.rating}/100` },
+].filter((credit): credit is { label: string; value: string } =>
+  Boolean(credit),
+);
+---
+
+<section class:list={[home.paper, styles.hero]} aria-labelledby="game-title">
+  <div class:list={[home.frame, styles.grid, game.cover && styles.withCover]}>
+    <div class={styles.text}>
+      <div class={styles.crumbs}>
+        <Breadcrumb items={breadcrumb} />
+      </div>
+      <p class={styles.kicker}>
+        <span>Durée de vie</span>
+        {genreLabel && <span>{genreLabel}</span>}
+        {year && <span>{year}</span>}
+      </p>
+      <h1 id="game-title" class={styles.title} data-length={nameLength}>
+        <span class={styles.question}>
+          Combien de temps faut-il pour terminer
+        </span>
+        {` `}
+        {/* No break before the "?": it stays with the last word */}
+        <span class={styles.name}>{game.name}</span>
+        {`\u00a0`}
+        <span class={styles.mark}>?</span>
+      </h1>
+
+      {times.length > 0 ? (
+        <div class={styles.verdict}>
+          {length && (
+            <p class={styles.length}>
+              {length}
+              {outcome && (
+                <span class={styles.outcome}>{`\u00a0: ${outcome}`}</span>
+              )}
+            </p>
+          )}
+          <p class={styles.answer}>
+            Pour terminer {game.name}, comptez environ {timesSummary(times)}.
+          </p>
+          <a class={styles.cta} href="#rythme">
+            <span>Calculer ma date de fin</span>
+            <span aria-hidden="true">↓</span>
+          </a>
+        </div>
+      ) : (
+        <p class={styles.answer}>
+          Aucune durée n'a encore été relevée pour {game.name}.
+        </p>
+      )}
+      <TimesRuler game={game} />
+    </div>
+
+    {game.cover && (
+      <figure class={styles.poster}>
+        <img
+          src={igdbImage(game.cover, `cover_big_2x`)}
+          alt={game.name}
+          width="352"
+          height="469"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </figure>
+    )}
+
+    {(credits.length > 0 || game.identity?.isMature) && (
+      <div class={styles.credits}>
+        {credits.length > 0 && (
+          <dl>
+            {credits.map((credit) => (
+              <div>
+                <dt>{credit.label}</dt>
+                <dd>{credit.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+        {game.identity?.isMature && (
+          <p class={styles.mature}>Contenu pour adultes</p>
+        )}
+      </div>
+    )}
+  </div>
+</section>

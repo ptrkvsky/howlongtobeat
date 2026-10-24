@@ -1,0 +1,119 @@
+---
+import DurationBar from '@/features/home/components/DurationBar.astro';
+import home from '@/features/home/components/home.module.css';
+import type { Game } from '@/types/Game';
+import {
+  getGameTimes,
+  isCurrentHltbTime,
+} from '@/features/jeu/utils/gameTimes';
+import { timeAxis } from '@/features/jeu/utils/timeAxis';
+import { formatCount, formatDate } from '@/utils/format';
+import styles from './timesRuler.module.css';
+
+// The HLTB times on one hour scale, in the duration code of the home (main
+// story filled, + extras outlined, 100 % hatched), with the number of
+// players behind each one. The sentence answer is in GameHero.astro
+interface Props {
+  game: Game;
+}
+
+const { game } = Astro.props;
+const times = getGameTimes(game);
+const axis = timeAxis(Math.max(...times.map((time) => time.hours)));
+// The time the page leads with: the main story, else the first known
+const [lead] = times;
+const players = (count: number) =>
+  `${formatCount(count)} joueur${count > 1 ? `s` : ``}`;
+// Few submissions: one speedrun or forgotten timer moves the average a lot
+const reliability = (count: number) =>
+  count < 10
+    ? { label: `estimation fragile`, weak: true }
+    : count < 100
+      ? { label: `fiable`, weak: false }
+      : { label: `très fiable`, weak: false };
+// The median is shown when the average is pulled away from it
+const median = game.hltb?.mainMedian ?? 0;
+const showMedian =
+  median > 0 &&
+  isCurrentHltbTime(game, `main`) &&
+  Math.abs(median - game.timeMainStory) / game.timeMainStory > 0.1;
+const bar = (key: string, hours: number) => ({
+  main: key === `main` ? hours : 0,
+  plus: key === `plus` ? hours : 0,
+  full: key === `full` ? hours : 0,
+});
+---
+
+{times.length > 0 && (
+  <section
+    id="durees"
+    class={styles.ruler}
+    aria-labelledby="durees-title"
+    style={`--intervals: ${axis.ticks.length - 1}`}
+  >
+    <h2 id="durees-title" class={home.kicker}>
+      Durée de vie
+    </h2>
+    <ol class={styles.lanes}>
+      {times.map((time) => (
+        <li
+          class:list={[styles.lane, time === lead && styles.lead]}
+          data-goal={time.key}
+          style={`--digits: ${String(time.hours).length}`}
+        >
+          <p class={styles.figure}>
+            <span class={styles.label}>
+              <span class={styles.swatch} aria-hidden="true" />
+              {time.label}
+            </span>
+            <span class={styles.hours}>
+              {time.hours}
+              <span class={styles.unit}> h</span>
+            </span>
+          </p>
+          <div class={styles.track}>
+            <DurationBar
+              {...bar(time.key, time.hours)}
+              scale={axis.max}
+              size="medium"
+              class={styles.bar}
+            />
+          </div>
+          {((time.key === `main` && showMedian) ||
+            (time.count != null && time.count > 0)) && (
+            <p class={styles.details}>
+              {time.count != null && time.count > 0 && (
+                <span>
+                  d'après {players(time.count)}
+                  {` · `}
+                  <span
+                    class:list={[
+                      styles.reliability,
+                      reliability(time.count).weak && styles.weak,
+                    ]}
+                  >
+                    {reliability(time.count).label}
+                  </span>
+                </span>
+              )}
+              {time.key === `main` && showMedian && (
+                <span>médiane : {median} h</span>
+              )}
+            </p>
+          )}
+        </li>
+      ))}
+    </ol>
+    <ol class={styles.axis} aria-hidden="true">
+      {axis.ticks.map((tick) => (
+        <li style={`--at: ${(tick / axis.max) * 100}%`}>{tick} h</li>
+      ))}
+    </ol>
+    <p class={styles.source}>
+      Source : HowLongToBeat
+      {times.some((time) => time.count != null) && (
+        <>, relevé le {formatDate(game.hltb!.updatedAt)}</>
+      )}
+    </p>
+  </section>
+)}

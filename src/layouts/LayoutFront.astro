@@ -4,22 +4,16 @@ import Footer from '@/components/Footer/Footer.astro';
 import styles from './layoutFront.module.css';
 
 interface Props {
-  cloakFooter?: boolean;
   isCentered?: boolean;
 }
 
-const { cloakFooter, isCentered } = Astro.props;
+const { isCentered } = Astro.props;
 ---
 
 <div class:list={[styles.layout, isCentered && `container`]}>
   <main>
     <slot />
   </main>
-  <!-- The home brings its own header and footer -->
-  <slot name="header">
-    <Header />
-  </slot>
-  <slot name="footer">
-    <Footer cloakFooter={cloakFooter} />
-  </slot>
+  <Header />
+  <Footer />
 </div>

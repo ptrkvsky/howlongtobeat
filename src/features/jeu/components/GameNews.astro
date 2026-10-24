@@ -1,0 +1,52 @@
+---
+import home from '@/features/home/components/home.module.css';
+import { newsCategoryLabels, newsPageUrl } from '@/config/news';
+import type { NewsSummary } from '@/config/news';
+import styles from './jeu.module.css';
+
+// "Dans l'actu": the news about the game, latest first. The articles link
+// to the game; this is the way back
+interface Props {
+  name: string;
+  news: NewsSummary[];
+}
+
+const MAX = 5;
+const { name, news } = Astro.props;
+// "23 oct. 2026", Paris time as on /actus
+const dayFormat = new Intl.DateTimeFormat(`fr-FR`, {
+  day: `numeric`,
+  month: `short`,
+  year: `numeric`,
+  timeZone: `Europe/Paris`,
+});
+---
+
+{news.length > 0 && (
+  <section class={home.section} aria-labelledby="actu">
+    <div class={home.frame}>
+      <div class={home.head}>
+        <p class={home.kicker}>Dans l'actu</p>
+        <h2 id="actu" class={home.title}>
+          {name} dans l'actu
+        </h2>
+      </div>
+      <ul class={styles.news}>
+        {news.slice(0, MAX).map((article) => (
+          <li>
+            <p class={styles.newsMeta}>
+              <span>{newsCategoryLabels[article.category]}</span>
+              <time datetime={article.date}>
+                {dayFormat.format(new Date(article.date))}
+              </time>
+            </p>
+            <h3 class={styles.newsTitle}>
+              <a href={newsPageUrl(article.slug)}>{article.title}</a>
+            </h3>
+            <p class={styles.newsExcerpt}>{article.excerpt}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}

@@ -1,94 +1,184 @@
-/* Pace calculator: goal and hours per week as pill radios */
+/* Pace calculator: the goal and the hours per week as chips, then the date
+   on the calendar ruler of the home (hero.module.css) */
 
 .pace {
-  margin-bottom: var(--space-8);
-  padding: var(--space-4) var(--space-5);
-  border: 1px solid var(--color-gray-700);
-  border-radius: 8px;
-  background: rgb(255 255 255 / 0.03);
-}
-
-.heading {
-  margin-bottom: var(--space-3);
-  font-size: var(--font-size-xl);
+  border-bottom: 1px solid var(--faint);
 }
 
 .form {
-  display: grid;
-  gap: var(--space-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5) clamp(2rem, 5vw, 4rem);
 }
 
 .group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
+  min-width: 0;
   margin: 0;
   padding: 0;
   border: 0;
 }
 
 .legend {
-  width: 100%;
-  margin-bottom: var(--space-2);
-  color: var(--color-gray-400);
-  font-size: var(--font-size-md);
+  margin-bottom: var(--space-3);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.choice {
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
   position: relative;
   cursor: pointer;
 }
 
-/* Visually hidden, still focusable and announced */
-.choice input {
+.chip input {
   position: absolute;
   opacity: 0;
   pointer-events: none;
 }
 
-.choice > span {
-  display: inline-block;
-  padding: var(--space-1) var(--space-3);
-  border: 1px solid var(--color-gray-600);
-  border-radius: 999px;
-  color: var(--color-gray-200);
-  font-size: var(--font-size-md);
+.chip > span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 3.5rem;
+  min-height: 2.75rem;
+  justify-content: center;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s,
+    color 0.2s;
 }
 
-.choice:hover > span {
-  border-color: var(--color-gray-400);
+.chip:hover > span {
+  border-color: var(--cream);
 }
 
-.choice input:checked + span {
-  border-color: var(--color-primary-500);
-  background: var(--color-primary-500);
-  color: var(--color-contrast);
+.chip input:checked + span {
+  border-color: var(--pink);
+  background: var(--pink);
+  color: var(--color-background);
 }
 
-.choice input:focus-visible + span {
-  outline: 2px solid var(--color-primary-500);
-  outline-offset: 2px;
+.chip input:focus-visible + span {
+  outline: 2px solid var(--pink);
+  outline-offset: 3px;
 }
 
-.hint {
-  opacity: 0.75;
+/* The duration code of the goal, inverted once the chip is checked */
+.swatch {
+  flex: none;
+  width: 0.9rem;
+  height: 0.5rem;
+}
+
+.swatch[data-goal='main'] {
+  background: var(--pink);
+}
+
+.swatch[data-goal='plus'] {
+  border: 1.5px solid var(--pink);
+}
+
+.swatch[data-goal='full'] {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--pink) 0 1.5px,
+    transparent 1.5px 5px
+  );
+}
+
+.chip input:checked + span .swatch[data-goal='main'] {
+  background: var(--color-background);
+}
+
+.chip input:checked + span .swatch[data-goal='plus'] {
+  border-color: var(--color-background);
+}
+
+.chip input:checked + span .swatch[data-goal='full'] {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-background) 0 1.5px,
+    transparent 1.5px 5px
+  );
+}
+
+/* Room for the flag above the date */
+.line {
+  margin-top: clamp(4rem, 9vh, 6rem);
+}
+
+.date {
+  font-size: clamp(3rem, 9vw, 9rem);
 }
 
 .result {
-  margin-top: var(--space-4);
-  font-size: var(--font-size-lg);
+  max-width: 34rem;
+  color: var(--muted);
+  font-family: var(--font-body-slim);
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: right;
+  text-wrap: pretty;
 }
 
 .result strong {
-  color: var(--color-primary-500);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-weight: normal;
+}
+
+/* The flag is planted when the date changes (paceClient.ts) */
+.pace[data-planted] .pole {
+  animation: plant 0.55s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.pace[data-planted] .date {
+  animation: settle 0.4s ease-out;
+}
+
+@keyframes plant {
+  from {
+    transform: scaleY(0.2);
+  }
+}
+
+@keyframes settle {
+  from {
+    opacity: 0.2;
+    transform: translateY(0.08em);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pace[data-planted] .pole,
+  .pace[data-planted] .date {
+    animation: none;
+  }
 }
 
 @media screen and (max-width: 766px) {
-  .pace {
-    padding: var(--space-3);
+  .form {
+    flex-direction: column;
   }
 
-  .choice > span {
-    font-size: 0.875rem;
+  .date {
+    font-size: clamp(3rem, 17vw, 6rem);
+  }
+
+  .result {
+    text-align: left;
   }
 }

@@ -2,24 +2,20 @@
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import LayoutFront from '@/layouts/LayoutFront.astro';
-import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
-import Markdown from '@/components/Markdown.astro';
-import Banner from '@/features/jeu/components/Banner/Banner.astro';
-import CircularBar from '@/features/jeu/components/CircularBar.astro';
-import Cover from '@/features/jeu/components/Cover.astro';
-import RelatedGames from '@/features/jeu/components/RelatedGames/RelatedGames.astro';
-import Community from '@/features/jeu/components/Community.astro';
-import Completion from '@/features/jeu/components/Completion.astro';
-import ExternalLinks from '@/features/jeu/components/ExternalLinks.astro';
-import Identity from '@/features/jeu/components/Identity.astro';
+import home from '@/features/home/components/home.module.css';
+import { today } from '@/features/home/finishDate';
+import About from '@/features/jeu/components/About.astro';
+import Evidence from '@/features/jeu/components/Evidence.astro';
+import GameHero from '@/features/jeu/components/GameHero.astro';
+import GameNews from '@/features/jeu/components/GameNews.astro';
 import Pace from '@/features/jeu/components/Pace/Pace.astro';
-import Price from '@/features/jeu/components/Price.astro';
-import Reviews from '@/features/jeu/components/Reviews.astro';
-import Time from '@/features/jeu/components/Time.astro';
-import Verdict from '@/features/jeu/components/Verdict.astro';
-import enriched from '@/features/jeu/components/enriched.module.css';
-import styles from '@/features/jeu/components/jeu.module.css';
-import { getGames, getRelatedGames } from '@/features/jeu/api';
+import RelatedGames from '@/features/jeu/components/RelatedGames/RelatedGames.astro';
+import { getNewsArticlesByGame } from '@/features/actus/api';
+import {
+  getGames,
+  getRelatedGames,
+  getTimeDistribution,
+} from '@/features/jeu/api';
 import { getAllGenres } from '@/functions/getAllGenres';
 import { igdbImage } from '@/utils/igdbImage';
 import {
@@ -31,7 +27,11 @@ import {
 } from '@/utils/structuredData';
 
 export const getStaticPaths = (async () => {
-  const [games, allGenres] = await Promise.all([getGames(), getAllGenres()]);
+  const [games, allGenres, distribution] = await Promise.all([
+    getGames(),
+    getAllGenres(),
+    getTimeDistribution(),
+  ]);
 
   return Promise.all(
     games.map(async (game) => ({
@@ -40,19 +40,19 @@ export const getStaticPaths = (async () => {
         game,
         genres: allGenres.filter((genre) => game.genreIds.includes(genre.id)),
         relatedGames: await getRelatedGames(game),
+        news: await getNewsArticlesByGame(game.slug),
+        distribution,
       },
     })),
   );
 }) satisfies GetStaticPaths;
 
-const { game, genres, relatedGames } = Astro.props;
+const { game, genres, relatedGames, news, distribution } = Astro.props;
 const canonical = `/jeu/${game.slug}`;
 const image = game.cover ? igdbImage(game.cover, `cover_big_2x`) : undefined;
-// Long descriptions are folded after a few lines (see .description)
-const isLongDescription = game.descriptionMd.length > 600;
 const [mainGenre] = genres;
 const title = `Combien de temps faut-il pour terminer ${game.name} ?`;
-const description = `Découvrez la durée de vie de ${game.name}. Quel temps vous faudra t-il pour voir la fin.`;
+const description = `Découvrez la durée de vie de ${game.name}. Quel temps vous faudra-t-il pour voir la fin.`;
 const breadcrumb = [
   { name: `Accueil`, path: `/` },
   ...(mainGenre
@@ -73,6 +73,8 @@ const jsonLd = [
   breadcrumbNode(canonical, breadcrumb),
   videoGameNode(game, genres, canonical),
 ];
+// The end dates are written from the build day, then from the visitor's one
+const day = today(`Europe/Paris`);
 ---
 
 <BaseLayout
@@ -81,62 +83,19 @@ const jsonLd = [
   canonical={canonical}
   ogImage={image}
   jsonLd={jsonLd}
+  preloadFonts={[
+    `/fonts/MonumentExtended-Black.woff2`,
+    `/fonts/PolySans-Slim.woff2`,
+  ]}
 >
   <LayoutFront>
-    {game.cover && <Banner game={game} />}
-
-    <div class:list={[`container`, styles.content]}>
-      <div class={styles.cover}>
-        {game.cover && <Cover game={game} priority />}
-        {game.rating != null && game.rating > 0 && (
-          <CircularBar percentage={game.rating} />
-        )}
-      </div>
-      <div class={styles.main}>
-        <Breadcrumb items={breadcrumb} />
-        <h1 class={styles.titleMain}>
-          Combien de temps faut-il pour terminer <br />
-          <span class={styles.name}>{game.name}</span> ?
-        </h1>
-        <Verdict game={game} />
-        <Time game={game} />
-        <Pace game={game} />
-        <Identity identity={game.identity} genres={genres} />
-        {(game.completion || game.reviews || game.hltb || game.price) && (
-          <div class={enriched.stats}>
-            {game.completion && (
-              <Completion name={game.name} completion={game.completion} />
-            )}
-            {game.reviews && <Reviews reviews={game.reviews} />}
-            {game.hltb && <Community hltb={game.hltb} />}
-            {game.price && (
-              <Price price={game.price} mainStory={game.timeMainStory} />
-            )}
-          </div>
-        )}
-        {game.descriptionMd &&
-          (isLongDescription ? (
-            <>
-              <div class:list={[styles.description, styles.folded]}>
-                <Markdown source={game.descriptionMd} />
-              </div>
-              <details class={styles.more}>
-                <summary>
-                  <span class={styles.open}>Lire la suite</span>
-                  <span class={styles.close}>Réduire</span>
-                </summary>
-              </details>
-            </>
-          ) : (
-            <div class={styles.description}>
-              <Markdown source={game.descriptionMd} />
-            </div>
-          ))}
-        <ExternalLinks links={game.links} />
-      </div>
-    </div>
-    <div class="container">
-      <RelatedGames relatedGames={relatedGames} />
+    <div class={home.page}>
+      <GameHero game={game} genres={genres} breadcrumb={breadcrumb} />
+      <Pace game={game} day={day} />
+      <Evidence game={game} distribution={distribution} />
+      <About game={game} genres={genres} />
+      <GameNews name={game.name} news={news} />
+      <RelatedGames game={game} genre={mainGenre} relatedGames={relatedGames} />
     </div>
   </LayoutFront>
 </BaseLayout>

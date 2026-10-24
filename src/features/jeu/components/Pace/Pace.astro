@@ -1,75 +1,168 @@
 ---
+import Flag from '@/features/home/components/Flag.astro';
+import hero from '@/features/home/components/hero.module.css';
+import home from '@/features/home/components/home.module.css';
+import { formatIsoDay } from '@/features/home/finishDate';
+import { FINISH_AT, heroView, paceHint } from '@/features/home/hero';
 import type { Game } from '@/types/Game';
 import { getGameTimes } from '@/features/jeu/utils/gameTimes';
-import { DEFAULT_PACE, PACES, formatPace, paceDays } from './pace';
+import { DEFAULT_PACE, PACES } from './pace';
 import styles from './pace.module.css';
 
-// "At your pace": weeks to finish the chosen goal at the chosen hours per
-// week. Rendered for the default choice (indexable, works without JS); the
-// script updates it and adds the end date, which the build cannot know
+// "At your pace": the end date of the chosen goal at the chosen hours per
+// week, on the calendar ruler of the home. Rendered for the default choice
+// from the build day (indexable, complete without JS); the script redraws
+// it from the visitor's day and last choice
 interface Props {
   game: Game;
+  // Build day, as a calendar day (see finishDate.ts)
+  day: Date;
 }
 
-const { game } = Astro.props;
+const { game, day } = Astro.props;
 const times = getGameTimes(game);
 const [first] = times;
-const hours = Object.fromEntries(times.map((time) => [time.key, time.hours]));
+const heroGame = {
+  name: game.name,
+  slug: game.slug,
+  main: game.timeMainStory,
+  plus: game.timeMainExtras,
+  full: game.timeCompletionists,
+};
 const goals = Object.fromEntries(times.map((time) => [time.key, time.goal]));
+const view = first && heroView(heroGame, DEFAULT_PACE, day, first.key);
+const [dayNumber, ...month] = view ? view.date.split(` `) : [];
 ---
 
-{first && (
+{first && view && (
   <section
-    class={styles.pace}
-    aria-labelledby="rythme"
+    id="rythme"
+    class:list={[home.section, styles.pace]}
+    aria-labelledby="rythme-title"
     data-pace
-    data-hours={JSON.stringify(hours)}
+    data-game={JSON.stringify(heroGame)}
     data-goals={JSON.stringify(goals)}
+    data-day={formatIsoDay(day)}
   >
-    <h2 id="rythme" class={styles.heading}>
-      À votre rythme
-    </h2>
-    <form class={styles.form}>
-      {times.length > 1 && (
+    <div class={home.frame}>
+      <div class={home.head}>
+        <p class={home.kicker}>Calculateur de date de fin</p>
+        <h2 id="rythme-title" class={home.title}>
+          À votre rythme
+        </h2>
+        <p class={home.lede}>
+          Choisissez un objectif et votre temps de jeu par semaine&nbsp;: la
+          date de fin suit.
+        </p>
+      </div>
+
+      <form class={styles.form}>
+        {times.length > 1 && (
+          <fieldset class={styles.group}>
+            <legend class={styles.legend}>Objectif</legend>
+            <div class={styles.chips}>
+              {times.map((time) => (
+                <label class={styles.chip}>
+                  <input
+                    type="radio"
+                    name="goal"
+                    value={time.key}
+                    checked={time === first}
+                  />
+                  <span>
+                    <span class={styles.swatch} data-goal={time.key} />
+                    {time.label}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
         <fieldset class={styles.group}>
-          <legend class={styles.legend}>Objectif</legend>
-          {times.map((time) => (
-            <label class={styles.choice}>
-              <input
-                type="radio"
-                name="goal"
-                value={time.key}
-                checked={time === first}
-              />
-              <span>{time.label}</span>
-            </label>
-          ))}
+          <legend class={styles.legend}>Temps de jeu par semaine</legend>
+          <div class={styles.chips}>
+            {PACES.map((pace) => (
+              <label class={styles.chip}>
+                <input
+                  type="radio"
+                  name="perWeek"
+                  value={pace}
+                  checked={pace === DEFAULT_PACE}
+                />
+                <span>{pace} h</span>
+              </label>
+            ))}
+          </div>
         </fieldset>
-      )}
-      <fieldset class={styles.group}>
-        <legend class={styles.legend}>Temps de jeu par semaine</legend>
-        {PACES.map((pace) => (
-          <label class={styles.choice}>
-            <input
-              type="radio"
-              name="perWeek"
-              value={pace}
-              checked={pace === DEFAULT_PACE}
-            />
-            <span>
-              {pace} h
-              {pace === 7 && <span class={styles.hint}> (1 h/jour)</span>}
-            </span>
-          </label>
-        ))}
-      </fieldset>
-    </form>
-    <p class={styles.result} aria-live="polite" data-pace-result>
-      À {DEFAULT_PACE} h par semaine, comptez{` `}
-      <strong>{formatPace(paceDays(first.hours, DEFAULT_PACE))}</strong> pour
-      {` `}
-      {first.goal}.
-    </p>
+      </form>
+
+      <div
+        class:list={[hero.line, styles.line]}
+        style={`--finish: ${FINISH_AT * 100}%`}
+      >
+        <p class={hero.answer}>
+          <span class={hero.over}>
+            <span class={hero.overWord}>Game Over</span>
+            <span class={hero.overAbout}>vers le</span>
+          </span>
+          <span class:list={[hero.date, styles.date]} data-pace-date>
+            <span class={hero.dateDay}>{dayNumber}</span>
+            {` `}
+            <span class={hero.dateMonth}>{month.join(` `)}</span>
+          </span>
+          <span class={hero.year} data-pace-year hidden={!view.year}>
+            {view.year}
+          </span>
+        </p>
+
+        <div class:list={[hero.pole, styles.pole]} aria-hidden="true">
+          <Flag class={hero.poleFlag} />
+        </div>
+
+        <div class={hero.track} aria-hidden="true">
+          <ol class={hero.ticks} data-pace-ticks>
+            {view.ticks.map((tick) => (
+              <li style={`--at: ${tick.at}%`}>{tick.label}</li>
+            ))}
+          </ol>
+          <span class={hero.today}>
+            Auj. <span data-pace-today>{view.today}</span>
+          </span>
+          <span class={hero.bars} data-pace-bars>
+            {view.goals.map((goal) => (
+              <span
+                data-goal={goal.key}
+                data-over={goal.length > 100 ? `` : undefined}
+                style={`width: ${Math.min(100, goal.length)}%`}
+              />
+            ))}
+          </span>
+        </div>
+      </div>
+
+      <div class={hero.footer}>
+        <dl class={hero.legend} data-pace-legend>
+          {view.goals.map((goal) => (
+            <div>
+              <dt>
+                <span data-goal={goal.key} />
+                {goal.label}
+              </dt>
+              <dd>
+                {goal.hours} h <span>→</span> {goal.endLabel}
+              </dd>
+            </div>
+          ))}
+        </dl>
+        <p class={styles.result} aria-live="polite" data-pace-result>
+          À {DEFAULT_PACE} h par semaine ({paceHint(DEFAULT_PACE)}), comptez
+          {` `}
+          <strong>{view.pace}</strong> pour {first.goal}, soit une fin vers le
+          {` `}
+          <strong>{view.dateLong}</strong>.
+        </p>
+      </div>
+    </div>
   </section>
 )}
 

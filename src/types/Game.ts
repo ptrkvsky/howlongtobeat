@@ -88,3 +88,7 @@ export interface GameLinks {
 }
 
 export type GameSummary = Pick<Game, 'id' | 'name' | 'cover' | 'slug'>;
+
+// A related game of a game page, drawn on the same hour scale
+export type RelatedGame = GameSummary &
+  Pick<Game, 'timeMainStory' | 'timeMainExtras' | 'timeCompletionists'>;

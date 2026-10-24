@@ -1,0 +1,72 @@
+---
+import Markdown from '@/components/Markdown.astro';
+import home from '@/features/home/components/home.module.css';
+import type { Game } from '@/types/Game';
+import type { Genre } from '@/types/Genre';
+import { externalLinks } from '@/utils/externalLinks';
+import ExternalLinks from './ExternalLinks.astro';
+import Identity from './Identity.astro';
+import styles from './jeu.module.css';
+
+// "Le jeu": the description in a reading column, the technical sheet and
+// the external links beside it
+interface Props {
+  game: Game;
+  genres: Genre[];
+}
+
+const { game, genres } = Astro.props;
+// Long descriptions are folded after a few lines (see .folded)
+const isLongDescription = game.descriptionMd.length > 600;
+const identity = game.identity;
+const hasSheet =
+  genres.length > 0 ||
+  (identity != null &&
+    (identity.releaseDate != null ||
+      identity.developers.length > 0 ||
+      identity.publishers.length > 0 ||
+      identity.platforms.length > 0));
+const hasLinks = externalLinks(game.links).length > 0;
+---
+
+{(game.descriptionMd || hasSheet || hasLinks) && (
+  <section class={home.section} aria-labelledby="le-jeu">
+    <div class={home.frame}>
+      <div class={home.head}>
+        <p class={home.kicker}>Le jeu</p>
+        <h2 id="le-jeu" class={home.title}>
+          À propos
+        </h2>
+      </div>
+      <div class:list={[styles.about, !game.descriptionMd && styles.sheetOnly]}>
+        {game.descriptionMd && (
+          <div class={styles.reading}>
+            {isLongDescription ? (
+              <>
+                <div class:list={[styles.description, styles.folded]}>
+                  <Markdown source={game.descriptionMd} />
+                </div>
+                <details class={styles.more}>
+                  <summary>
+                    <span class={styles.open}>Lire la suite</span>
+                    <span class={styles.close}>Réduire</span>
+                  </summary>
+                </details>
+              </>
+            ) : (
+              <div class={styles.description}>
+                <Markdown source={game.descriptionMd} />
+              </div>
+            )}
+          </div>
+        )}
+        {(hasSheet || hasLinks) && (
+          <div class={styles.sheet}>
+            <Identity identity={identity} genres={genres} />
+            <ExternalLinks links={game.links} />
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+)}

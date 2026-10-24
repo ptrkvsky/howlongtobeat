@@ -1,4 +1,4 @@
-import type { Game, GameSummary } from '@/types/Game';
+import type { Game, RelatedGame } from '@/types/Game';
 import { getGames, toGameSummary } from './getGames';
 
 const COUNT = 12;
@@ -55,7 +55,7 @@ function lowerBound(games: Game[], hltbId: number) {
  * with the closest main story time. Completed, if needed, by the following
  * HLTB ids (the former rule)
  */
-export async function getRelatedGames(game: Game): Promise<GameSummary[]> {
+export async function getRelatedGames(game: Game): Promise<RelatedGame[]> {
   const { byGenre, byHltbId, position } = await getIndex();
 
   const shared = new Map<Game, number>();
@@ -93,5 +93,10 @@ export async function getRelatedGames(game: Game): Promise<GameSummary[]> {
     }
   }
 
-  return related.map(toGameSummary);
+  return related.map((relatedGame) => ({
+    ...toGameSummary(relatedGame),
+    timeMainStory: relatedGame.timeMainStory,
+    timeMainExtras: relatedGame.timeMainExtras,
+    timeCompletionists: relatedGame.timeCompletionists,
+  }));
 }

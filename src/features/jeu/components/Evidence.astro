@@ -1,0 +1,162 @@
+---
+import home from '@/features/home/components/home.module.css';
+import type { Game } from '@/types/Game';
+import { FILM_HOURS, films, rankFigure } from '@/features/jeu/utils/verdict';
+import {
+  type TimeBin,
+  binIndex,
+  binLabel,
+} from '@/features/jeu/utils/timeDistribution';
+import { formatCount } from '@/utils/format';
+import Community from './Community.astro';
+import Completion from './Completion.astro';
+import Price from './Price.astro';
+import Reviews from './Reviews.astro';
+import enriched from './enriched.module.css';
+import styles from './evidence.module.css';
+
+// "What the figures say": how the game compares to the catalog, and the
+// Steam, HowLongToBeat and price data that passed the trust checks of
+// getGames. A row only shows with its data; no row, no section
+interface Props {
+  game: Game;
+  distribution: TimeBin[];
+}
+
+const { game, distribution } = Astro.props;
+const rank = rankFigure(game.timeRank);
+const filmCount = films(game.timeMainStory);
+const gameBin = binIndex(game.timeMainStory);
+const maxBin = Math.max(...distribution.map((bin) => bin.count));
+const catalogSize = distribution.reduce((sum, bin) => sum + bin.count, 0);
+const hasCommunity =
+  game.hltb != null &&
+  (game.hltb.completed > 0 || game.hltb.playing > 0 || game.hltb.backlog > 0);
+const histogramLabel = `Répartition des ${formatCount(catalogSize)} jeux du catalogue selon la durée de l'histoire principale : ${distribution
+  .map((bin) => `${formatCount(bin.count)} de ${binLabel(bin)}`)
+  .join(
+    `, `,
+  )}. ${game.name} est dans la tranche ${binLabel(distribution[gameBin] ?? distribution[0])}.`;
+const hasRows =
+  rank ||
+  filmCount ||
+  game.completion ||
+  game.reviews ||
+  hasCommunity ||
+  game.price;
+---
+
+{hasRows && (
+  <section class={home.section} aria-labelledby="chiffres">
+    <div class={home.frame}>
+      <div class={home.head}>
+        <p class={home.kicker}>Données et sources</p>
+        <h2 id="chiffres" class={home.title}>
+          Ce que disent les chiffres
+        </h2>
+        <p class={home.lede}>
+          Chaque chiffre est sourcé et daté. Une donnée absente n'est pas encore
+          assez fiable pour ce jeu.
+        </p>
+      </div>
+
+      <ul class={styles.ledger}>
+        {rank && (
+          <li class={styles.row}>
+            <p class={styles.label}>Dans le catalogue</p>
+            <p class={styles.body}>
+              {rank.words}
+              {` `}
+              <span class={enriched.value}>{rank.percent} %</span> des jeux du
+              catalogue.
+            </p>
+            {gameBin >= 0 && (
+              <figure class={styles.visual}>
+                <span
+                  class={styles.histogram}
+                  role="img"
+                  aria-label={histogramLabel}
+                >
+                  {distribution.map((bin, index) => (
+                    <span
+                      class:list={[
+                        styles.bin,
+                        index === gameBin && styles.current,
+                      ]}
+                      style={`--height: ${maxBin ? (bin.count / maxBin) * 100 : 0}%`}
+                    />
+                  ))}
+                </span>
+                <figcaption class={styles.scale} aria-hidden="true">
+                  <span>1 h</span>
+                  <span>16 h</span>
+                  <span>256 h +</span>
+                </figcaption>
+              </figure>
+            )}
+          </li>
+        )}
+
+        {filmCount && (
+          <li class={styles.row}>
+            <p class={styles.label}>Au cinéma</p>
+            <p class={styles.body}>
+              L'histoire dure autant que{` `}
+              <span class={enriched.value}>{filmCount} films</span>.
+              <span class={enriched.source}>
+                À raison de {FILM_HOURS} h par film.
+              </span>
+            </p>
+          </li>
+        )}
+
+        {game.completion && (
+          <li class={styles.row}>
+            <p class={styles.label}>Fin vue sur Steam</p>
+            <div class={styles.body}>
+              <Completion name={game.name} completion={game.completion} />
+            </div>
+            <div class={styles.visual}>
+              <span
+                class={styles.gauge}
+                style={`--value: ${Math.min(100, game.completion.percent)}%`}
+                aria-hidden="true"
+              />
+              <span class={styles.scale} aria-hidden="true">
+                <span>0 %</span>
+                <span>100 %</span>
+              </span>
+            </div>
+          </li>
+        )}
+
+        {game.reviews && (
+          <li class={styles.row}>
+            <p class={styles.label}>Avis Steam</p>
+            <div class={styles.body}>
+              <Reviews reviews={game.reviews} />
+            </div>
+          </li>
+        )}
+
+        {hasCommunity && (
+          <li class={styles.row}>
+            <p class={styles.label}>Communauté</p>
+            <div class={styles.body}>
+              <Community hltb={game.hltb!} />
+            </div>
+          </li>
+        )}
+
+        {game.price && (
+          <li class={styles.row}>
+            <p class={styles.label}>Prix</p>
+            <div class={styles.body}>
+              <Price price={game.price} mainStory={game.timeMainStory} />
+            </div>
+          </li>
+        )}
+      </ul>
+    </div>
+  </section>
+)}

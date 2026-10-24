@@ -1,0 +1,97 @@
+---
+import { igdbImage } from '@/utils/igdbImage';
+import type { HomeData } from '../data';
+import home from './home.module.css';
+import styles from './ruler.module.css';
+
+// "La règle": the most played games of the catalog on one hours axis, each
+// cover in the lane closest to its time (lanes computed by data.ts). The
+// links are in axis order: tabbing walks along the ruler
+interface Props {
+  ruler: HomeData['ruler'];
+}
+
+const { ruler } = Astro.props;
+const { games, axisMax, median, lanesAbove, lanesBelow } = ruler;
+const ticks = Array.from({ length: axisMax / 5 + 1 }, (_, index) => index * 5);
+const shortest = games[0];
+const longest = games.reduce((a, b) => (b.main > a.main ? b : a));
+---
+
+<section class={home.section} aria-labelledby="regle">
+  <div class={home.frame}>
+    <div class={home.head}>
+      <p class={home.kicker}>
+        0 → {axisMax} h · {games.length} jeux
+      </p>
+      <h2 id="regle" class={home.title}>
+        La règle
+      </h2>
+      <p class={home.lede}>
+        Les {games.length} jeux les plus joués du catalogue, posés sur la même
+        échelle : <strong>la durée de leur histoire principale</strong>. Plus
+        une couverture est à droite, plus la fin est loin.
+      </p>
+    </div>
+
+    <div
+      class={styles.ruler}
+      style={`--above: ${lanesAbove}; --below: ${lanesBelow}`}
+    >
+      <ol class={styles.games}>
+        {games.map((game) => (
+          <li
+            class:list={[
+              styles.game,
+              game.lane > 0 ? styles.above : styles.below,
+            ]}
+            style={`--x: ${game.x.toFixed(2)}; --offset: ${game.lane > 0 ? -game.lane : -game.lane - 1}`}
+          >
+            <a
+              class={styles.link}
+              href={`/jeu/${game.slug}`}
+              aria-label={`${game.name}, ${game.main} h`}
+            >
+              <img
+                class={styles.cover}
+                src={igdbImage(game.cover!, `cover_small_2x`)}
+                alt=""
+                width="90"
+                height="128"
+                loading="lazy"
+                decoding="async"
+              />
+              <span class={styles.label} aria-hidden="true">
+                {game.name} <span class={home.mono}>{game.main} h</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ol>
+      <div class={styles.axis} aria-hidden="true">
+        {ticks.map((hours) => (
+          <span
+            class:list={[styles.tick, hours % 10 === 0 && styles.major]}
+            style={`--x: ${(hours / axisMax) * 100}`}
+          >
+            {hours % 10 === 0 && `${hours} h`}
+          </span>
+        ))}
+        {games.map((game) => (
+          <span class={styles.mark} style={`--x: ${game.x.toFixed(2)}`} />
+        ))}
+        <span class={styles.median} style={`--x: ${(median / axisMax) * 100}`}>
+          <span>Médiane {median} h</span>
+        </span>
+      </div>
+    </div>
+
+    <p class={styles.caption}>
+      Du plus court, <a href={`/jeu/${shortest.slug}`}>{shortest.name}</a>
+      {` `}({shortest.main} h), au plus long,{` `}
+      <a href={`/jeu/${longest.slug}`}>{longest.name}</a> ({longest.main} h).
+      Médiane : {median} h. Durées de l'histoire principale, d'après
+      HowLongToBeat.
+    </p>
+  </div>
+</section>

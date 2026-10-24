@@ -1,0 +1,143 @@
+/*
+ * Shared by the home sections: the frame, the section headings, the graph
+ * paper. Colors are the site tokens (src/styles/tokens.css) and their
+ * cream at lower opacities.
+ */
+.page {
+  --cream: var(--color-border);
+  --muted: rgb(255 246 230 / 0.66);
+  --faint: rgb(255 246 230 / 0.14);
+  --line: rgb(255 246 230 / 0.3);
+  --pink: var(--color-primary-500);
+  --gutter: clamp(1rem, 4vw, 3.5rem);
+  --section-space: clamp(4rem, 8vw, 7rem);
+
+  overflow-x: clip;
+  color: var(--cream);
+}
+
+/* Graph paper: a line every 40px, a fainter one every 8px. The header is
+   80px high, so its paper continues in the hero */
+.paper {
+  background-image:
+    linear-gradient(rgb(255 246 230 / 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 246 230 / 0.055) 1px, transparent 1px),
+    linear-gradient(rgb(255 246 230 / 0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 246 230 / 0.022) 1px, transparent 1px);
+  background-size:
+    40px 40px,
+    40px 40px,
+    8px 8px,
+    8px 8px;
+  background-position: -1px -1px;
+}
+
+.frame {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  position: relative;
+  padding-block: var(--section-space);
+}
+
+/* Heading of a section: the mark on the ruler, then the title and the lede
+   side by side on large screens */
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: end;
+  gap: var(--space-4) var(--space-12);
+  margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  grid-column: 1 / -1;
+  margin-bottom: var(--space-2);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* The graduation before each kicker */
+.kicker::before {
+  content: '';
+  flex: none;
+  width: 2.5rem;
+  height: 0.6rem;
+  border-left: 1px solid var(--pink);
+  background: linear-gradient(var(--pink), var(--pink)) left 50% / 100% 1px
+    no-repeat;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, 4.25rem);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.lede {
+  max-width: 34rem;
+  color: var(--muted);
+  font-family: var(--font-body-slim);
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.lede strong {
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-weight: normal;
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-8);
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--pink);
+  font-size: var(--font-size-md);
+  transition: color 0.2s;
+}
+
+.more:hover {
+  color: var(--pink);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.page :focus-visible {
+  outline: 2px solid var(--pink);
+  outline-offset: 3px;
+}
+
+@media screen and (max-width: 766px) {
+  .head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

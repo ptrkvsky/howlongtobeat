@@ -1,0 +1,28 @@
+// French names of the genres on the home. The genre pages still show the
+// imported (English) names: their own labels are a later change
+export const genreLabels: Record<string, string> = {
+  adventure: `Aventure`,
+  arcade: `Arcade`,
+  'card-and-board-game': `Cartes et plateau`,
+  fighting: `Combat`,
+  'hack-and-slash-beat-em-up': `Beat'em all`,
+  indie: `Indépendant`,
+  moba: `MOBA`,
+  music: `Musique`,
+  pinball: `Flipper`,
+  platformd: `Plates-formes`,
+  platform: `Plates-formes`,
+  'point-and-click': `Point & click`,
+  puzzle: `Réflexion`,
+  'quiz-trivia': `Quiz`,
+  racing: `Course`,
+  'real-time-strategy-rts': `Stratégie en temps réel`,
+  'role-playing-rpg': `Jeu de rôle`,
+  shooter: `Tir`,
+  simulator: `Simulation`,
+  sport: `Sport`,
+  strategy: `Stratégie`,
+  tactical: `Tactique`,
+  'turn-based-strategy-tbs': `Stratégie au tour par tour`,
+  'visual-novel': `Visual novel`,
+};

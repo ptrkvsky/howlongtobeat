@@ -141,6 +141,13 @@ table {
   src: url('/fonts/PolySans-Slim.woff2') format('woff2');
   font-display: swap;
 }
+/* SIL Open Font License, see /fonts/OFL-JetBrainsMono.txt */
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
 
 /* Base */
 * {
@@ -221,4 +228,16 @@ button {
 
 .primary-color {
   color: var(--color-primary-500);
+}
+
+/* Visitors who ask for less motion get the final state right away */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

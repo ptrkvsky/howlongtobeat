@@ -1,0 +1,101 @@
+.genres {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 var(--space-12);
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--cream);
+  list-style: none;
+}
+
+.genre {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 4.5rem 7.5rem 4.5rem;
+  align-items: end;
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--faint);
+}
+
+.name {
+  font-family: var(--font-body);
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  line-height: 1.2;
+  transition: color 0.2s;
+}
+
+.genre:hover .name {
+  color: var(--pink);
+}
+
+.count,
+.median {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.median {
+  display: grid;
+  color: var(--cream);
+  font-size: 0.85rem;
+}
+
+.medianLabel {
+  color: var(--muted);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.histogram {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  align-items: end;
+  gap: 3px;
+  height: 2rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.bin {
+  height: max(1px, var(--height));
+  background: var(--pink);
+}
+
+.genre:hover .bin {
+  background: var(--cream);
+}
+
+.others {
+  margin-top: var(--space-8);
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.others a {
+  color: var(--cream);
+  border-bottom: 1px solid var(--line);
+}
+
+.others a:hover {
+  border-color: var(--pink);
+}
+
+@media screen and (max-width: 900px) {
+  .genres {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .genre {
+    grid-template-columns: minmax(0, 1fr) 5.5rem 3.5rem;
+  }
+
+  .count {
+    display: none;
+  }
+}

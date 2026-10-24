@@ -1,0 +1,76 @@
+---
+import type { HomeData } from '../data';
+import { GENRE_BINS } from '../data';
+import home from './home.module.css';
+import styles from './genreIndex.module.css';
+
+// Genres by length: how long their games are, as a small histogram
+interface Props {
+  genres: HomeData['genres'];
+}
+
+const { charted, others } = Astro.props.genres;
+const describe = (bins: number[]) =>
+  GENRE_BINS.map((bin, index) => `${bins[index]} jeux de ${bin.label}`).join(
+    `, `,
+  );
+---
+
+<section class={home.section} aria-labelledby="genres">
+  <div class={home.frame}>
+    <div class={home.head}>
+      <p class={home.kicker}>Par genre, par durée</p>
+      <h2 id="genres" class={home.title}>
+        Explorer par le temps
+      </h2>
+      <p class={home.lede}>
+        Pour chaque genre, la répartition de ses jeux selon la durée de
+        l'histoire principale, de <strong>moins de 5 h</strong> à{` `}
+        <strong>plus de 80 h</strong>.
+      </p>
+    </div>
+    <ul class={styles.genres}>
+      {charted.map((genre) => {
+        const max = Math.max(...genre.bins);
+        return (
+          <li>
+            <a class={styles.genre} href={`/genre/${genre.slug}`}>
+              <span class={styles.name}>{genre.label}</span>
+              <span class={styles.count}>
+                {genre.count.toLocaleString(`fr-FR`)} jeux
+              </span>
+              <span
+                class={styles.histogram}
+                role="img"
+                aria-label={describe(genre.bins)}
+              >
+                {genre.bins.map((count) => (
+                  <span
+                    class={styles.bin}
+                    style={`--height: ${max ? (count / max) * 100 : 0}%`}
+                  />
+                ))}
+              </span>
+              <span class={styles.median}>
+                <span class={styles.medianLabel}>médiane</span>
+                {genre.median} h
+              </span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+    {others.length > 0 && (
+      <p class={styles.others}>
+        Et aussi :{` `}
+        {others.map((genre, index) => (
+          <>
+            {index > 0 && `, `}
+            <a href={`/genre/${genre.slug}`}>{genre.label}</a>
+          </>
+        ))}
+        .
+      </p>
+    )}
+  </div>
+</section>

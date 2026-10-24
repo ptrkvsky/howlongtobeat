@@ -1,0 +1,131 @@
+---
+import {
+  DEFAULT_PACE,
+  PACES,
+  paceDays,
+} from '@/features/jeu/components/Pace/pace';
+import { igdbImage } from '@/utils/igdbImage';
+import type { HomeData } from '../data';
+import { addDays, formatDay, formatIsoDay } from '../finishDate';
+import { calendarTicks } from '../hero';
+import Flag from './Flag.astro';
+import home from './home.module.css';
+import styles from './finishable.module.css';
+
+// "Before Christmas": what can still be finished before the next calendar
+// milestone, on a calendar axis from today. One list per pace, switched by
+// the pace of the hero (scripts/home.ts); the 7 h list without JS
+interface Props {
+  lists: HomeData['finishable'];
+  milestone: HomeData['milestone'];
+  day: Date;
+}
+
+const { lists, milestone, day } = Astro.props;
+const title = `Avant ${milestone.label}`;
+const ticks = calendarTicks(day, milestone.days).filter((tick) => tick.label);
+---
+
+<section
+  class={home.section}
+  aria-labelledby="avant"
+  data-finishable
+  data-milestone={formatIsoDay(milestone.date)}
+>
+  <div class={home.frame}>
+    <div class={home.head}>
+      <p class={home.kicker}>
+        <span>
+          J-<span data-milestone-days>{milestone.days}</span> ·{` `}
+          {formatDay(milestone.date, day)}
+        </span>
+      </p>
+      <h2 id="avant" class={home.title}>
+        {title}
+      </h2>
+      <div>
+        <p class={home.lede}>
+          À{' '}
+          <strong>
+            <span data-pace-label>{DEFAULT_PACE}</span> h par semaine
+          </strong>
+          , les plus grandes aventures parmi les jeux les plus joués que vous
+          pouvez encore finir avant {milestone.label}.
+        </p>
+        <fieldset class={styles.paces}>
+          <legend class={home.srOnly}>Temps de jeu par semaine</legend>
+          {PACES.map((pace) => (
+            <label class={styles.pace}>
+              <input
+                type="radio"
+                name="finishable-pace"
+                value={pace}
+                checked={pace === DEFAULT_PACE}
+                data-pace-radio
+              />
+              <span>{pace} h</span>
+            </label>
+          ))}
+        </fieldset>
+      </div>
+    </div>
+
+    <div class={styles.chart}>
+      <div class={styles.axis} aria-hidden="true">
+        <span class={styles.today}>Auj.</span>
+        {ticks.map((tick) => (
+          <span class={styles.month} style={`--at: ${tick.at}%`}>
+            {tick.label}
+          </span>
+        ))}
+        <span class={styles.goal}>
+          <Flag class={styles.flag} />
+          {formatDay(milestone.date, day, `short`)}
+        </span>
+      </div>
+      {PACES.map((pace) => (
+        <ol
+          class={styles.list}
+          data-finishable-list={pace}
+          hidden={pace !== DEFAULT_PACE}
+        >
+          {lists[pace].map((game) => {
+            const days = paceDays(game.main, pace);
+            return (
+              <li class={styles.row}>
+                <a class={styles.link} href={`/jeu/${game.slug}`}>
+                  <img
+                    class={styles.cover}
+                    src={igdbImage(game.cover!, `cover_small_2x`)}
+                    alt=""
+                    width="40"
+                    height="56"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <span class={styles.name}>
+                    {game.name}
+                    <span class={styles.hours}>{game.main} h</span>
+                  </span>
+                </a>
+                <span class={styles.track} aria-hidden="true">
+                  <span
+                    class={styles.bar}
+                    style={`width: ${(days / milestone.days) * 100}%`}
+                    data-days={days}
+                  />
+                </span>
+                <span class={styles.end}>
+                  fin vers le{` `}
+                  <span data-finish-days={days}>
+                    {formatDay(addDays(day, days), day, `short`)}
+                  </span>
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+      ))}
+    </div>
+  </div>
+</section>

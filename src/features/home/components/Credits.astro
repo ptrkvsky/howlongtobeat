@@ -1,0 +1,93 @@
+---
+import urls from '@/config/urls';
+import Flag from './Flag.astro';
+import home from './home.module.css';
+import styles from './credits.module.css';
+
+// End of the home: the sources as the footnote of a chart, the way back to
+// the calculator, then GAME OVER and the links of the site footer
+interface Props {
+  gamesCount: number;
+  builtAt: Date;
+}
+
+const { gamesCount, builtAt } = Astro.props;
+const updated = new Intl.DateTimeFormat(`fr-FR`, {
+  day: `numeric`,
+  month: `long`,
+  year: `numeric`,
+  hour: `2-digit`,
+  minute: `2-digit`,
+  timeZone: `Europe/Paris`,
+}).format(builtAt);
+const sources = [
+  [`Durées`, `HowLongToBeat`],
+  [`Avis et succès`, `Steam`],
+  [`Prix`, `IsThereAnyDeal`],
+  [`Jaquettes, sorties et studios`, `IGDB`],
+];
+const links = [
+  { url: urls.plan, label: `Genres et plan du site` },
+  { url: urls.actus, label: `Actus` },
+  { url: urls.mentions, label: `Mentions légales` },
+  { url: urls.politique, label: `Politique de confidentialité` },
+];
+---
+
+<footer class:list={[home.page, styles.credits]}>
+  <div class={home.frame}>
+    <div class={styles.note}>
+      <p class={styles.noteTitle}>Sources</p>
+      <dl class={styles.sources}>
+        {sources.map(([what, who]) => (
+          <div>
+            <dt>{what}</dt>
+            <dd>{who}</dd>
+          </div>
+        ))}
+        <div>
+          <dt>Catalogue</dt>
+          <dd>{gamesCount.toLocaleString(`fr-FR`)} jeux</dd>
+        </div>
+        <div>
+          <dt>Mise à jour</dt>
+          <dd>
+            <time datetime={builtAt.toISOString()}>{updated}</time>
+          </dd>
+        </div>
+      </dl>
+      <p class={styles.disclaimer}>
+        Les dates sont des estimations : elles supposent un rythme régulier à
+        partir d'aujourd'hui.
+      </p>
+    </div>
+
+    <div class={styles.cta}>
+      <p class={styles.ctaText}>
+        Et vous, quand est votre prochain Game Over ?
+      </p>
+      <a class={styles.ctaLink} href="#calcul" data-search-open>
+        Calculer ma date <span aria-hidden="true">↑</span>
+      </a>
+    </div>
+  </div>
+
+  <p class={styles.wordmark} aria-hidden="true">
+    <span>Game</span>
+    <Flag class={styles.flag} />
+    <span>Over</span>
+  </p>
+
+  <div class:list={[home.frame, styles.bottom]}>
+    <nav aria-label="Pied de page">
+      <ul class={styles.links}>
+        {links.map(({ url, label }) => (
+          <li>
+            <a href={url}>{label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <p class={styles.copy}>© {builtAt.getFullYear()} Game Over</p>
+  </div>
+</footer>

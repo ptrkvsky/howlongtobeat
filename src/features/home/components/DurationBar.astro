@@ -1,0 +1,50 @@
+---
+// The duration code of the home: one track with the main story filled, the
+// main story + extras outlined and the 100 % hatched, all from zero. Works
+// without color, and says its values to screen readers
+import './durationBar.css';
+
+interface Props {
+  main: number;
+  plus?: number;
+  full?: number;
+  // Hours at the end of the track: longer times run off it
+  scale: number;
+  size?: `small` | `medium`;
+  class?: string;
+}
+
+const {
+  main,
+  plus = 0,
+  full = 0,
+  scale,
+  size = `small`,
+  class: className,
+} = Astro.props;
+const percent = (hours: number) => Math.min(100, (hours / scale) * 100);
+const label = [
+  main > 0 && `histoire principale ${main} h`,
+  plus > 0 && `avec les extras ${plus} h`,
+  full > 0 && `100 % ${full} h`,
+]
+  .filter(Boolean)
+  .join(`, `);
+---
+
+<span
+  class:list={[`duration-bar`, `duration-bar--${size}`, className]}
+  role="img"
+  aria-label={`Durée : ${label}`}
+  style={`--main: ${percent(main)}%; --plus: ${percent(plus)}%; --full: ${percent(full)}%`}
+>
+  {full > 0 && (
+    <span class:list={[`duration-bar__full`, full > scale && `is-over`]} />
+  )}
+  {plus > 0 && (
+    <span class:list={[`duration-bar__plus`, plus > scale && `is-over`]} />
+  )}
+  {main > 0 && (
+    <span class:list={[`duration-bar__main`, main > scale && `is-over`]} />
+  )}
+</span>

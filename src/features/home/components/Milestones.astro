@@ -1,0 +1,65 @@
+---
+import { DEFAULT_PACE } from '@/features/jeu/components/Pace/pace';
+import type { HomeGame } from '../data';
+import { heroView, paceHint } from '../hero';
+import home from './home.module.css';
+import styles from './milestones.module.css';
+
+// How the date is made: hours, then weeks at your pace, then a day. Same
+// game and pace as the hero, updated with it by scripts/home.ts
+interface Props {
+  game: HomeGame;
+  day: Date;
+}
+
+const { game, day } = Astro.props;
+const view = heroView(game, DEFAULT_PACE, day);
+---
+
+<section class={home.section} aria-labelledby="methode">
+  <div class={home.frame}>
+    <div class={home.head}>
+      <p class={home.kicker}>La méthode</p>
+      <h2 id="methode" class={home.title}>
+        Des heures à une date
+      </h2>
+      <p class={home.lede}>
+        Les durées disent combien d'heures. Votre rythme dit combien de
+        semaines. Game Over en tire <strong>un jour du calendrier</strong>.
+      </p>
+    </div>
+    <ol class={styles.steps}>
+      <li class={styles.step}>
+        <span class={styles.index}>01 · Durée</span>
+        <span class={styles.value}>
+          <span data-step-hours>{view.target.hours}</span>&nbsp;h
+        </span>
+        <span class={styles.text}>
+          pour <span data-step-goal>{view.target.goal}</span> de{` `}
+          <span data-step-name>{game.name}</span>, d'après les joueurs de
+          HowLongToBeat.
+        </span>
+      </li>
+      <li class={styles.step}>
+        <span class={styles.index}>02 · Rythme</span>
+        <span class={styles.value} data-step-pace>
+          {view.pace.replace(`environ `, ``).toUpperCase()}
+        </span>
+        <span class={styles.text}>
+          à <span data-step-per-week>{DEFAULT_PACE}</span> h par semaine, soit{' '}
+          <span data-step-hint>{paceHint(DEFAULT_PACE)}</span>.
+        </span>
+      </li>
+      <li class={styles.step}>
+        <span class={styles.index}>03 · Date</span>
+        <span class:list={[styles.value, styles.pink]} data-step-date>
+          {view.dateLong.toUpperCase()}
+        </span>
+        <span class={styles.text}>
+          votre Game Over, à quelques jours près. Changez de rythme, la date
+          suit.
+        </span>
+      </li>
+    </ol>
+  </div>
+</section>

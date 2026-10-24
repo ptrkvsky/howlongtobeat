@@ -1,0 +1,497 @@
+.hero {
+  position: relative;
+  padding-block: clamp(2.5rem, 6vh, 4.5rem) clamp(3rem, 7vh, 5rem);
+  border-bottom: 1px solid var(--faint);
+}
+
+.kicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-8);
+  margin-bottom: var(--space-5);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.kicker span:first-child {
+  color: var(--pink);
+}
+
+.title {
+  margin-bottom: var(--space-4);
+  font-family: var(--font-body);
+  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+  letter-spacing: 0;
+}
+
+/* "J'ai [7 h] par semaine. Je veux finir [Elden Ring]." */
+.sentence {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.35em;
+  max-width: 62rem;
+  font-family: var(--font-body-slim);
+  font-size: clamp(1.75rem, 3.7vw, 3.4rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.clause {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.3em;
+  min-width: 0;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.select,
+.combo {
+  position: relative;
+  display: inline-flex;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.select select,
+.input {
+  appearance: none;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 0.1em 0.02em;
+  border: 0;
+  border-bottom: 2px solid var(--pink);
+  border-radius: 0;
+  background: transparent;
+  color: var(--cream);
+  font: inherit;
+  font-family: var(--font-body);
+  line-height: 1.15;
+  letter-spacing: inherit;
+}
+
+.select select {
+  padding-right: 0.9em;
+  field-sizing: content;
+  cursor: pointer;
+}
+
+/* The arrow of the select */
+.select::after {
+  content: '';
+  position: absolute;
+  right: 0.15em;
+  top: 50%;
+  width: 0.3em;
+  height: 0.3em;
+  border-right: 2px solid var(--pink);
+  border-bottom: 2px solid var(--pink);
+  transform: translateY(-75%) rotate(45deg);
+  pointer-events: none;
+}
+
+.select option {
+  background: var(--color-background);
+  color: var(--cream);
+  font-size: 1rem;
+}
+
+.input {
+  width: 14ch;
+  field-sizing: content;
+  min-width: 4ch;
+  text-overflow: ellipsis;
+}
+
+.input::placeholder {
+  color: var(--muted);
+}
+
+.select select:focus-visible,
+.input:focus-visible {
+  outline: none;
+  background: rgb(255 0 138 / 0.12);
+}
+
+.results {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  width: min(32rem, calc(100vw - 2 * var(--gutter)));
+  max-height: min(24rem, 60vh);
+  overflow-y: auto;
+  margin: 0;
+  padding: var(--space-2) 0;
+  border: 1px solid var(--line);
+  background: var(--color-background);
+  box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 0.6);
+  font-family: var(--font-body);
+  font-size: var(--font-size-md);
+  line-height: 1.3;
+  list-style: none;
+  white-space: normal;
+}
+
+.results li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  cursor: pointer;
+}
+
+.results li[aria-selected='true'] {
+  background: var(--pink);
+  color: var(--color-background);
+}
+
+.results li span:last-child {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.results li[data-empty] {
+  color: var(--muted);
+  cursor: default;
+}
+
+/* The answer: the date, its flag pole down to the ruler, the ruler */
+.line {
+  position: relative;
+  display: grid;
+  margin-top: clamp(2.5rem, 6vh, 4.5rem);
+}
+
+.answer {
+  display: grid;
+  justify-items: end;
+  width: var(--finish);
+  padding-right: clamp(1rem, 2vw, 1.75rem);
+  text-align: right;
+}
+
+.over {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-bottom: clamp(0.5rem, 1.4vw, 1.25rem);
+  font-family: var(--font-mono);
+  font-size: clamp(0.75rem, 1vw, 0.9rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.overWord {
+  color: var(--pink);
+}
+
+.overAbout {
+  color: var(--muted);
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+.date {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: clamp(3.4rem, 10.5vw, 10.5rem);
+  line-height: 0.82;
+  letter-spacing: -0.035em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.year {
+  margin-top: var(--space-3);
+  color: var(--pink);
+  font-family: var(--font-mono);
+  font-size: clamp(1rem, 1.8vw, 1.6rem);
+  letter-spacing: 0.06em;
+}
+
+.year[hidden] {
+  display: none;
+}
+
+/* From the top of the date down to the ruler */
+.pole {
+  position: absolute;
+  top: -0.25rem;
+  bottom: 0;
+  left: var(--finish);
+  width: 2px;
+  margin-left: -1px;
+  background: var(--cream);
+  transform-origin: bottom center;
+}
+
+.poleFlag {
+  position: absolute;
+  top: 0;
+  left: 2px;
+  width: clamp(2.25rem, 3.2vw, 3rem);
+  height: auto;
+  color: var(--cream);
+}
+
+.track {
+  position: relative;
+  height: 4.6rem;
+  margin-top: clamp(1.25rem, 3vh, 2rem);
+  border-top: 1px solid var(--cream);
+}
+
+.ticks {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ticks li {
+  position: absolute;
+  top: 0;
+  left: var(--at);
+  width: 1px;
+  height: 0.45rem;
+  background: var(--line);
+}
+
+/* Month starts carry their name */
+.ticks li:not(:empty) {
+  height: 0.9rem;
+  background: var(--cream);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-indent: 0.4rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.today {
+  position: absolute;
+  top: -1.6rem;
+  left: 0;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.today::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 1.1rem;
+  width: 1px;
+  height: 1.4rem;
+  background: var(--cream);
+}
+
+/* One lane per goal, under the axis: the main story reaches the flag */
+.bars {
+  position: absolute;
+  top: 1.6rem;
+  left: 0;
+  right: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.bars > span {
+  display: block;
+  height: 10px;
+  max-width: 100%;
+  transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* The duration code: main story filled, + extras outlined, 100 % hatched */
+.bars [data-goal='main'],
+.legend [data-goal='main'] {
+  background: var(--pink);
+}
+
+.bars [data-goal='main'] {
+  height: 1.5rem;
+}
+
+.bars [data-goal='plus'],
+.legend [data-goal='plus'] {
+  border: 1.5px solid var(--pink);
+}
+
+.bars [data-goal='full'],
+.legend [data-goal='full'] {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--pink) 0 1.5px,
+    transparent 1.5px 5px
+  );
+}
+
+/* Past the end of the ruler: an open, fading end */
+.bars [data-over] {
+  border-right: 0;
+  mask-image: linear-gradient(90deg, #000 calc(100% - 3rem), transparent);
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-5) var(--space-12);
+  margin-top: var(--space-5);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-8);
+}
+
+.legend dt {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.legend dt span {
+  display: inline-block;
+  width: 1.1rem;
+  height: 0.6rem;
+}
+
+.legend dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.legend dd span {
+  color: var(--pink);
+}
+
+.meta {
+  display: grid;
+  justify-items: end;
+  gap: var(--space-2);
+  text-align: right;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  padding: 0 var(--space-5);
+  background: var(--cream);
+  color: var(--color-background);
+  font-size: var(--font-size-md);
+  transition: background-color 0.2s;
+}
+
+.cta:visited {
+  color: var(--color-background);
+}
+
+.cta:hover {
+  background: var(--pink);
+}
+
+.note {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* The flag is planted when the date changes (scripts/home.ts) */
+.hero[data-planted] .pole {
+  animation: plant 0.55s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.hero[data-planted] .date {
+  animation: settle 0.4s ease-out;
+}
+
+@keyframes plant {
+  from {
+    transform: scaleY(0.2);
+  }
+}
+
+@keyframes settle {
+  from {
+    opacity: 0.2;
+    transform: translateY(0.08em);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bars > span,
+  .hero[data-planted] .pole,
+  .hero[data-planted] .date {
+    transition: none;
+    animation: none;
+  }
+}
+
+@media screen and (max-width: 766px) {
+  /* The 64px header leaves the paper 16px off its 40px lines */
+  .hero {
+    background-position: -1px 15px;
+    padding-block: var(--space-8) var(--space-12);
+  }
+
+  .sentence {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .clause {
+    flex-wrap: wrap;
+  }
+
+  .date {
+    font-size: clamp(3rem, 17vw, 6rem);
+    line-height: 0.88;
+    white-space: normal;
+  }
+
+  .dateMonth {
+    display: block;
+  }
+
+  .footer,
+  .meta {
+    justify-items: start;
+    text-align: left;
+  }
+
+  .meta {
+    width: 100%;
+  }
+
+  .cta {
+    justify-content: space-between;
+    width: 100%;
+  }
+}

@@ -1,0 +1,174 @@
+---
+import { DEFAULT_PACE, PACES } from '@/features/jeu/components/Pace/pace';
+import type { HomeGame } from '../data';
+import { formatIsoDay } from '../finishDate';
+import { FINISH_AT, heroView, paceHint } from '../hero';
+import Flag from './Flag.astro';
+import home from './home.module.css';
+import styles from './hero.module.css';
+
+// "When will you see the end?": the pace and the game as a sentence, the
+// answer as a date on a calendar ruler. Rendered for the default game and
+// pace (complete without JS); scripts/home.ts redraws it with the visitor's
+// day, saved pace and searched game
+interface Props {
+  game: HomeGame;
+  day: Date;
+  gamesCount: number;
+}
+
+const { game, day, gamesCount } = Astro.props;
+const view = heroView(game, DEFAULT_PACE, day);
+const [dayNumber, ...month] = view.date.split(` `);
+---
+
+<section
+  id="calcul"
+  class:list={[home.paper, styles.hero]}
+  aria-labelledby="hero-title"
+  data-hero
+  data-game={JSON.stringify(game)}
+  data-day={formatIsoDay(day)}
+>
+  <div class={home.frame}>
+    <p class={styles.kicker}>
+      <span>Calculateur de date de fin</span>
+      <span>{gamesCount.toLocaleString(`fr-FR`)} jeux chronométrés</span>
+    </p>
+    <h1 id="hero-title" class={styles.title}>
+      Quand verrez-vous la fin ?
+    </h1>
+
+    <form class={styles.sentence} data-hero-form>
+      <span class={styles.clause}>
+        J'ai{` `}
+        <span class={styles.select}>
+          <label for="hero-pace" class={home.srOnly}>
+            Temps de jeu par semaine
+          </label>
+          <select id="hero-pace" name="perWeek" data-pace-select>
+            {PACES.map((pace) => (
+              <option value={pace} selected={pace === DEFAULT_PACE}>
+                {pace} h
+              </option>
+            ))}
+          </select>
+        </span>
+        {` `}par semaine.
+      </span>
+      <span class={styles.clause}>
+        Je veux finir{` `}
+        <span class={styles.combo} data-combo>
+          <label for="hero-game" class={home.srOnly}>
+            Jeu à terminer
+          </label>
+          <input
+            id="hero-game"
+            class={styles.input}
+            type="text"
+            name="game"
+            value={game.name}
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="false"
+            aria-controls="hero-results"
+            aria-describedby="hero-search-hint"
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+            data-search-input
+          />
+          <ul
+            id="hero-results"
+            class={styles.results}
+            role="listbox"
+            aria-label="Jeux trouvés"
+            hidden
+            data-search-results
+          ></ul>
+        </span>
+      </span>
+      <span id="hero-search-hint" class={home.srOnly}>
+        Tapez le nom d'un jeu, puis choisissez-le dans la liste avec les flèches
+        et Entrée.
+      </span>
+    </form>
+
+    <div class={styles.line} style={`--finish: ${FINISH_AT * 100}%`}>
+      <p class={styles.answer}>
+        <span class={styles.over}>
+          <span class={styles.overWord}>Game Over</span>
+          <span class={styles.overAbout}>vers le</span>
+        </span>
+        <span class={styles.date} data-hero-date>
+          <span class={styles.dateDay}>{dayNumber}</span>
+          {` `}
+          <span class={styles.dateMonth}>{month.join(` `)}</span>
+        </span>
+        <span class={styles.year} data-hero-year hidden={!view.year}>
+          {view.year}
+        </span>
+        <span class={home.srOnly} data-hero-date-long>
+          {view.dateLong}
+        </span>
+      </p>
+
+      <div class={styles.pole} aria-hidden="true">
+        <Flag class={styles.poleFlag} />
+      </div>
+
+      <div class={styles.track} aria-hidden="true">
+        <ol class={styles.ticks} data-hero-ticks>
+          {view.ticks.map((tick) => (
+            <li style={`--at: ${tick.at}%`}>{tick.label}</li>
+          ))}
+        </ol>
+        <span class={styles.today}>
+          Auj. <span data-hero-today>{view.today}</span>
+        </span>
+        <span class={styles.bars} data-hero-bars>
+          {view.goals.map((goal) => (
+            <span
+              data-goal={goal.key}
+              data-over={goal.length > 100 ? `` : undefined}
+              style={`width: ${Math.min(100, goal.length)}%`}
+            />
+          ))}
+        </span>
+      </div>
+    </div>
+
+    <div class={styles.footer}>
+      <dl class={styles.legend} data-hero-legend>
+        {view.goals.map((goal) => (
+          <div>
+            <dt>
+              <span data-goal={goal.key} />
+              {goal.label}
+            </dt>
+            <dd>
+              {goal.hours} h <span>→</span> {goal.endLabel}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      <p class={styles.meta}>
+        <a class={styles.cta} href={`/jeu/${game.slug}`} data-hero-link>
+          <span>
+            Voir la fiche <span data-hero-name>{game.name}</span>
+          </span>
+          <span aria-hidden="true">→</span>
+        </a>
+        <span class={styles.note} data-hero-pace-note>
+          Environ {view.pace.replace(`environ `, ``)} de jeu, à{` `}
+          {paceHint(DEFAULT_PACE)}.
+        </span>
+      </p>
+    </div>
+    <p class={home.srOnly} aria-live="polite" data-hero-live></p>
+  </div>
+</section>
+
+<script>
+  import '../scripts/home';
+</script>

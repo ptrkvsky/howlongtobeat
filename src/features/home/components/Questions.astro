@@ -1,0 +1,78 @@
+---
+import { DEFAULT_PACE, paceDays } from '@/features/jeu/components/Pace/pace';
+import { formatPercent, formatPrice } from '@/utils/format';
+import type { HomeData } from '../data';
+import { addDays, formatDay } from '../finishDate';
+import home from './home.module.css';
+import styles from './questions.module.css';
+
+// What a game page answers, shown with the real answers of one game
+interface Props {
+  example: NonNullable<HomeData['example']>;
+  day: Date;
+}
+
+const { example, day } = Astro.props;
+const days = paceDays(example.main, DEFAULT_PACE);
+const perHour = example.price.current / example.main;
+const questions = [
+  {
+    question: `Combien de temps ?`,
+    answer: `${example.main} h`,
+    detail: `pour l'histoire principale, ${example.plus} h avec les extras${example.full ? `, ${example.full} h pour le 100 %` : ``}.`,
+  },
+  {
+    question: `Quand vais-je le finir ?`,
+    answer: formatDay(addDays(day, days), day, `short`).toUpperCase(),
+    days,
+    detail: `à ${DEFAULT_PACE} h par semaine, en partant aujourd'hui.`,
+  },
+  {
+    question: `Les joueurs le finissent-ils ?`,
+    answer: formatPercent(example.completion),
+    detail: `des joueurs Steam ont débloqué le succès de fin.`,
+  },
+  {
+    question: `Ça vaut le coup ?`,
+    answer: `${formatPrice(Math.round(perHour * 100) / 100, example.price.currency)}/h`,
+    detail: `${formatPrice(example.price.current, example.price.currency)} chez ${example.price.shop}, pour ${example.main} h d'histoire.`,
+  },
+];
+---
+
+<section class={home.section} aria-labelledby="questions">
+  <div class={home.frame}>
+    <div class={home.head}>
+      <p class={home.kicker}>Sur chaque fiche</p>
+      <h2 id="questions" class={home.title}>
+        Quatre questions
+      </h2>
+      <p class={home.lede}>
+        Quand les données existent, chaque fiche y répond. Exemple réel avec
+        {` `}
+        <strong>{example.name}</strong>.
+      </p>
+    </div>
+    <ol class={styles.questions}>
+      {questions.map((item, index) => (
+        <li class={styles.question}>
+          <span class={styles.index}>{String(index + 1).padStart(2, `0`)}</span>
+          <h3 class={styles.ask}>{item.question}</h3>
+          <p class={styles.answer}>
+            {item.days ? (
+              <span data-finish-days={item.days} data-finish-upper>
+                {item.answer}
+              </span>
+            ) : (
+              item.answer
+            )}
+          </p>
+          <p class={styles.detail}>{item.detail}</p>
+        </li>
+      ))}
+    </ol>
+    <a class={home.more} href={`/jeu/${example.slug}`}>
+      Ouvrir la fiche {example.name} <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</section>

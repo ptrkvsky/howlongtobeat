@@ -1,0 +1,59 @@
+---
+import urls from '@/config/urls';
+import Flag from './Flag.astro';
+import home from './home.module.css';
+import styles from './homeHeader.module.css';
+
+// Header of the home: same links as the site header, plus the search,
+// which is the field of the hero (scripts/search.ts gives it the focus)
+---
+
+<header class:list={[home.page, home.paper, styles.header]}>
+  <div class:list={[home.frame, styles.inner]}>
+    <a href={urls.home} class={styles.logo} aria-label="Game Over, accueil">
+      <Flag class={styles.flag} />
+      <span>Game Over</span>
+    </a>
+    <nav aria-label="Navigation principale">
+      <ul class={styles.links}>
+        <li>
+          <a href={urls.plan} class={styles.link}>
+            Genres
+          </a>
+        </li>
+        <li>
+          <a href={urls.actus} class={styles.link}>
+            Actus
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <button
+      type="button"
+      class={styles.search}
+      aria-label="Rechercher un jeu"
+      aria-keyshortcuts="/"
+      data-search-open
+    >
+      <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+        <circle
+          cx="6.5"
+          cy="6.5"
+          r="5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+        ></circle>
+        <path
+          d="M10.5 10.5 15 15"
+          stroke="currentColor"
+          stroke-width="1.5"
+        ></path>
+      </svg>
+      <span class={styles.searchLabel}>Rechercher un jeu</span>
+      <kbd class={styles.key} aria-hidden="true">
+        /
+      </kbd>
+    </button>
+  </div>
+</header>

@@ -1,0 +1,235 @@
+.paces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-5) 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.pace {
+  position: relative;
+  cursor: pointer;
+}
+
+.pace input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pace span {
+  display: inline-grid;
+  place-items: center;
+  min-width: 3.5rem;
+  min-height: 2.5rem;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
+}
+
+.pace:hover span {
+  border-color: var(--cream);
+}
+
+.pace input:checked + span {
+  border-color: var(--pink);
+  background: var(--pink);
+  color: var(--color-background);
+}
+
+.pace input:focus-visible + span {
+  outline: 2px solid var(--pink);
+  outline-offset: 3px;
+}
+
+/* Rows: game, then the calendar track, then the end date. The axis above
+   uses the same columns */
+.chart {
+  --columns: minmax(12rem, 3fr) minmax(0, 8fr) 9.5rem;
+}
+
+.axis {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--columns);
+  gap: 0 var(--space-5);
+  height: 2.5rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* The labels live in the track column */
+.axis > * {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: end;
+  padding-bottom: var(--space-2);
+}
+
+.today {
+  justify-self: start;
+}
+
+.month {
+  justify-self: start;
+  margin-left: var(--at);
+  padding-left: 0.4rem;
+  border-left: 1px solid var(--line);
+}
+
+.goal {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  justify-self: end;
+  transform: translateX(50%);
+  color: var(--cream);
+}
+
+.flag {
+  width: 1.4rem;
+  height: auto;
+  color: var(--pink);
+}
+
+.list {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list[hidden] {
+  display: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: var(--columns);
+  align-items: center;
+  gap: 0 var(--space-5);
+  min-height: 4.5rem;
+  border-top: 1px solid var(--faint);
+}
+
+.row:last-child {
+  border-bottom: 1px solid var(--faint);
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+  padding-block: var(--space-2);
+}
+
+.cover {
+  flex: none;
+  width: 40px;
+  height: 56px;
+  object-fit: cover;
+  background: var(--faint);
+}
+
+.name {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+  font-size: var(--font-size-md);
+  line-height: 1.2;
+  transition: color 0.2s;
+}
+
+.link:hover .name {
+  color: var(--pink);
+}
+
+.hours {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+/* From today to the milestone, which is the right edge of the track */
+.track {
+  position: relative;
+  height: 100%;
+  min-height: 4.5rem;
+  display: flex;
+  align-items: center;
+  border-right: 1px dashed var(--pink);
+}
+
+.bar {
+  height: 0.75rem;
+  background: var(--pink);
+  transform-origin: left center;
+}
+
+.end {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.end span {
+  color: var(--cream);
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .bar {
+      animation: grow linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+  }
+}
+
+@keyframes grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@media screen and (max-width: 766px) {
+  .chart {
+    --columns: minmax(0, 1fr) auto;
+  }
+
+  .axis {
+    display: none;
+  }
+
+  .row {
+    grid-template-columns: var(--columns);
+    grid-template-areas:
+      'game game'
+      'track end';
+    gap: 0 var(--space-3);
+    padding-bottom: var(--space-3);
+  }
+
+  .link {
+    grid-area: game;
+  }
+
+  .end {
+    grid-area: end;
+  }
+
+  .track {
+    grid-area: track;
+    min-height: 1rem;
+  }
+}

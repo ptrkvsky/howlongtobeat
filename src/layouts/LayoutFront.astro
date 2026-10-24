@@ -15,6 +15,11 @@ const { cloakFooter, isCentered } = Astro.props;
   <main>
     <slot />
   </main>
-  <Header />
-  <Footer cloakFooter={cloakFooter} />
+  <!-- The home brings its own header and footer -->
+  <slot name="header">
+    <Header />
+  </slot>
+  <slot name="footer">
+    <Footer cloakFooter={cloakFooter} />
+  </slot>
 </div>

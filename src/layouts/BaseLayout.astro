@@ -20,6 +20,8 @@ interface Props {
   jsonLd?: JsonLdNode[];
   // Open Graph type: an /actus article, an author page or any other page
   ogType?: `website` | `article` | `profile`;
+  // Fonts of the first screen, loaded with the HTML (the home's hero)
+  preloadFonts?: string[];
   // article:* Open Graph tags of an /actus article
   article?: {
     publishedTime: string;
@@ -44,6 +46,7 @@ const {
   jsonLd,
   ogType = `website`,
   article,
+  preloadFonts = [],
 } = Astro.props;
 
 const fullTitle =
@@ -59,6 +62,9 @@ const gtmSnippet = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':ne
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
+    {preloadFonts.map((font) => (
+      <link rel="preload" href={font} as="font" type="font/woff2" crossorigin />
+    ))}
     {description && <meta name="description" content={description} />}
     {noindex && <meta name="robots" content="noindex" />}
     {!noindex && largeImagePreview && (

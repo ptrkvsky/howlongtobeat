@@ -3,8 +3,14 @@
  * each use needs (https://api-docs.igdb.com/#images).
  */
 export type IgdbImageSize =
+  // 90 × 128, and 180 × 256 for high density screens
+  | `cover_small`
+  | `cover_small_2x`
   // 264 × 374, and 528 × 748 for high density screens
-  `cover_big` | `cover_big_2x` | `720p` | `1080p`;
+  | `cover_big`
+  | `cover_big_2x`
+  | `720p`
+  | `1080p`;
 
 export const igdbImage = (imageId: string, size: IgdbImageSize) =>
   `https://images.igdb.com/igdb/image/upload/t_${size}/${imageId}.jpg`;

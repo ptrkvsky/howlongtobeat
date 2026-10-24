@@ -1,8 +1,17 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import LayoutFront from '@/layouts/LayoutFront.astro';
-import Banner from '@/features/home/components/Banner/Banner.astro';
-import { getGames } from '@/features/jeu/api';
+import HomeHeader from '@/features/home/components/HomeHeader.astro';
+import Hero from '@/features/home/components/Hero.astro';
+import Milestones from '@/features/home/components/Milestones.astro';
+import Finishable from '@/features/home/components/Finishable.astro';
+import Ruler from '@/features/home/components/Ruler.astro';
+import Questions from '@/features/home/components/Questions.astro';
+import TimedNews from '@/features/home/components/TimedNews.astro';
+import GenreIndex from '@/features/home/components/GenreIndex.astro';
+import Credits from '@/features/home/components/Credits.astro';
+import home from '@/features/home/components/home.module.css';
+import { getHomeData } from '@/features/home/data';
 import { siteInformations } from '@/config/siteInformations';
 import {
   organizationNode,
@@ -12,9 +21,9 @@ import {
   websiteNode,
 } from '@/utils/structuredData';
 
-const countGames = (await getGames()).length;
-const title = `Découvrez le temps de jeu necessaire pour terminer vous jeux favoris. - ${siteInformations.title}`;
-const description = `Game Over repertorie la durée de vie de ${countGames} jeux. Retrouvez toutes les informations sur la duree de vie de l'ensemble de vos jeux preferes.`;
+const data = await getHomeData();
+const title = `Combien de temps pour finir un jeu ? Votre date de fin - ${siteInformations.title}`;
+const description = `Durée de vie de ${data.gamesCount.toLocaleString(`fr-FR`)} jeux vidéo, et la date à laquelle vous les finirez à votre rythme. Durées HowLongToBeat, avis Steam, prix et actus.`;
 const jsonLd = [
   websiteNode(),
   organizationNode(),
@@ -28,8 +37,35 @@ const jsonLd = [
 ];
 ---
 
-<BaseLayout absoluteTitle={title} description={description} jsonLd={jsonLd}>
+<BaseLayout
+  absoluteTitle={title}
+  description={description}
+  canonical="/"
+  jsonLd={jsonLd}
+  preloadFonts={[
+    `/fonts/MonumentExtended-Black.woff2`,
+    `/fonts/PolySans-Slim.woff2`,
+  ]}
+>
   <LayoutFront cloakFooter={false}>
-    <Banner countGames={countGames} />
+    <HomeHeader slot="header" />
+    <div class={home.page}>
+      <Hero game={data.hero} day={data.day} gamesCount={data.gamesCount} />
+      <Milestones game={data.hero} day={data.day} />
+      <Finishable
+        lists={data.finishable}
+        milestone={data.milestone}
+        day={data.day}
+      />
+      <Ruler ruler={data.ruler} />
+      {data.example && <Questions example={data.example} day={data.day} />}
+      <TimedNews news={data.news} />
+      <GenreIndex genres={data.genres} />
+    </div>
+    <Credits
+      slot="footer"
+      gamesCount={data.gamesCount}
+      builtAt={data.builtAt}
+    />
   </LayoutFront>
 </BaseLayout>

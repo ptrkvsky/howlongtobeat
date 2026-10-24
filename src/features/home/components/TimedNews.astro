@@ -1,0 +1,98 @@
+---
+import { newsCategoryLabels, newsPageUrl } from '@/config/news';
+import urls from '@/config/urls';
+import type { HomeData } from '../data';
+import DurationBar from './DurationBar.astro';
+import home from './home.module.css';
+import styles from './timedNews.module.css';
+
+// The latest news, timestamped like a wire, with the length of the game
+// they are about when it is in the catalog
+interface Props {
+  news: HomeData['news'];
+}
+
+const { news } = Astro.props;
+const [lead, ...rest] = news;
+const dayFormat = new Intl.DateTimeFormat(`fr-FR`, {
+  day: `numeric`,
+  month: `short`,
+  timeZone: `Europe/Paris`,
+});
+const timeFormat = new Intl.DateTimeFormat(`fr-FR`, {
+  timeStyle: `short`,
+  timeZone: `Europe/Paris`,
+});
+// "23 oct. · 21:17", Paris time
+const stamp = (date: string) =>
+  `${dayFormat.format(new Date(date))} · ${timeFormat.format(new Date(date))}`;
+// The IGDB artworks are stored at 1080p: 720p is enough here
+const smaller = (url: string) => url.replace(`/t_1080p/`, `/t_720p/`);
+const scale = Math.max(40, ...news.map((article) => article.game?.main ?? 0));
+---
+
+{lead && (
+  <section class={home.section} aria-labelledby="actus">
+    <div class={home.frame}>
+      <div class={home.head}>
+        <p class={home.kicker}>Fil mis à jour toutes les heures</p>
+        <h2 id="actus" class={home.title}>
+          Les actus
+        </h2>
+        <p class={home.lede}>
+          Sorties, mises à jour, annonces. Quand une actu parle d'un jeu du
+          catalogue, sa durée est juste à côté.
+        </p>
+      </div>
+      <div class={styles.layout}>
+        <a class={styles.lead} href={newsPageUrl(lead.slug)}>
+          <img
+            class={styles.image}
+            src={smaller(lead.image.url)}
+            alt={lead.image.alt}
+            width="1280"
+            height="720"
+            loading="lazy"
+            decoding="async"
+          />
+          <p class={styles.meta}>
+            <time datetime={lead.date}>{stamp(lead.date)}</time>
+            <span>{newsCategoryLabels[lead.category]}</span>
+          </p>
+          <h3 class={styles.leadTitle}>{lead.title}</h3>
+          <p class={styles.excerpt}>{lead.excerpt}</p>
+        </a>
+        <ol class={styles.wire}>
+          {rest.map((article) => (
+            <li class={styles.item}>
+              <a class={styles.itemLink} href={newsPageUrl(article.slug)}>
+                <p class={styles.meta}>
+                  <time datetime={article.date}>{stamp(article.date)}</time>
+                  <span>{newsCategoryLabels[article.category]}</span>
+                </p>
+                <h3 class={styles.title}>{article.title}</h3>
+                {article.game && article.game.main > 0 && (
+                  <span class={styles.game}>
+                    <span class={styles.gameName}>
+                      {article.game.name} ·{` `}
+                      <span class={home.mono}>{article.game.main} h</span>
+                    </span>
+                    <DurationBar
+                      main={article.game.main}
+                      plus={article.game.plus}
+                      full={article.game.full}
+                      scale={scale}
+                    />
+                  </span>
+                )}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <a class={home.more} href={urls.actus}>
+        Toutes les actus <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+)}

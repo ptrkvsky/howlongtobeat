@@ -19,6 +19,7 @@
     "start": "astro preview --port 2881",
     "type-check": "astro check",
     "lint": "eslint src scripts",
+    "test": "tsx --test \"src/**/*.test.ts\"",
     "format": "prettier \"src/**/*.+(ts|js|astro|css)\" --write",
     "prepare": "husky",
     "commit": "cz",

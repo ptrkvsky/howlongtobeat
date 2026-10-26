@@ -341,9 +341,10 @@ async function publish() {
   for (const row of ready.slice(0, 20))
     console.info(`  ${row.name} → /jeu/${row.slug}`);
   if (!dryRun && ready.length) {
+    const now = new Date();
     await db
       .update(game)
-      .set({ isPublished: true, updatedAt: new Date() })
+      .set({ isPublished: true, publishedAt: now, updatedAt: now })
       .where(
         inArray(
           game.id,

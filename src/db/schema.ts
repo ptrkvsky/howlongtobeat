@@ -59,6 +59,8 @@ export const game = pgTable(`game`, {
   isTranslated: boolean(`is_translated`).notNull().default(false),
   // Only published games get a page
   isPublished: boolean(`is_published`).notNull().default(false),
+  // Set by scripts/import-games.ts --publish, null for the legacy games
+  publishedAt: timestamp(`published_at`, { withTimezone: true }),
   firstReleaseDate: date(`first_release_date`),
   source: gameSource(`source`).notNull().default(`legacy`),
   ...timestamps,

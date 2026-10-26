@@ -1,0 +1,72 @@
+---
+import { igdbImage } from '@/utils/igdbImage';
+import { NEW_GAMES_DAYS } from '../newGames';
+import type { HomeData } from '../data';
+import DurationBar from './DurationBar.astro';
+import home from './home.module.css';
+import styles from './newGames.module.css';
+
+// The most played games among those the weekly import published lately
+interface Props {
+  games: HomeData['newGames'];
+}
+
+const { games } = Astro.props;
+const dayFormat = new Intl.DateTimeFormat(`fr-FR`, {
+  day: `numeric`,
+  month: `short`,
+  timeZone: `Europe/Paris`,
+});
+const scale = Math.max(40, ...games.map((game) => game.main));
+---
+
+{games.length > 0 && (
+  <section class={home.section} aria-labelledby="nouveaux">
+    <div class={home.frame}>
+      <div class={home.head}>
+        <p class={home.kicker}>Ajoutés chaque lundi</p>
+        <h2 id="nouveaux" class={home.title}>
+          Nouveaux dans le catalogue
+        </h2>
+        <p class={home.lede}>
+          Les plus joués des jeux arrivés ces {NEW_GAMES_DAYS} derniers jours,
+          avec leur durée.
+        </p>
+      </div>
+      <ol class={styles.grid}>
+        {games.map((game) => (
+          <li>
+            <a class={styles.card} href={`/jeu/${game.slug}`}>
+              <img
+                class={styles.cover}
+                src={igdbImage(game.cover!, `cover_big`)}
+                srcset={`${igdbImage(game.cover!, `cover_big_2x`)} 2x`}
+                alt=""
+                width="264"
+                height="374"
+                loading="lazy"
+                decoding="async"
+              />
+              <p class={styles.meta}>
+                Ajouté le{` `}
+                <time datetime={game.publishedAt}>
+                  {dayFormat.format(new Date(game.publishedAt))}
+                </time>
+              </p>
+              <h3 class={styles.name}>{game.name}</h3>
+              <span class={styles.time}>
+                <span class={home.mono}>{game.main} h</span> pour l'histoire
+              </span>
+              <DurationBar
+                main={game.main}
+                plus={game.plus}
+                full={game.full}
+                scale={scale}
+              />
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+)}

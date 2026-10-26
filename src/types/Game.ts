@@ -12,6 +12,8 @@ export interface Game {
   timeMainExtras: number;
   timeCompletionists: number;
   descriptionMd: string;
+  // Publication of an imported game, null for the legacy games
+  publishedAt: string | null;
   genreIds: number[];
   identity: GameIdentity | null;
   reviews: GameReviews | null;

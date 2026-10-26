@@ -70,6 +70,7 @@ async function fetchGames(): Promise<Game[]> {
           timeMainExtras: game.timeMainExtras,
           timeCompletionists: game.timeCompletionists,
           descriptionMd: game.descriptionMd,
+          publishedAt: game.publishedAt,
           genreIds: sql<
             number[]
           >`coalesce((select array_agg(genre_id) from game_genre where game_id = ${game.id}), '{}')`,
@@ -133,6 +134,7 @@ async function fetchGames(): Promise<Game[]> {
         ...row,
         // The confirmed IGDB cover first: the imported ones may be another game's
         cover: (igdbTrusted && igdb?.coverImageId) || imageIdFromUrl(row.cover),
+        publishedAt: row.publishedAt?.toISOString() ?? null,
         identity,
         reviews,
         completion,

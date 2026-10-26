@@ -9,6 +9,7 @@ import { getAllGenres } from '@/functions/getAllGenres';
 import type { Game } from '@/types/Game';
 import { genreLabels } from './genres';
 import { nextMilestone, today } from './finishDate';
+import { newGames } from './newGames';
 
 export interface HomeGame {
   name: string;
@@ -231,6 +232,10 @@ async function homeData() {
     milestone,
     finishable: finishableLists(listable, milestone.days),
     ruler: ruler(listable),
+    newGames: newGames(listable, builtAt).map((game) => ({
+      ...toHomeGame(game),
+      publishedAt: game.publishedAt!,
+    })),
     news: news.slice(0, 6).map((article) => {
       const game = article.game && bySlug.get(article.game.slug);
       return { ...article, game: game ? toHomeGame(game) : null };

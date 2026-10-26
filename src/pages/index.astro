@@ -6,6 +6,7 @@ import Milestones from '@/features/home/components/Milestones.astro';
 import Finishable from '@/features/home/components/Finishable.astro';
 import Ruler from '@/features/home/components/Ruler.astro';
 import Questions from '@/features/home/components/Questions.astro';
+import NewGames from '@/features/home/components/NewGames.astro';
 import TimedNews from '@/features/home/components/TimedNews.astro';
 import GenreIndex from '@/features/home/components/GenreIndex.astro';
 import home from '@/features/home/components/home.module.css';
@@ -56,6 +57,7 @@ const jsonLd = [
       />
       <Ruler ruler={data.ruler} />
       {data.example && <Questions example={data.example} day={data.day} />}
+      <NewGames games={data.newGames} />
       <TimedNews news={data.news} />
       <GenreIndex genres={data.genres} />
     </div>

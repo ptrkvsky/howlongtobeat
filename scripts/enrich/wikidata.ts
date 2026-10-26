@@ -16,15 +16,20 @@ interface SparqlResponse {
   results: { bindings: Record<string, { value: string } | undefined>[] };
 }
 
-async function sparql(query: string) {
-  const { results } = await fetchJson<SparqlResponse>(ENDPOINT, {
-    method: `POST`,
-    headers: {
-      Accept: `application/sparql-results+json`,
-      'Content-Type': `application/x-www-form-urlencoded`,
+async function sparql(query: string, timeoutMs?: number) {
+  const { results } = await fetchJson<SparqlResponse>(
+    ENDPOINT,
+    {
+      method: `POST`,
+      headers: {
+        Accept: `application/sparql-results+json`,
+        'Content-Type': `application/x-www-form-urlencoded`,
+      },
+      body: new URLSearchParams({ query }),
     },
-    body: new URLSearchParams({ query }),
-  });
+    undefined,
+    timeoutMs,
+  );
   return results.bindings;
 }
 
@@ -80,15 +85,19 @@ export interface WikidataHltbItem {
   igdb: string | null;
 }
 
-// Every item with a HowLongToBeat id, in one query (~50,000 rows, ~10 s)
+// Every item with a HowLongToBeat id, in one query (~50,000 rows, ~40 s:
+// above the default timeout, below the 60 s limit of the query service)
 export async function getAllHltbItems() {
-  const rows = await sparql(`SELECT ?item ?hltb ?sitelinks ?label
+  const rows = await sparql(
+    `SELECT ?item ?hltb ?sitelinks ?label
     (SAMPLE(?steam) AS ?steamId) (SAMPLE(?igdb) AS ?igdbId) WHERE {
       ?item wdt:P2816 ?hltb ; wikibase:sitelinks ?sitelinks .
       OPTIONAL { ?item wdt:P1733 ?steam }
       OPTIONAL { ?item wdt:P5794 ?igdb }
       OPTIONAL { ?item rdfs:label ?label FILTER(LANG(?label) = "en") }
-    } GROUP BY ?item ?hltb ?sitelinks ?label`);
+    } GROUP BY ?item ?hltb ?sitelinks ?label`,
+    120_000,
+  );
   const byHltb = new Map<number, WikidataHltbItem>();
   for (const row of rows) {
     const hltb = Number(row.hltb!.value);

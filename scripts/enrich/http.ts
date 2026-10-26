@@ -43,6 +43,7 @@ async function request<T>(
   url: string,
   init: RequestInit,
   retries: number,
+  timeoutMs: number,
   parse: (response: Response) => Promise<T>,
 ): Promise<T> {
   const { host } = new URL(url);
@@ -53,7 +54,7 @@ async function request<T>(
       const response = await fetch(url, {
         ...init,
         headers: { 'User-Agent': USER_AGENT, ...init.headers },
-        signal: AbortSignal.timeout(20_000),
+        signal: AbortSignal.timeout(timeoutMs),
       });
       if (response.ok) return (await parse(response)) as T;
       const body = await response.text();
@@ -74,16 +75,18 @@ export async function fetchJson<T>(
   url: string,
   init: RequestInit = {},
   retries = 3,
+  timeoutMs = 20_000,
 ): Promise<T> {
-  return request(url, init, retries, (response) => response.json());
+  return request(url, init, retries, timeoutMs, (response) => response.json());
 }
 
 export async function fetchText(
   url: string,
   init: RequestInit = {},
   retries = 3,
+  timeoutMs = 20_000,
 ): Promise<string> {
-  return request(url, init, retries, (response) => response.text());
+  return request(url, init, retries, timeoutMs, (response) => response.text());
 }
 
 export const errorMessage = (error: unknown) =>

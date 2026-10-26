@@ -8,6 +8,9 @@
  * (--imported: only the games added by scripts/import-games.ts)
  * Re-translate the games of a previous file from their original source:
  *   pnpm tsx scripts/translate-games.ts --retranslate <file>
+ * Rewrite in French, from the description (any format) and the IGDB summary,
+ * the imported games the translation cannot handle:
+ *   pnpm tsx scripts/translate-games.ts --rewrite [--model gpt-6.1-sol]
  * Clean the endings of published descriptions (".." / "," / cut sentences):
  *   pnpm tsx scripts/translate-games.ts --polish [--limit 20]
  * Write a reviewed file to the database (entries with issues are skipped):
@@ -32,7 +35,7 @@ import { parseArgs } from 'node:util';
 import { and, desc, eq, inArray, ne, or, sql } from 'drizzle-orm';
 import OpenAI from 'openai';
 import { closeDb, getDb } from '../src/db/client';
-import { game } from '../src/db/schema';
+import { game, igdbInfo } from '../src/db/schema';
 import { escapeMarkdown, plainParagraph } from './lib/markdown';
 
 for (const file of [`.env.local`, `.env`]) {
@@ -49,6 +52,8 @@ const { values: args } = parseArgs({
     write: { type: `string` },
     retranslate: { type: `string` },
     polish: { type: `boolean`, default: false },
+    rewrite: { type: `boolean`, default: false },
+    model: { type: `string` },
     imported: { type: `boolean`, default: false },
   },
 });
@@ -58,10 +63,12 @@ const OUTPUT_DIR = join(process.cwd(), `.translations`);
 // USD per 1M tokens (input, output), standard tier
 const PRICES: Record<string, [number, number]> = {
   'gpt-6-luna': [0.1, 0.5],
+  'gpt-6.1-sol': [2, 10],
+  'gpt-6-astra': [10, 50],
   'gpt-4.1-nano': [0.1, 0.4],
 };
 
-type Mode = `translate` | `polish`;
+type Mode = `translate` | `polish` | `rewrite`;
 
 interface Job {
   // game.id, or the Sanity document id in files made before the migration
@@ -70,6 +77,8 @@ interface Job {
   source: string;
   // Text when the job was created: --write skips the game if it changed
   previous?: string;
+  // IGDB summary, given to the model as a second source (rewrite)
+  igdb?: string;
   mode: Mode;
 }
 
@@ -95,6 +104,12 @@ const PROMPTS: Record<Mode, string> = {
 - Traduction fidèle et naturelle, sans rien ajouter ni retirer.
 - Garde tels quels les noms de jeux, de personnages, de studios et de lieux.
 - Si le texte est déjà en français, renvoie-le en corrigeant seulement les fautes évidentes.
+${COMMON_RULES}`,
+  rewrite: `Tu rédiges en français (France) la description d'un jeu vidéo, pour un site qui indique la durée de vie des jeux.
+- Appuie-toi uniquement sur le texte source et, s'il est fourni, sur le résumé IGDB : n'ajoute aucun fait absent de ces textes (date, plateforme, note, durée, récompense).
+- Un seul paragraphe de 2 à 4 phrases, en texte brut : ni titre, ni liste, ni mise en forme.
+- Ton neutre et informatif, sans formule publicitaire ni spoiler.
+- Garde tels quels les noms de jeux, de personnages, de studios et de lieux.
 ${COMMON_RULES}`,
   polish: `Tu corriges la fin de descriptions de jeux vidéo déjà écrites en français.
 - Ne modifie que la fin du texte : tout le reste doit rester strictement identique, mot pour mot.
@@ -137,6 +152,9 @@ function validate(job: Job, text: string): string[] {
   if (!ENDS_WELL.test(text)) issues.push(`bad-ending`);
   if (/\.\.$|,$/.test(text)) issues.push(`bad-ending`);
   if (text.includes(`�`)) issues.push(`replacement-char`);
+  if (job.mode === `rewrite` && (text.length < 120 || text.length > 900)) {
+    issues.push(`length:${text.length}`);
+  }
   if (job.mode === `translate` && (ratio < 0.3 || ratio > 2)) {
     issues.push(`length-ratio:${ratio.toFixed(2)}`);
   }
@@ -145,6 +163,7 @@ function validate(job: Job, text: string): string[] {
   }
   const name = job.name.toLowerCase();
   if (
+    job.mode !== `rewrite` &&
     job.source.toLowerCase().includes(name) &&
     !text.toLowerCase().includes(name)
   ) {
@@ -200,7 +219,11 @@ async function callModel(openai: OpenAI, model: string, jobs: Job[]) {
       {
         role: `user`,
         content: JSON.stringify(
-          jobs.map((job) => ({ id: job._id, text: job.source })),
+          jobs.map((job) => ({
+            id: job._id,
+            text: job.source,
+            ...(job.igdb && { igdb: job.igdb }),
+          })),
         ),
       },
     ],
@@ -256,6 +279,31 @@ async function loadJobs(): Promise<Job[]> {
     return jobs.slice(0, limit);
   }
 
+  if (args.rewrite) {
+    const rows = await getDb()
+      .db.select({ ...fields, igdb: igdbInfo.summaryEn })
+      .from(game)
+      .leftJoin(igdbInfo, eq(igdbInfo.gameId, game.id))
+      .where(
+        and(
+          eq(game.source, `import`),
+          eq(game.isPublished, false),
+          eq(game.isTranslated, false),
+          ne(game.descriptionMd, ``),
+        ),
+      )
+      .orderBy(desc(game.rating))
+      .limit(limit);
+    return rows.map((row) => ({
+      _id: String(row.id),
+      name: row.name,
+      source: row.descriptionMd,
+      previous: row.descriptionMd,
+      igdb: row.igdb || undefined,
+      mode: `rewrite` as const,
+    }));
+  }
+
   const games = await getDb()
     .db.select(fields)
     .from(game)
@@ -285,9 +333,9 @@ async function loadJobs(): Promise<Job[]> {
 }
 
 async function run() {
-  const model = process.env.OPENAI_MODEL;
+  const model = args.model || process.env.OPENAI_MODEL;
   if (!process.env.OPENAI_API_KEY || !model) {
-    throw new Error(`OPENAI_API_KEY and OPENAI_MODEL must be set`);
+    throw new Error(`OPENAI_API_KEY and OPENAI_MODEL (or --model) must be set`);
   }
   const price = PRICES[model];
   if (!price) console.warn(`⚠ no price known for ${model}: no budget check`);
@@ -301,7 +349,7 @@ async function run() {
     args.out ||
     join(
       OUTPUT_DIR,
-      `${new Date().toISOString().replace(/[:.]/g, `-`)}-${args.polish ? `polish` : `translate`}-${model}.jsonl`,
+      `${new Date().toISOString().replace(/[:.]/g, `-`)}-${args.polish ? `polish` : args.rewrite ? `rewrite` : `translate`}-${model}.jsonl`,
     );
   const done = existsSync(file) ? readEntries(file) : new Map<string, Entry>();
 
@@ -426,7 +474,12 @@ async function write(file: string) {
     await db.transaction(async (tx) => {
       for (const entry of chunk) {
         const row = byId.get(entry._id);
-        const current = row && plainParagraph(row.descriptionMd);
+        // A rewrite replaces any description, not only a plain paragraph
+        const current =
+          row &&
+          (entry.mode === `rewrite`
+            ? row.descriptionMd
+            : plainParagraph(row.descriptionMd));
         if (!row || current === undefined) {
           console.warn(`⚠ skipped ${entry.name}: unexpected description`);
           continue;

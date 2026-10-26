@@ -20,7 +20,14 @@ pnpm tsx scripts/import-games.ts
 log "Enriching the imported games"
 pnpm tsx scripts/sync.ts ids --unpublished
 pnpm tsx scripts/sync.ts igdb --unpublished
-pnpm tsx scripts/sync.ts steam --unpublished
+# Steam is a nice to have: a failure or a long throttling must not block the
+# publication, the games left are fetched by the next run
+STEAM_TIMEOUT="${STEAM_TIMEOUT:-30m}"
+steam() {
+  timeout "$STEAM_TIMEOUT" pnpm tsx scripts/sync.ts steam "$@" ||
+    log "Steam enrichment incomplete (exit $?), continuing"
+}
+steam --unpublished
 
 # Prices change every week: refreshed for the published games too
 log "Refreshing the prices"

@@ -365,6 +365,8 @@ const isSafeCompletion = (
     completion.percent <= 99,
   );
 
+const MAX_STEAM_FAILURES = 10;
+
 async function syncSteam() {
   if (!process.env.STEAM_API_KEY) {
     console.warn(
@@ -401,8 +403,11 @@ async function syncSteam() {
 
   let done = 0;
   let next = 0;
+  // Steam answers with its home page once it throttles the IP: stop instead
+  // of hammering it, the games left are fetched by the next run
+  let failures = 0;
   const worker = async () => {
-    while (next < games.length) {
+    while (next < games.length && failures < MAX_STEAM_FAILURES) {
       const row = games[next++];
       const appId = row.appId!;
       const [reviews, achievements] = await Promise.allSettled([
@@ -416,8 +421,10 @@ async function syncSteam() {
             : (achievements as PromiseRejectedResult).reason;
         // Not written: retried by the next run
         console.warn(`⚠ ${row.name}: ${errorMessage(reason)}`);
+        failures++;
         continue;
       }
+      failures = 0;
       const review = reviews.value;
       const ach = achievements.value;
       const completion = ach?.completion
@@ -477,6 +484,11 @@ async function syncSteam() {
   };
   // Reviews (store) and achievements (api) are on two throttled hosts
   await Promise.all([worker(), worker()]);
+  if (failures >= MAX_STEAM_FAILURES) {
+    console.warn(
+      `⚠ steam: stopped after ${failures} failures in a row, ${games.length - done} games left for the next run`,
+    );
+  }
 }
 
 // ── prices ─────────────────────────────────────────────────────────────────

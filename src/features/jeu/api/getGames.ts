@@ -11,7 +11,7 @@ import {
 } from '@/db/schema';
 import type { Game, GameSummary } from '@/types/Game';
 import { steamReviewLabel } from '@/utils/format';
-import { imageIdFromUrl } from '@/utils/igdbImage';
+import { imageIdFromUrl, sharedImageIds } from '@/utils/igdbImage';
 
 // Data is only shown from confirmed ids (scripts/sync.ts). IGDB data needs no
 // Steam id: console games have none
@@ -93,6 +93,12 @@ async function fetchGames(): Promise<Game[]> {
     db.select().from(gameOverride),
   ]);
 
+  const sharedCovers = sharedImageIds(rows.map(({ game: row }) => row.cover));
+  const legacyCover = (url: string | null) => {
+    const imageId = imageIdFromUrl(url);
+    return imageId && !sharedCovers.has(imageId) ? imageId : null;
+  };
+
   const games = rows.map(
     ({ game: row, ids, igdb, steam, hltb, price }): Game => {
       const igdbTrusted = Boolean(ids && IGDB_TRUSTED.has(ids.status));
@@ -133,7 +139,7 @@ async function fetchGames(): Promise<Game[]> {
       return {
         ...row,
         // The confirmed IGDB cover first: the imported ones may be another game's
-        cover: (igdbTrusted && igdb?.coverImageId) || imageIdFromUrl(row.cover),
+        cover: (igdbTrusted && igdb?.coverImageId) || legacyCover(row.cover),
         publishedAt: row.publishedAt?.toISOString() ?? null,
         identity,
         reviews,

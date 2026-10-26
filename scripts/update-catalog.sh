@@ -20,6 +20,8 @@ pnpm tsx scripts/import-games.ts
 log "Enriching the imported games"
 pnpm tsx scripts/sync.ts ids --unpublished
 pnpm tsx scripts/sync.ts igdb --unpublished
+# Published games too, past --max-age: their covers would never be fetched
+pnpm tsx scripts/sync.ts igdb
 # Steam is a nice to have: a failure or a long throttling must not block the
 # publication, the games left are fetched by the next run
 STEAM_TIMEOUT="${STEAM_TIMEOUT:-30m}"

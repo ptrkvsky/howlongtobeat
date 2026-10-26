@@ -24,3 +24,17 @@ export function imageIdFromUrl(url: string | null) {
     )?.[1] ?? null
   );
 }
+
+// Image ids found on several games: the 2021 scraping gave 007 Legends' cover
+// (co3gzq) to thousands of games, a placeholder rather than their cover
+export function sharedImageIds(urls: (string | null)[]) {
+  const seen = new Set<string>();
+  const shared = new Set<string>();
+  for (const url of urls) {
+    const imageId = imageIdFromUrl(url);
+    if (!imageId) continue;
+    if (seen.has(imageId)) shared.add(imageId);
+    seen.add(imageId);
+  }
+  return shared;
+}

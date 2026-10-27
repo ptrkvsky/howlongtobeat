@@ -136,16 +136,18 @@
   padding: 0;
 }
 
-/* Reading progress, under the header's border. Pages without data-progress
-   never render the element, so --progress is only set when it exists
-   (header.ts) */
+/* Reading progress. Fixed to the viewport, not the header (a sibling, not a
+   child of it): it stays visible once [data-state='hidden'] moves the header
+   away. Pages without `progress` never render the element, so --progress is
+   only set when it exists (header.ts) */
 .progress {
-  position: absolute;
-  bottom: -1px;
+  position: fixed;
+  top: 0;
   left: 0;
+  z-index: 30;
   width: 100%;
   height: 2px;
-  background: var(--pink);
+  background: var(--color-primary-500);
   transform: scaleX(var(--progress, 0));
   transform-origin: left;
 }

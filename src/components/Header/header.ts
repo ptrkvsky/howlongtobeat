@@ -1,10 +1,11 @@
 // Smart sticky header: compact and hidden states on scroll (CSS reads
 // [data-state] on the header, header.module.css). Also drives the reading
-// progress bar when the page asks for one (data-progress on the header),
-// in the same rAF tick to avoid layout thrashing. CSS keeps a header that
-// has the focus visible regardless of [data-state]
+// progress bar when the page has one (a sibling of the header, so it keeps
+// showing once the header itself has hidden), in the same rAF tick to avoid
+// layout thrashing. CSS keeps a header that has the focus visible regardless
+// of [data-state]
 const header = document.querySelector<HTMLElement>(`[data-header]`)!;
-const hasProgress = header.hasAttribute(`data-progress`);
+const progressBar = document.querySelector<HTMLElement>(`[data-progress-bar]`);
 
 const TOP_THRESHOLD = 80;
 const HIDE_THRESHOLD = 8;
@@ -25,9 +26,12 @@ function update() {
     lastY = y;
   }
 
-  if (hasProgress) {
+  if (progressBar) {
     const max = document.documentElement.scrollHeight - innerHeight;
-    header.style.setProperty(`--progress`, String(max > 0 ? scrollY / max : 0));
+    progressBar.style.setProperty(
+      `--progress`,
+      String(max > 0 ? scrollY / max : 0),
+    );
   }
 }
 
@@ -42,4 +46,4 @@ addEventListener(
   { passive: true },
 );
 
-if (hasProgress) update();
+if (progressBar) update();

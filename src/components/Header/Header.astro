@@ -4,19 +4,20 @@ import Flag from '@/features/home/components/Flag.astro';
 import home from '@/features/home/components/home.module.css';
 import styles from './header.module.css';
 
-// Header of every page. The search is the field of the hero: on the home
-// the button gives it the focus (scripts/search.ts), elsewhere it is a link
-// to the home
+interface Props {
+  // A thin reading-progress bar under the header, for long pages (articles,
+  // game sheets). Driven by header.ts
+  progress?: boolean;
+}
+
+const { progress = false } = Astro.props;
+
+// Header of every page, smart sticky (header.ts: compact then hidden on
+// scroll, back on scroll up). The search is the field of the hero on the
+// home (scripts/search.ts gives it the focus); elsewhere the same button
+// opens a dialog with the same combobox (features/search/headerSearch.ts)
 const { pathname } = Astro.url;
 const isHome = pathname === urls.home;
-const SearchTag = isHome ? `button` : `a`;
-const searchProps = isHome
-  ? {
-      type: `button` as const,
-      'aria-keyshortcuts': `/`,
-      'data-search-open': true,
-    }
-  : { href: `${urls.home}#calcul` };
 
 // `match` decides which link is current: the genre pages belong to "Genres"
 const links = [
@@ -33,7 +34,11 @@ const links = [
 ];
 ---
 
-<header class:list={[home.page, home.paper, styles.header]}>
+<header
+  class:list={[home.page, home.paper, styles.header]}
+  data-header
+  data-progress={progress || undefined}
+>
   <div class:list={[home.frame, styles.inner]}>
     <a href={urls.home} class={styles.logo} aria-label="Game Over, accueil">
       <Flag class={styles.flag} />
@@ -54,10 +59,12 @@ const links = [
         ))}
       </ul>
     </nav>
-    <SearchTag
+    <button
+      type="button"
       class={styles.search}
       aria-label="Rechercher un jeu"
-      {...searchProps}
+      aria-keyshortcuts="/"
+      data-search-open
     >
       <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
         <circle
@@ -75,11 +82,73 @@ const links = [
         ></path>
       </svg>
       <span class={styles.searchLabel}>Rechercher un jeu</span>
-      {isHome && (
-        <kbd class={styles.key} aria-hidden="true">
-          /
-        </kbd>
-      )}
-    </SearchTag>
+      <kbd class={styles.key} aria-hidden="true">
+        /
+      </kbd>
+    </button>
   </div>
+  {progress && <div class={styles.progress} aria-hidden="true"></div>}
+  {!isHome && (
+    <dialog
+      class={styles.dialog}
+      data-search-dialog
+      aria-label="Rechercher un jeu"
+    >
+      <div class={styles.dialogBox}>
+        <div class={styles.dialogField}>
+          <label for="header-game" class={home.srOnly}>
+            Rechercher un jeu
+          </label>
+          <input
+            id="header-game"
+            class={styles.dialogInput}
+            type="text"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="false"
+            aria-controls="header-results"
+            aria-describedby="header-search-hint"
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+            placeholder="Nom d'un jeu…"
+            data-search-input
+          />
+          <button
+            type="button"
+            class={styles.dialogClose}
+            data-search-close
+            aria-label="Fermer la recherche"
+          >
+            <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+              <path
+                d="M3 3 13 13 M13 3 3 13"
+                stroke="currentColor"
+                stroke-width="1.5"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        <ul
+          id="header-results"
+          class={styles.dialogResults}
+          role="listbox"
+          aria-label="Jeux trouvés"
+          hidden
+          data-search-results
+        ></ul>
+        <p id="header-search-hint" class={home.srOnly}>
+          Tapez le nom d'un jeu, puis choisissez-le dans la liste avec les
+          flèches et Entrée.
+        </p>
+      </div>
+    </dialog>
+  )}
 </header>
+
+<script>
+  import './header';
+</script>
+<script>
+  import '@/features/search/headerSearch';
+</script>

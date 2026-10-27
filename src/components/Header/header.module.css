@@ -1,9 +1,42 @@
-/* 80px: a multiple of the graph paper, which goes on in the hero */
+/* 80px: a multiple of the graph paper, which goes on in the hero. Sticky so
+   it can hide and reappear compact on scroll (header.ts, [data-state]) */
 .header {
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 20;
   height: 80px;
   border-bottom: 1px solid var(--faint);
+  background-color: transparent;
+  transition:
+    transform 0.25s,
+    height 0.2s,
+    background-color 0.2s;
+}
+
+/* Scrolled past the hero and going up: shrink, and read over the content
+   below instead of continuing its graph paper */
+.header[data-state='compact'] {
+  height: 56px;
+  border-bottom-color: var(--line);
+  background-color: rgb(from var(--color-background) r g b / 0.85);
+  backdrop-filter: blur(8px);
+}
+
+/* Scrolling down: out of the way entirely */
+.header[data-state='hidden'] {
+  transform: translateY(-100%);
+}
+
+/* A focus never stays hidden, whichever way it got there (Tab, or the
+   search dialog it contains) */
+.header[data-state='hidden']:focus-within {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header {
+    transition: none;
+  }
 }
 
 .inner {
@@ -92,9 +125,139 @@
   font-size: 0.75rem;
 }
 
+.header[data-state='compact'] .searchLabel,
+.header[data-state='compact'] .key {
+  display: none;
+}
+
+.header[data-state='compact'] .search {
+  justify-content: center;
+  width: 44px;
+  padding: 0;
+}
+
+/* Reading progress, under the header's border. Pages without data-progress
+   never render the element, so --progress is only set when it exists
+   (header.ts) */
+.progress {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--pink);
+  transform: scaleX(var(--progress, 0));
+  transform-origin: left;
+}
+
+/* Search dialog, opened from the header button on every page but the home
+   (headerSearch.ts). Centered high, not mid-screen: it reads as an extension
+   of the header rather than a modal interrupting the page */
+.dialog {
+  position: fixed;
+  top: 12vh;
+  left: 50%;
+  margin: 0;
+  transform: translateX(-50%);
+  width: min(32rem, calc(100vw - 2 * var(--gutter)));
+  max-width: none;
+  border: none;
+  padding: 0;
+  background: transparent;
+  color: var(--cream);
+}
+
+.dialog::backdrop {
+  background: rgb(1 1 3 / 0.7);
+}
+
+.dialogBox {
+  border: 1px solid var(--line);
+  background: var(--color-background);
+  box-shadow: var(--box-shadow);
+}
+
+.dialogField {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--faint);
+}
+
+.dialogInput {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  color: var(--cream);
+  font: inherit;
+  font-size: var(--font-size-md);
+}
+
+.dialogInput:focus-visible {
+  outline: none;
+}
+
+.dialogClose {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.dialogClose:hover {
+  color: var(--cream);
+}
+
+.dialogResults {
+  max-height: min(24rem, 50vh);
+  overflow-y: auto;
+  margin: 0;
+  padding: var(--space-2) 0;
+  font-family: var(--font-body);
+  font-size: var(--font-size-md);
+  line-height: 1.3;
+  list-style: none;
+}
+
+.dialogResults li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  cursor: pointer;
+}
+
+.dialogResults li[aria-selected='true'] {
+  background: var(--pink);
+  color: var(--color-background);
+}
+
+.dialogResults li span:last-child {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.dialogResults li[data-empty] {
+  color: var(--muted);
+  cursor: default;
+}
+
 @media screen and (max-width: 766px) {
   .header {
     height: 64px;
+  }
+
+  .header[data-state='compact'] {
+    height: 48px;
   }
 
   .inner {
@@ -119,6 +282,11 @@
     justify-content: center;
     width: 44px;
     padding: 0;
+  }
+
+  .dialog {
+    top: 4vh;
+    width: calc(100vw - 2rem);
   }
 }
 

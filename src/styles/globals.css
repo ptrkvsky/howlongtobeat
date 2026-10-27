@@ -155,6 +155,11 @@ table {
   margin: 0;
 }
 
+/* The header is sticky: keep anchors (#calcul, #rythme…) from landing under it */
+html {
+  scroll-padding-top: var(--header-height);
+}
+
 :root {
   font-size: 1rem;
   font-size: clamp(

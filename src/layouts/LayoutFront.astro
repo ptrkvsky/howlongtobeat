@@ -5,15 +5,21 @@ import styles from './layoutFront.module.css';
 
 interface Props {
   isCentered?: boolean;
+  // A reading progress bar in the header, for long pages (articles, game
+  // sheets)
+  progress?: boolean;
 }
 
-const { isCentered } = Astro.props;
+const { isCentered, progress } = Astro.props;
 ---
 
 <div class:list={[styles.layout, isCentered && `container`]}>
-  <main>
+  <a href="#contenu" class={styles.skip}>
+    Aller au contenu
+  </a>
+  <Header progress={progress} />
+  <main id="contenu" tabindex="-1">
     <slot />
   </main>
-  <Header />
   <Footer />
 </div>

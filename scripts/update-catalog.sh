@@ -8,6 +8,7 @@
 # Env (.env.local): DATABASE_URL, IGDB_CLIENT_ID + IGDB_CLIENT_SECRET,
 # STEAM_API_KEY, ITAD_API_KEY, OPENAI_API_KEY + OPENAI_MODEL
 #   TRANSLATE_MAX_USD  OpenAI budget of a run (default 5)
+#   EMBED_MAX_USD      embeddings budget of a run (default 1)
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -50,3 +51,16 @@ fi
 
 log "Publishing the ready games"
 pnpm tsx scripts/import-games.ts --publish
+
+# "D'autres jeux à terminer" (docs/recommandations.md): tags of the new games,
+# embeddings of the changed profiles only (a few cents), then every list.
+# Not blocking: the build keeps the previous lists, or the fallback
+log "Computing the recommendations"
+timeout "$STEAM_TIMEOUT" pnpm tsx scripts/sync.ts tags ||
+  log "Steam tags incomplete (exit $?), continuing"
+if pnpm tsx scripts/embed-games.ts --max-usd "${EMBED_MAX_USD:-1}"; then
+  pnpm tsx scripts/recommend.ts ||
+    log "Recommendations failed (exit $?), the previous ones are kept"
+else
+  log "Embeddings failed (exit $?), recommendations not recomputed"
+fi

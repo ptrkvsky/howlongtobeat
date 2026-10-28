@@ -1,0 +1,2957 @@
+{
+  "rimworld": {
+    "against-the-storm": {
+      "grade": 2,
+      "name": "Against the Storm",
+      "by": "claude-draft"
+    },
+    "aven-colony": {
+      "grade": 2,
+      "name": "Aven Colony",
+      "by": "claude-draft"
+    },
+    "banished": {
+      "grade": 2,
+      "name": "Banished",
+      "by": "claude-draft"
+    },
+    "bloodstained-ritual-of-the-night": {
+      "grade": 0,
+      "name": "Bloodstained: Ritual of the Night",
+      "by": "claude-draft"
+    },
+    "chroma-squad": {
+      "grade": 0,
+      "name": "Chroma Squad",
+      "by": "claude-draft"
+    },
+    "crosscode": {
+      "grade": 0,
+      "name": "CrossCode",
+      "by": "claude-draft"
+    },
+    "dark-souls-ii-scholar-of-the-first-sin": {
+      "grade": 0,
+      "name": "Dark Souls II: Scholar of the First Sin",
+      "by": "claude-draft"
+    },
+    "deadbolt": {
+      "grade": 0,
+      "name": "Deadbolt",
+      "by": "claude-draft"
+    },
+    "factorio": {
+      "grade": 1,
+      "name": "Factorio",
+      "by": "claude-draft"
+    },
+    "ixion": {
+      "grade": 2,
+      "name": "Ixion",
+      "by": "claude-draft"
+    },
+    "owlboy": {
+      "grade": 0,
+      "name": "Owlboy",
+      "by": "claude-draft"
+    },
+    "oxygen-not-included": {
+      "grade": 3,
+      "name": "Oxygen Not Included",
+      "by": "claude-draft"
+    },
+    "per-aspera": {
+      "grade": 1,
+      "name": "Per Aspera",
+      "by": "claude-draft"
+    },
+    "planetbase": {
+      "grade": 2,
+      "name": "Planetbase",
+      "by": "claude-draft"
+    },
+    "portal-stories-mel": {
+      "grade": 0,
+      "name": "Portal Stories: Mel",
+      "by": "claude-draft"
+    },
+    "salt-sanctuary": {
+      "grade": 0,
+      "name": "Salt & Sanctuary",
+      "by": "claude-draft"
+    },
+    "spacebase-df-9": {
+      "grade": 3,
+      "name": "Spacebase DF-9",
+      "by": "claude-draft"
+    },
+    "startopia": {
+      "grade": 2,
+      "name": "Startopia",
+      "by": "claude-draft"
+    },
+    "stranded-alien-dawn": {
+      "grade": 3,
+      "name": "Stranded: Alien Dawn",
+      "by": "claude-draft"
+    },
+    "surviving-mars": {
+      "grade": 2,
+      "name": "Surviving Mars",
+      "by": "claude-draft"
+    },
+    "surviving-the-aftermath": {
+      "grade": 2,
+      "name": "Surviving The Aftermath",
+      "by": "claude-draft"
+    },
+    "they-are-billions": {
+      "grade": 1,
+      "name": "They Are Billions",
+      "by": "claude-draft"
+    },
+    "va-11-hall-a-cyberpunk-bartender-action": {
+      "grade": 0,
+      "name": "VA-11 Hall-A: Cyberpunk Bartender Action",
+      "by": "claude-draft"
+    },
+    "xenoblade-chronicles-3d": {
+      "grade": 0,
+      "name": "Xenoblade Chronicles 3D",
+      "by": "claude-draft"
+    }
+  },
+  "factorio": {
+    "against-the-storm": {
+      "grade": 1,
+      "name": "Against the Storm",
+      "by": "claude-draft"
+    },
+    "age-of-empires-iii": {
+      "grade": 0,
+      "name": "Age of Empires III",
+      "by": "claude-draft"
+    },
+    "anno-2205": {
+      "grade": 2,
+      "name": "Anno 2205",
+      "by": "claude-draft"
+    },
+    "chroma-squad": {
+      "grade": 0,
+      "name": "Chroma Squad",
+      "by": "claude-draft"
+    },
+    "cult-of-the-lamb": {
+      "grade": 0,
+      "name": "Cult of the Lamb",
+      "by": "claude-draft"
+    },
+    "door-kickers": {
+      "grade": 0,
+      "name": "Door Kickers",
+      "by": "claude-draft"
+    },
+    "dyson-sphere-program": {
+      "grade": 3,
+      "name": "Dyson Sphere Program",
+      "by": "claude-draft"
+    },
+    "endless-space-2": {
+      "grade": 0,
+      "name": "Endless Space 2",
+      "by": "claude-draft"
+    },
+    "ftl-faster-than-light": {
+      "grade": 0,
+      "name": "FTL: Faster Than Light",
+      "by": "claude-draft"
+    },
+    "i-was-a-teenage-exocolonist": {
+      "grade": 0,
+      "name": "I Was a Teenage Exocolonist",
+      "by": "claude-draft"
+    },
+    "ixion": {
+      "grade": 1,
+      "name": "Ixion",
+      "by": "claude-draft"
+    },
+    "library-of-ruina": {
+      "grade": 0,
+      "name": "Library Of Ruina",
+      "by": "claude-draft"
+    },
+    "mewgenics": {
+      "grade": 0,
+      "name": "Mewgenics",
+      "by": "claude-draft"
+    },
+    "nova-lands": {
+      "grade": 2,
+      "name": "Nova Lands",
+      "by": "claude-draft"
+    },
+    "papas-freezeria-deluxe": {
+      "grade": 0,
+      "name": "Papa's Freezeria Deluxe",
+      "by": "claude-draft"
+    },
+    "per-aspera": {
+      "grade": 1,
+      "name": "Per Aspera",
+      "by": "claude-draft"
+    },
+    "planetbase": {
+      "grade": 1,
+      "name": "Planetbase",
+      "by": "claude-draft"
+    },
+    "rimworld": {
+      "grade": 1,
+      "name": "RimWorld",
+      "by": "claude-draft"
+    },
+    "rise-of-industry": {
+      "grade": 2,
+      "name": "Rise of Industry",
+      "by": "claude-draft"
+    },
+    "satisfactory": {
+      "grade": 3,
+      "name": "Satisfactory",
+      "by": "claude-draft"
+    },
+    "shapez-2": {
+      "grade": 3,
+      "name": "shapez 2",
+      "by": "claude-draft"
+    },
+    "shapezio": {
+      "grade": 3,
+      "name": "shapez.io",
+      "by": "claude-draft"
+    },
+    "sins-of-a-solar-empire-trinity": {
+      "grade": 0,
+      "name": "Sins of a Solar Empire: Trinity",
+      "by": "claude-draft"
+    },
+    "slay-the-spire": {
+      "grade": 0,
+      "name": "Slay the Spire",
+      "by": "claude-draft"
+    },
+    "startopia": {
+      "grade": 1,
+      "name": "Startopia",
+      "by": "claude-draft"
+    },
+    "steamworld-build": {
+      "grade": 1,
+      "name": "SteamWorld Build",
+      "by": "claude-draft"
+    },
+    "supreme-commander-2": {
+      "grade": 0,
+      "name": "Supreme Commander 2",
+      "by": "claude-draft"
+    },
+    "the-planet-crafter": {
+      "grade": 2,
+      "name": "The Planet Crafter",
+      "by": "claude-draft"
+    },
+    "the-riftbreaker": {
+      "grade": 2,
+      "name": "The Riftbreaker",
+      "by": "claude-draft"
+    },
+    "timberborn": {
+      "grade": 1,
+      "name": "Timberborn",
+      "by": "claude-draft"
+    }
+  },
+  "stardew-valley": {
+    "abiotic-factor": {
+      "grade": 0,
+      "name": "Abiotic Factor",
+      "by": "claude-draft"
+    },
+    "chroma-squad": {
+      "grade": 0,
+      "name": "Chroma Squad",
+      "by": "claude-draft"
+    },
+    "coral-island": {
+      "grade": 3,
+      "name": "Coral Island",
+      "by": "claude-draft"
+    },
+    "core-keeper": {
+      "grade": 2,
+      "name": "Core Keeper",
+      "by": "claude-draft"
+    },
+    "cult-of-the-lamb": {
+      "grade": 1,
+      "name": "Cult of the Lamb",
+      "by": "claude-draft"
+    },
+    "dave-the-diver": {
+      "grade": 1,
+      "name": "Dave The Diver",
+      "by": "claude-draft"
+    },
+    "dredge": {
+      "grade": 1,
+      "name": "Dredge",
+      "by": "claude-draft"
+    },
+    "fantasy-life-i-the-girl-who-steals-time": {
+      "grade": 2,
+      "name": "Fantasy Life i: The Girl Who Steals Time",
+      "by": "claude-draft"
+    },
+    "farm-together": {
+      "grade": 2,
+      "name": "Farm Together",
+      "by": "claude-draft"
+    },
+    "farming-simulator-19": {
+      "grade": 1,
+      "name": "Farming Simulator 19",
+      "by": "claude-draft"
+    },
+    "farming-simulator-2013": {
+      "grade": 1,
+      "name": "Farming Simulator 2013",
+      "by": "claude-draft"
+    },
+    "golf-story": {
+      "grade": 0,
+      "name": "Golf Story",
+      "by": "claude-draft"
+    },
+    "graveyard-keeper": {
+      "grade": 2,
+      "name": "Graveyard Keeper",
+      "by": "claude-draft"
+    },
+    "harvest-moon": {
+      "grade": 3,
+      "name": "Harvest Moon",
+      "by": "claude-draft"
+    },
+    "harvest-moon-friends-of-mineral-town": {
+      "grade": 3,
+      "name": "Harvest Moon: Friends of Mineral Town",
+      "by": "claude-draft"
+    },
+    "harvestella": {
+      "grade": 2,
+      "name": "Harvestella",
+      "by": "claude-draft"
+    },
+    "hollow-knight": {
+      "grade": 0,
+      "name": "Hollow Knight",
+      "by": "claude-draft"
+    },
+    "hollow-knight-silksong": {
+      "grade": 0,
+      "name": "Hollow Knight: Silksong",
+      "by": "claude-draft"
+    },
+    "huniepop": {
+      "grade": 0,
+      "name": "HuniePop",
+      "by": "claude-draft"
+    },
+    "i-was-a-teenage-exocolonist": {
+      "grade": 1,
+      "name": "I Was a Teenage Exocolonist",
+      "by": "claude-draft"
+    },
+    "library-of-ruina": {
+      "grade": 0,
+      "name": "Library Of Ruina",
+      "by": "claude-draft"
+    },
+    "littlewood": {
+      "grade": 2,
+      "name": "Littlewood",
+      "by": "claude-draft"
+    },
+    "lunas-fishing-garden": {
+      "grade": 1,
+      "name": "Luna's Fishing Garden",
+      "by": "claude-draft"
+    },
+    "mewgenics": {
+      "grade": 0,
+      "name": "Mewgenics",
+      "by": "claude-draft"
+    },
+    "my-time-at-portia": {
+      "grade": 3,
+      "name": "My Time At Portia",
+      "by": "claude-draft"
+    },
+    "my-time-at-sandrock": {
+      "grade": 3,
+      "name": "My Time at Sandrock",
+      "by": "claude-draft"
+    },
+    "plantera": {
+      "grade": 1,
+      "name": "Plantera",
+      "by": "claude-draft"
+    },
+    "rune-factory-a-fantasy-harvest-moon": {
+      "grade": 3,
+      "name": "Rune Factory: A Fantasy Harvest Moon",
+      "by": "claude-draft"
+    },
+    "rustys-retirement": {
+      "grade": 1,
+      "name": "Rusty's Retirement",
+      "by": "claude-draft"
+    },
+    "slay-the-spire": {
+      "grade": 0,
+      "name": "Slay the Spire",
+      "by": "claude-draft"
+    },
+    "story-of-seasons-pioneers-of-olive-town": {
+      "grade": 3,
+      "name": "Story of Seasons: Pioneers of Olive Town",
+      "by": "claude-draft"
+    },
+    "tunic": {
+      "grade": 0,
+      "name": "Tunic",
+      "by": "claude-draft"
+    }
+  },
+  "cities-skylines": {
+    "airborne-kingdom": {
+      "grade": 2,
+      "name": "Airborne Kingdom",
+      "by": "claude-draft"
+    },
+    "anno-1800": {
+      "grade": 2,
+      "name": "Anno 1800",
+      "by": "claude-draft"
+    },
+    "banished": {
+      "grade": 2,
+      "name": "Banished",
+      "by": "claude-draft"
+    },
+    "cities-in-motion": {
+      "grade": 1,
+      "name": "Cities in Motion",
+      "by": "claude-draft"
+    },
+    "cities-in-motion-2": {
+      "grade": 1,
+      "name": "Cities in Motion 2",
+      "by": "claude-draft"
+    },
+    "cities-skylines-ii": {
+      "grade": 3,
+      "name": "Cities: Skylines II",
+      "by": "claude-draft"
+    },
+    "cities-xl-platinum": {
+      "grade": 3,
+      "name": "Cities XL Platinum",
+      "by": "claude-draft"
+    },
+    "endzone-a-world-apart": {
+      "grade": 2,
+      "name": "Endzone - A World Apart",
+      "by": "claude-draft"
+    },
+    "game-dev-tycoon": {
+      "grade": 0,
+      "name": "Game Dev Tycoon",
+      "by": "claude-draft"
+    },
+    "harvest-moon": {
+      "grade": 0,
+      "name": "Harvest Moon",
+      "by": "claude-draft"
+    },
+    "ixion": {
+      "grade": 1,
+      "name": "Ixion",
+      "by": "claude-draft"
+    },
+    "nier": {
+      "grade": 0,
+      "name": "Nier",
+      "by": "claude-draft"
+    },
+    "papas-freezeria-deluxe": {
+      "grade": 0,
+      "name": "Papa's Freezeria Deluxe",
+      "by": "claude-draft"
+    },
+    "parkasaurus": {
+      "grade": 1,
+      "name": "Parkasaurus",
+      "by": "claude-draft"
+    },
+    "planet-coaster": {
+      "grade": 1,
+      "name": "Planet Coaster",
+      "by": "claude-draft"
+    },
+    "planet-zoo": {
+      "grade": 1,
+      "name": "Planet Zoo",
+      "by": "claude-draft"
+    },
+    "rise-of-industry": {
+      "grade": 1,
+      "name": "Rise of Industry",
+      "by": "claude-draft"
+    },
+    "sid-meiers-civilization-v": {
+      "grade": 1,
+      "name": "Sid Meier's Civilization V",
+      "by": "claude-draft"
+    },
+    "sid-meiers-civilization-vi": {
+      "grade": 1,
+      "name": "Sid Meier's Civilization VI",
+      "by": "claude-draft"
+    },
+    "simcity-2000": {
+      "grade": 3,
+      "name": "SimCity 2000",
+      "by": "claude-draft"
+    },
+    "simcity-4": {
+      "grade": 3,
+      "name": "SimCity 4",
+      "by": "claude-draft"
+    },
+    "steamworld-build": {
+      "grade": 2,
+      "name": "SteamWorld Build",
+      "by": "claude-draft"
+    },
+    "the-hundred-line-last-defense-academy": {
+      "grade": 0,
+      "name": "The Hundred Line: Last Defense Academy",
+      "by": "claude-draft"
+    },
+    "the-movies": {
+      "grade": 0,
+      "name": "The Movies",
+      "by": "claude-draft"
+    },
+    "timberborn": {
+      "grade": 2,
+      "name": "Timberborn",
+      "by": "claude-draft"
+    },
+    "total-war-shogun-2": {
+      "grade": 0,
+      "name": "Total War: Shogun 2",
+      "by": "claude-draft"
+    },
+    "transport-fever-2": {
+      "grade": 2,
+      "name": "Transport Fever 2",
+      "by": "claude-draft"
+    },
+    "two-point-campus": {
+      "grade": 1,
+      "name": "Two Point Campus",
+      "by": "claude-draft"
+    }
+  },
+  "hades": {
+    "ai-the-somnium-files": {
+      "grade": 0,
+      "name": "AI: The Somnium Files",
+      "by": "claude-draft"
+    },
+    "apotheon": {
+      "grade": 1,
+      "name": "Apotheon",
+      "by": "claude-draft"
+    },
+    "asterigos-curse-of-the-stars": {
+      "grade": 1,
+      "name": "Asterigos: Curse of the Stars",
+      "by": "claude-draft"
+    },
+    "astral-chain": {
+      "grade": 1,
+      "name": "Astral Chain",
+      "by": "claude-draft"
+    },
+    "black-myth-wukong": {
+      "grade": 1,
+      "name": "Black Myth: Wukong",
+      "by": "claude-draft"
+    },
+    "call-of-duty-modern-warfare-2019": {
+      "grade": 0,
+      "name": "Call of Duty: Modern Warfare (2019)",
+      "by": "claude-draft"
+    },
+    "crash-team-racing-nitro-fueled": {
+      "grade": 0,
+      "name": "Crash Team Racing Nitro-Fueled",
+      "by": "claude-draft"
+    },
+    "curse-of-the-dead-gods": {
+      "grade": 3,
+      "name": "Curse of the Dead Gods",
+      "by": "claude-draft"
+    },
+    "deaths-door-2021": {
+      "grade": 2,
+      "name": "Death's Door (2021)",
+      "by": "claude-draft"
+    },
+    "delver": {
+      "grade": 1,
+      "name": "Delver",
+      "by": "claude-draft"
+    },
+    "devil-may-cry-5": {
+      "grade": 1,
+      "name": "Devil May Cry 5",
+      "by": "claude-draft"
+    },
+    "dreamscaper": {
+      "grade": 3,
+      "name": "Dreamscaper",
+      "by": "claude-draft"
+    },
+    "dungeon-souls": {
+      "grade": 2,
+      "name": "Dungeon Souls",
+      "by": "claude-draft"
+    },
+    "god-of-war-iii": {
+      "grade": 1,
+      "name": "God of War III",
+      "by": "claude-draft"
+    },
+    "god-of-war-ragnarok": {
+      "grade": 1,
+      "name": "God of War: Ragnarök",
+      "by": "claude-draft"
+    },
+    "hades-ii": {
+      "grade": 3,
+      "name": "Hades II",
+      "by": "claude-draft"
+    },
+    "halls-of-torment": {
+      "grade": 1,
+      "name": "Halls of Torment",
+      "by": "claude-draft"
+    },
+    "hedon": {
+      "grade": 0,
+      "name": "Hedon",
+      "by": "claude-draft"
+    },
+    "heroes-of-hammerwatch": {
+      "grade": 2,
+      "name": "Heroes of Hammerwatch",
+      "by": "claude-draft"
+    },
+    "hypnospace-outlaw": {
+      "grade": 0,
+      "name": "Hypnospace Outlaw",
+      "by": "claude-draft"
+    },
+    "minecraft-dungeons": {
+      "grade": 1,
+      "name": "Minecraft Dungeons",
+      "by": "claude-draft"
+    },
+    "moonlighter": {
+      "grade": 2,
+      "name": "Moonlighter",
+      "by": "claude-draft"
+    },
+    "neon-abyss": {
+      "grade": 2,
+      "name": "Neon Abyss",
+      "by": "claude-draft"
+    },
+    "nobody-saves-the-world": {
+      "grade": 1,
+      "name": "Nobody Saves the World",
+      "by": "claude-draft"
+    },
+    "ravenswatch": {
+      "grade": 3,
+      "name": "Ravenswatch",
+      "by": "claude-draft"
+    },
+    "subnautica-below-zero": {
+      "grade": 0,
+      "name": "Subnautica: Below Zero",
+      "by": "claude-draft"
+    },
+    "super-mario-maker-2": {
+      "grade": 0,
+      "name": "Super Mario Maker 2",
+      "by": "claude-draft"
+    },
+    "the-song-of-saya": {
+      "grade": 0,
+      "name": "The Song of Saya",
+      "by": "claude-draft"
+    },
+    "titan-quest": {
+      "grade": 1,
+      "name": "Titan Quest",
+      "by": "claude-draft"
+    },
+    "torchlight": {
+      "grade": 1,
+      "name": "Torchlight",
+      "by": "claude-draft"
+    },
+    "tunche": {
+      "grade": 2,
+      "name": "Tunche",
+      "by": "claude-draft"
+    },
+    "witch-on-the-holy-night": {
+      "grade": 0,
+      "name": "Witch on the Holy Night",
+      "by": "claude-draft"
+    }
+  },
+  "hollow-knight": {
+    "aeterna-noctis": {
+      "grade": 3,
+      "name": "Aeterna Noctis",
+      "by": "claude-draft"
+    },
+    "afterimage": {
+      "grade": 3,
+      "name": "Afterimage",
+      "by": "claude-draft"
+    },
+    "aquaria": {
+      "grade": 2,
+      "name": "Aquaria",
+      "by": "claude-draft"
+    },
+    "blasphemous": {
+      "grade": 3,
+      "name": "Blasphemous",
+      "by": "claude-draft"
+    },
+    "blasphemous-ii": {
+      "grade": 3,
+      "name": "Blasphemous II",
+      "by": "claude-draft"
+    },
+    "broken-age-the-complete-adventure": {
+      "grade": 0,
+      "name": "Broken Age: The Complete Adventure",
+      "by": "claude-draft"
+    },
+    "carrion": {
+      "grade": 1,
+      "name": "Carrion",
+      "by": "claude-draft"
+    },
+    "creaks": {
+      "grade": 0,
+      "name": "Creaks",
+      "by": "claude-draft"
+    },
+    "dark-souls-iii": {
+      "grade": 1,
+      "name": "Dark Souls III",
+      "by": "claude-draft"
+    },
+    "dead-cells": {
+      "grade": 2,
+      "name": "Dead Cells",
+      "by": "claude-draft"
+    },
+    "dex": {
+      "grade": 1,
+      "name": "Dex",
+      "by": "claude-draft"
+    },
+    "dishonored-2": {
+      "grade": 0,
+      "name": "Dishonored 2",
+      "by": "claude-draft"
+    },
+    "fallout-4": {
+      "grade": 0,
+      "name": "Fallout 4",
+      "by": "claude-draft"
+    },
+    "firewatch": {
+      "grade": 0,
+      "name": "Firewatch",
+      "by": "claude-draft"
+    },
+    "foregone": {
+      "grade": 2,
+      "name": "Foregone",
+      "by": "claude-draft"
+    },
+    "gears-of-war-ultimate-edition": {
+      "grade": 0,
+      "name": "Gears of War: Ultimate Edition",
+      "by": "claude-draft"
+    },
+    "haiku-the-robot": {
+      "grade": 3,
+      "name": "Haiku, the Robot",
+      "by": "claude-draft"
+    },
+    "hollow-knight-silksong": {
+      "grade": 3,
+      "name": "Hollow Knight: Silksong",
+      "by": "claude-draft"
+    },
+    "horizon-zero-dawn": {
+      "grade": 0,
+      "name": "Horizon Zero Dawn",
+      "by": "claude-draft"
+    },
+    "inside-my-radio": {
+      "grade": 0,
+      "name": "Inside My Radio",
+      "by": "claude-draft"
+    },
+    "little-nightmares": {
+      "grade": 0,
+      "name": "Little Nightmares",
+      "by": "claude-draft"
+    },
+    "lone-fungus": {
+      "grade": 3,
+      "name": "Lone Fungus",
+      "by": "claude-draft"
+    },
+    "lost-ruins": {
+      "grade": 2,
+      "name": "Lost Ruins",
+      "by": "claude-draft"
+    },
+    "momodora-reverie-under-the-moonlight": {
+      "grade": 3,
+      "name": "Momodora: Reverie Under the Moonlight",
+      "by": "claude-draft"
+    },
+    "monster-sanctuary": {
+      "grade": 1,
+      "name": "Monster Sanctuary",
+      "by": "claude-draft"
+    },
+    "nine-sols": {
+      "grade": 3,
+      "name": "Nine Sols",
+      "by": "claude-draft"
+    },
+    "ori-and-the-will-of-the-wisps": {
+      "grade": 3,
+      "name": "Ori and the Will of the Wisps",
+      "by": "claude-draft"
+    },
+    "planet-of-lana": {
+      "grade": 1,
+      "name": "Planet of Lana",
+      "by": "claude-draft"
+    },
+    "prince-of-persia-the-lost-crown": {
+      "grade": 3,
+      "name": "Prince of Persia: The Lost Crown",
+      "by": "claude-draft"
+    },
+    "rain-world": {
+      "grade": 2,
+      "name": "Rain World",
+      "by": "claude-draft"
+    },
+    "shantae-half-genie-hero": {
+      "grade": 1,
+      "name": "Shantae: Half-Genie Hero",
+      "by": "claude-draft"
+    },
+    "souldiers": {
+      "grade": 2,
+      "name": "Souldiers",
+      "by": "claude-draft"
+    },
+    "south-park-the-fractured-but-whole": {
+      "grade": 0,
+      "name": "South Park: The Fractured But Whole",
+      "by": "claude-draft"
+    },
+    "unravel": {
+      "grade": 0,
+      "name": "Unravel",
+      "by": "claude-draft"
+    },
+    "valdis-story-abyssal-city": {
+      "grade": 2,
+      "name": "Valdis Story: Abyssal City",
+      "by": "claude-draft"
+    },
+    "volgarr-the-viking": {
+      "grade": 1,
+      "name": "Volgarr the Viking",
+      "by": "claude-draft"
+    }
+  },
+  "celeste": {
+    "animal-well": {
+      "grade": 1,
+      "name": "Animal Well",
+      "by": "claude-draft"
+    },
+    "astalon-tears-of-the-earth": {
+      "grade": 1,
+      "name": "Astalon: Tears of the Earth",
+      "by": "claude-draft"
+    },
+    "bloody-trapland": {
+      "grade": 2,
+      "name": "Bloody Trapland",
+      "by": "claude-draft"
+    },
+    "bread-fred": {
+      "grade": 1,
+      "name": "Bread & Fred",
+      "by": "claude-draft"
+    },
+    "carrion": {
+      "grade": 0,
+      "name": "Carrion",
+      "by": "claude-draft"
+    },
+    "chasm": {
+      "grade": 1,
+      "name": "Chasm",
+      "by": "claude-draft"
+    },
+    "dark-souls-iii-the-ringed-city": {
+      "grade": 0,
+      "name": "Dark Souls III: The Ringed City",
+      "by": "claude-draft"
+    },
+    "disgaea-5-complete": {
+      "grade": 0,
+      "name": "Disgaea 5 Complete",
+      "by": "claude-draft"
+    },
+    "dustforce": {
+      "grade": 3,
+      "name": "Dustforce",
+      "by": "claude-draft"
+    },
+    "fire-emblem-echoes-shadows-of-valentia": {
+      "grade": 0,
+      "name": "Fire Emblem Echoes: Shadows of Valentia",
+      "by": "claude-draft"
+    },
+    "getting-over-it-with-bennett-foddy": {
+      "grade": 2,
+      "name": "Getting Over It with Bennett Foddy",
+      "by": "claude-draft"
+    },
+    "gris": {
+      "grade": 1,
+      "name": "GRIS",
+      "by": "claude-draft"
+    },
+    "hollow-knight-silksong": {
+      "grade": 1,
+      "name": "Hollow Knight: Silksong",
+      "by": "claude-draft"
+    },
+    "hue": {
+      "grade": 1,
+      "name": "HUE",
+      "by": "claude-draft"
+    },
+    "insurmountable": {
+      "grade": 0,
+      "name": "Insurmountable",
+      "by": "claude-draft"
+    },
+    "jump-king": {
+      "grade": 2,
+      "name": "Jump King",
+      "by": "claude-draft"
+    },
+    "jusant": {
+      "grade": 1,
+      "name": "Jusant",
+      "by": "claude-draft"
+    },
+    "kaze-and-the-wild-masks": {
+      "grade": 2,
+      "name": "Kaze and the Wild Masks",
+      "by": "claude-draft"
+    },
+    "lone-fungus": {
+      "grade": 1,
+      "name": "Lone Fungus",
+      "by": "claude-draft"
+    },
+    "mario-kart-8-deluxe": {
+      "grade": 0,
+      "name": "Mario Kart 8 Deluxe",
+      "by": "claude-draft"
+    },
+    "momodora-reverie-under-the-moonlight": {
+      "grade": 1,
+      "name": "Momodora: Reverie Under the Moonlight",
+      "by": "claude-draft"
+    },
+    "mutant-mudds": {
+      "grade": 2,
+      "name": "Mutant Mudds",
+      "by": "claude-draft"
+    },
+    "night-in-the-woods": {
+      "grade": 0,
+      "name": "Night in the Woods",
+      "by": "claude-draft"
+    },
+    "omno": {
+      "grade": 1,
+      "name": "Omno",
+      "by": "claude-draft"
+    },
+    "ovivo": {
+      "grade": 1,
+      "name": "Ovivo",
+      "by": "claude-draft"
+    },
+    "pillars-of-eternity-ii-deadfire": {
+      "grade": 0,
+      "name": "Pillars of Eternity II: Deadfire",
+      "by": "claude-draft"
+    },
+    "prince-of-persia-the-lost-crown": {
+      "grade": 1,
+      "name": "Prince of Persia: The Lost Crown",
+      "by": "claude-draft"
+    },
+    "sanabi": {
+      "grade": 2,
+      "name": "SANABI",
+      "by": "claude-draft"
+    },
+    "semblance": {
+      "grade": 1,
+      "name": "Semblance",
+      "by": "claude-draft"
+    },
+    "shadows-of-adam": {
+      "grade": 0,
+      "name": "Shadows of Adam",
+      "by": "claude-draft"
+    },
+    "slime-san": {
+      "grade": 3,
+      "name": "Slime-san",
+      "by": "claude-draft"
+    },
+    "stories-untold": {
+      "grade": 0,
+      "name": "Stories Untold",
+      "by": "claude-draft"
+    },
+    "super-meat-boy": {
+      "grade": 3,
+      "name": "Super Meat Boy",
+      "by": "claude-draft"
+    },
+    "the-end-is-nigh": {
+      "grade": 3,
+      "name": "The End Is Nigh",
+      "by": "claude-draft"
+    },
+    "the-frostrune": {
+      "grade": 0,
+      "name": "The Frostrune",
+      "by": "claude-draft"
+    },
+    "the-kings-bird": {
+      "grade": 2,
+      "name": "The King's Bird",
+      "by": "claude-draft"
+    },
+    "thomas-was-alone": {
+      "grade": 1,
+      "name": "Thomas Was Alone",
+      "by": "claude-draft"
+    },
+    "vrchat": {
+      "grade": 0,
+      "name": "VRChat",
+      "by": "claude-draft"
+    },
+    "yakuza-0": {
+      "grade": 0,
+      "name": "Yakuza 0",
+      "by": "claude-draft"
+    },
+    "you-have-10-seconds": {
+      "grade": 2,
+      "name": "You Have 10 Seconds",
+      "by": "claude-draft"
+    },
+    "youropa": {
+      "grade": 1,
+      "name": "Youropa",
+      "by": "claude-draft"
+    }
+  },
+  "slay-the-spire": {
+    "across-the-obelisk": {
+      "grade": 3,
+      "name": "Across the Obelisk",
+      "by": "claude-draft"
+    },
+    "ash-of-gods-redemption": {
+      "grade": 1,
+      "name": "Ash of Gods: Redemption",
+      "by": "claude-draft"
+    },
+    "astrea-six-sided-oracles": {
+      "grade": 3,
+      "name": "Astrea: Six-Sided Oracles",
+      "by": "claude-draft"
+    },
+    "backpack-hero": {
+      "grade": 2,
+      "name": "Backpack Hero",
+      "by": "claude-draft"
+    },
+    "banners-of-ruin": {
+      "grade": 3,
+      "name": "Banners of Ruin",
+      "by": "claude-draft"
+    },
+    "braveland-pirate": {
+      "grade": 0,
+      "name": "Braveland Pirate",
+      "by": "claude-draft"
+    },
+    "chroma-squad": {
+      "grade": 0,
+      "name": "Chroma Squad",
+      "by": "claude-draft"
+    },
+    "chrono-ark": {
+      "grade": 3,
+      "name": "Chrono Ark",
+      "by": "claude-draft"
+    },
+    "crown-trick": {
+      "grade": 1,
+      "name": "Crown Trick",
+      "by": "claude-draft"
+    },
+    "cult-of-the-lamb": {
+      "grade": 0,
+      "name": "Cult of the Lamb",
+      "by": "claude-draft"
+    },
+    "deep-sky-derelicts": {
+      "grade": 2,
+      "name": "Deep Sky Derelicts",
+      "by": "claude-draft"
+    },
+    "dicey-dungeons": {
+      "grade": 2,
+      "name": "Dicey Dungeons",
+      "by": "claude-draft"
+    },
+    "evoland-2": {
+      "grade": 0,
+      "name": "Evoland 2",
+      "by": "claude-draft"
+    },
+    "gordian-quest": {
+      "grade": 3,
+      "name": "Gordian Quest",
+      "by": "claude-draft"
+    },
+    "griftlands": {
+      "grade": 3,
+      "name": "Griftlands",
+      "by": "claude-draft"
+    },
+    "hand-of-fate-2": {
+      "grade": 2,
+      "name": "Hand of Fate 2",
+      "by": "claude-draft"
+    },
+    "i-was-a-teenage-exocolonist": {
+      "grade": 1,
+      "name": "I Was a Teenage Exocolonist",
+      "by": "claude-draft"
+    },
+    "into-the-breach": {
+      "grade": 1,
+      "name": "Into the Breach",
+      "by": "claude-draft"
+    },
+    "iris-and-the-giant": {
+      "grade": 3,
+      "name": "Iris and the Giant",
+      "by": "claude-draft"
+    },
+    "library-of-ruina": {
+      "grade": 2,
+      "name": "Library Of Ruina",
+      "by": "claude-draft"
+    },
+    "mewgenics": {
+      "grade": 1,
+      "name": "Mewgenics",
+      "by": "claude-draft"
+    },
+    "monster-sanctuary": {
+      "grade": 0,
+      "name": "Monster Sanctuary",
+      "by": "claude-draft"
+    },
+    "monster-slayers": {
+      "grade": 3,
+      "name": "Monster Slayers",
+      "by": "claude-draft"
+    },
+    "monster-train": {
+      "grade": 3,
+      "name": "Monster Train",
+      "by": "claude-draft"
+    },
+    "nowhere-prophet": {
+      "grade": 3,
+      "name": "Nowhere Prophet",
+      "by": "claude-draft"
+    },
+    "roguebook": {
+      "grade": 3,
+      "name": "Roguebook",
+      "by": "claude-draft"
+    },
+    "shogun-showdown": {
+      "grade": 2,
+      "name": "Shogun Showdown",
+      "by": "claude-draft"
+    },
+    "solitairica": {
+      "grade": 2,
+      "name": "Solitairica",
+      "by": "claude-draft"
+    },
+    "spin-hero": {
+      "grade": 2,
+      "name": "Spin Hero",
+      "by": "claude-draft"
+    },
+    "star-renegades": {
+      "grade": 1,
+      "name": "Star Renegades",
+      "by": "claude-draft"
+    },
+    "steamworld-heist": {
+      "grade": 0,
+      "name": "SteamWorld Heist",
+      "by": "claude-draft"
+    }
+  },
+  "the-witcher-3-wild-hunt": {
+    "batman-arkham-knight": {
+      "grade": 1,
+      "name": "Batman: Arkham Knight",
+      "by": "claude-draft"
+    },
+    "blacktail": {
+      "grade": 1,
+      "name": "BLACKTAIL",
+      "by": "claude-draft"
+    },
+    "darkest-dungeon": {
+      "grade": 0,
+      "name": "Darkest Dungeon",
+      "by": "claude-draft"
+    },
+    "demonicon": {
+      "grade": 1,
+      "name": "Demonicon",
+      "by": "claude-draft"
+    },
+    "diablo-iv": {
+      "grade": 1,
+      "name": "Diablo IV",
+      "by": "claude-draft"
+    },
+    "dragon-age-inquisition-game-of-the-year-edition": {
+      "grade": 3,
+      "name": "Dragon Age: Inquisition - Game of the Year Edition",
+      "by": "claude-draft"
+    },
+    "dragon-age-origins-ultimate-edition": {
+      "grade": 2,
+      "name": "Dragon Age: Origins - Ultimate Edition",
+      "by": "claude-draft"
+    },
+    "dragons-dogma-ii": {
+      "grade": 2,
+      "name": "Dragon's Dogma II",
+      "by": "claude-draft"
+    },
+    "dread-delusion": {
+      "grade": 1,
+      "name": "Dread Delusion",
+      "by": "claude-draft"
+    },
+    "elden-ring": {
+      "grade": 2,
+      "name": "Elden ring",
+      "by": "claude-draft"
+    },
+    "etrian-odyssey-ii-heroes-of-lagaard": {
+      "grade": 0,
+      "name": "Etrian Odyssey II: Heroes of Lagaard",
+      "by": "claude-draft"
+    },
+    "final-fantasy-vii-rebirth": {
+      "grade": 2,
+      "name": "Final Fantasy VII Rebirth",
+      "by": "claude-draft"
+    },
+    "fire-emblem-three-houses": {
+      "grade": 0,
+      "name": "Fire Emblem: Three Houses",
+      "by": "claude-draft"
+    },
+    "gothic": {
+      "grade": 2,
+      "name": "Gothic",
+      "by": "claude-draft"
+    },
+    "graveyard-keeper": {
+      "grade": 0,
+      "name": "Graveyard Keeper",
+      "by": "claude-draft"
+    },
+    "hogwarts-legacy": {
+      "grade": 2,
+      "name": "Hogwarts Legacy",
+      "by": "claude-draft"
+    },
+    "kingdom-come-deliverance": {
+      "grade": 3,
+      "name": "Kingdom Come: Deliverance",
+      "by": "claude-draft"
+    },
+    "lords-of-the-fallen": {
+      "grade": 1,
+      "name": "Lords of the Fallen",
+      "by": "claude-draft"
+    },
+    "lords-of-xulima": {
+      "grade": 0,
+      "name": "Lords of Xulima",
+      "by": "claude-draft"
+    },
+    "middle-earth-shadow-of-mordor-game-of-the-year": {
+      "grade": 1,
+      "name": "Middle-Earth: Shadow of Mordor - Game of the Year",
+      "by": "claude-draft"
+    },
+    "middle-earth-shadow-of-war": {
+      "grade": 1,
+      "name": "Middle-Earth: Shadow of War",
+      "by": "claude-draft"
+    },
+    "ni-no-kuni-wrath-of-the-white-witch": {
+      "grade": 1,
+      "name": "Ni no Kuni: Wrath of the White Witch",
+      "by": "claude-draft"
+    },
+    "pillars-of-eternity": {
+      "grade": 1,
+      "name": "Pillars of Eternity",
+      "by": "claude-draft"
+    },
+    "red-dead-redemption-2": {
+      "grade": 2,
+      "name": "Red Dead Redemption 2",
+      "by": "claude-draft"
+    },
+    "risen-3-titan-lords": {
+      "grade": 2,
+      "name": "Risen 3: Titan Lords",
+      "by": "claude-draft"
+    },
+    "shin-megami-tensei-strange-journey": {
+      "grade": 0,
+      "name": "Shin Megami Tensei: Strange Journey",
+      "by": "claude-draft"
+    },
+    "tainted-grail-the-fall-of-avalon": {
+      "grade": 2,
+      "name": "Tainted Grail: The Fall of Avalon",
+      "by": "claude-draft"
+    },
+    "the-book-of-unwritten-tales-2": {
+      "grade": 0,
+      "name": "The Book of Unwritten Tales 2",
+      "by": "claude-draft"
+    },
+    "the-elder-scrolls-iii-morrowind": {
+      "grade": 2,
+      "name": "The Elder Scrolls III: Morrowind",
+      "by": "claude-draft"
+    },
+    "the-elder-scrolls-iii-morrowind-game-of-the-year-edition": {
+      "grade": 2,
+      "name": "The Elder Scrolls III: Morrowind - Game of the Year Edition",
+      "by": "claude-draft"
+    },
+    "the-elder-scrolls-iv-oblivion-game-of-the-year-edition": {
+      "grade": 2,
+      "name": "The Elder Scrolls IV: Oblivion - Game of the Year Edition",
+      "by": "claude-draft"
+    },
+    "the-elder-scrolls-v-skyrim": {
+      "grade": 3,
+      "name": "The Elder Scrolls V: Skyrim",
+      "by": "claude-draft"
+    },
+    "the-legend-of-heroes-trails-of-cold-steel-ii": {
+      "grade": 1,
+      "name": "The Legend of Heroes: Trails of Cold Steel II",
+      "by": "claude-draft"
+    },
+    "the-legend-of-zelda-breath-of-the-wild": {
+      "grade": 2,
+      "name": "The Legend of Zelda: Breath of the Wild",
+      "by": "claude-draft"
+    },
+    "the-witcher": {
+      "grade": 2,
+      "name": "The Witcher",
+      "by": "claude-draft"
+    },
+    "the-witcher-2-assassins-of-kings": {
+      "grade": 3,
+      "name": "The Witcher 2: Assassins of Kings",
+      "by": "claude-draft"
+    },
+    "the-witcher-3-wild-hunt-game-of-the-year-edition": {
+      "grade": 0,
+      "name": "The Witcher 3: Wild Hunt - Game of the Year Edition",
+      "by": "claude-draft",
+      "note": "Doublon : édition du même jeu"
+    },
+    "wytchwood": {
+      "grade": 0,
+      "name": "Wytchwood",
+      "by": "claude-draft"
+    }
+  },
+  "disco-elysium": {
+    "a-plague-tale-requiem": {
+      "grade": 0,
+      "name": "A Plague Tale: Requiem",
+      "by": "claude-draft"
+    },
+    "as-dusk-falls": {
+      "grade": 1,
+      "name": "As Dusk Falls",
+      "by": "claude-draft"
+    },
+    "biomutant": {
+      "grade": 0,
+      "name": "Biomutant",
+      "by": "claude-draft"
+    },
+    "castlevania-advance-collection": {
+      "grade": 0,
+      "name": "Castlevania Advance Collection",
+      "by": "claude-draft"
+    },
+    "diablo-iii-eternal-collection": {
+      "grade": 0,
+      "name": "Diablo III: Eternal Collection",
+      "by": "claude-draft"
+    },
+    "dying-light-the-following-enhanced-edition": {
+      "grade": 0,
+      "name": "Dying Light: The Following - Enhanced Edition",
+      "by": "claude-draft"
+    },
+    "elex": {
+      "grade": 1,
+      "name": "ELEX",
+      "by": "claude-draft"
+    },
+    "eternal-threads": {
+      "grade": 1,
+      "name": "Eternal Threads",
+      "by": "claude-draft"
+    },
+    "g-senjou-no-maou-the-devil-on-g-string": {
+      "grade": 1,
+      "name": "G-senjou no Maou - The Devil on G-String",
+      "by": "claude-draft"
+    },
+    "gamedec": {
+      "grade": 3,
+      "name": "Gamedec",
+      "by": "claude-draft"
+    },
+    "gemini-rue": {
+      "grade": 1,
+      "name": "Gemini Rue",
+      "by": "claude-draft"
+    },
+    "golden-sun": {
+      "grade": 0,
+      "name": "Golden Sun",
+      "by": "claude-draft"
+    },
+    "heavy-rain": {
+      "grade": 1,
+      "name": "Heavy Rain",
+      "by": "claude-draft"
+    },
+    "in-stars-and-time": {
+      "grade": 1,
+      "name": "In Stars And Time",
+      "by": "claude-draft"
+    },
+    "leviathan-the-last-day-of-the-decade": {
+      "grade": 1,
+      "name": "Leviathan: The Last Day of the Decade",
+      "by": "claude-draft"
+    },
+    "lies-of-p": {
+      "grade": 0,
+      "name": "Lies of P",
+      "by": "claude-draft"
+    },
+    "martha-is-dead": {
+      "grade": 1,
+      "name": "Martha is Dead",
+      "by": "claude-draft"
+    },
+    "omori": {
+      "grade": 1,
+      "name": "OMORI",
+      "by": "claude-draft"
+    },
+    "onimusha-way-of-the-sword": {
+      "grade": 0,
+      "name": "Onimusha: Way of the Sword",
+      "by": "claude-draft"
+    },
+    "paradise-killer": {
+      "grade": 2,
+      "name": "Paradise Killer",
+      "by": "claude-draft"
+    },
+    "pathologic-2": {
+      "grade": 2,
+      "name": "Pathologic 2",
+      "by": "claude-draft"
+    },
+    "pillars-of-eternity-ii-deadfire": {
+      "grade": 2,
+      "name": "Pillars of Eternity II: Deadfire",
+      "by": "claude-draft"
+    },
+    "roadwarden": {
+      "grade": 3,
+      "name": "Roadwarden",
+      "by": "claude-draft"
+    },
+    "shadowrun-dragonfall-directors-cut": {
+      "grade": 2,
+      "name": "Shadowrun: Dragonfall - Director's Cut",
+      "by": "claude-draft"
+    },
+    "the-case-of-the-golden-idol": {
+      "grade": 2,
+      "name": "The Case of the Golden Idol",
+      "by": "claude-draft"
+    },
+    "the-council-2018": {
+      "grade": 2,
+      "name": "The Council (2018)",
+      "by": "claude-draft"
+    },
+    "the-deed": {
+      "grade": 1,
+      "name": "The Deed",
+      "by": "claude-draft"
+    },
+    "the-forgotten-city-2021": {
+      "grade": 2,
+      "name": "The Forgotten City (2021)",
+      "by": "claude-draft"
+    },
+    "the-rise-of-the-golden-idol": {
+      "grade": 2,
+      "name": "The Rise of the Golden Idol",
+      "by": "claude-draft"
+    },
+    "the-surge-2": {
+      "grade": 0,
+      "name": "The Surge 2",
+      "by": "claude-draft"
+    },
+    "the-thaumaturge": {
+      "grade": 3,
+      "name": "The Thaumaturge",
+      "by": "claude-draft"
+    },
+    "the-witcher": {
+      "grade": 1,
+      "name": "The Witcher",
+      "by": "claude-draft"
+    },
+    "the-witchs-house": {
+      "grade": 0,
+      "name": "The Witch's House",
+      "by": "claude-draft"
+    },
+    "this-is-the-police": {
+      "grade": 1,
+      "name": "This is the Police",
+      "by": "claude-draft"
+    },
+    "whispers-of-a-machine": {
+      "grade": 2,
+      "name": "Whispers of a Machine",
+      "by": "claude-draft"
+    },
+    "whos-lila": {
+      "grade": 1,
+      "name": "Who's Lila?",
+      "by": "claude-draft"
+    },
+    "why-am-i-dead-at-sea": {
+      "grade": 1,
+      "name": "Why Am I Dead At Sea",
+      "by": "claude-draft"
+    },
+    "yakuza-4": {
+      "grade": 0,
+      "name": "Yakuza 4",
+      "by": "claude-draft"
+    },
+    "ys-seven": {
+      "grade": 0,
+      "name": "Ys Seven",
+      "by": "claude-draft"
+    }
+  },
+  "xcom-2": {
+    "alien-shooter-2-reloaded": {
+      "grade": 0,
+      "name": "Alien Shooter 2: Reloaded",
+      "by": "claude-draft"
+    },
+    "aliens-dark-descent": {
+      "grade": 2,
+      "name": "Aliens: Dark Descent",
+      "by": "claude-draft"
+    },
+    "battle-brothers": {
+      "grade": 2,
+      "name": "Battle Brothers",
+      "by": "claude-draft"
+    },
+    "deus-ex-mankind-divided": {
+      "grade": 0,
+      "name": "Deus Ex: Mankind Divided",
+      "by": "claude-draft"
+    },
+    "doom-2016": {
+      "grade": 0,
+      "name": "Doom (2016)",
+      "by": "claude-draft"
+    },
+    "fallout-tactics-brotherhood-of-steel": {
+      "grade": 2,
+      "name": "Fallout Tactics: Brotherhood of Steel",
+      "by": "claude-draft"
+    },
+    "final-fantasy-tactics": {
+      "grade": 1,
+      "name": "Final Fantasy Tactics",
+      "by": "claude-draft"
+    },
+    "final-fantasy-tactics-the-war-of-the-lions": {
+      "grade": 1,
+      "name": "Final Fantasy Tactics: The War of the Lions",
+      "by": "claude-draft"
+    },
+    "fire-emblem-path-of-radiance": {
+      "grade": 1,
+      "name": "Fire Emblem: Path of Radiance",
+      "by": "claude-draft"
+    },
+    "fire-emblem-the-sacred-stones": {
+      "grade": 1,
+      "name": "Fire Emblem: The Sacred Stones",
+      "by": "claude-draft"
+    },
+    "frozen-synapse": {
+      "grade": 1,
+      "name": "Frozen Synapse",
+      "by": "claude-draft"
+    },
+    "jagged-alliance-3": {
+      "grade": 3,
+      "name": "Jagged Alliance 3",
+      "by": "claude-draft"
+    },
+    "mutant-year-zero-road-to-eden": {
+      "grade": 3,
+      "name": "Mutant Year Zero: Road to Eden",
+      "by": "claude-draft"
+    },
+    "phantom-doctrine": {
+      "grade": 3,
+      "name": "Phantom Doctrine",
+      "by": "claude-draft"
+    },
+    "prey-2017": {
+      "grade": 0,
+      "name": "Prey (2017)",
+      "by": "claude-draft"
+    },
+    "shadow-warrior-2": {
+      "grade": 0,
+      "name": "Shadow Warrior 2",
+      "by": "claude-draft"
+    },
+    "sid-meiers-alpha-centauri": {
+      "grade": 0,
+      "name": "Sid Meier's Alpha Centauri",
+      "by": "claude-draft"
+    },
+    "sid-meiers-civilization-beyond-earth": {
+      "grade": 0,
+      "name": "Sid Meier's Civilization: Beyond Earth",
+      "by": "claude-draft"
+    },
+    "sid-meiers-civilization-v": {
+      "grade": 0,
+      "name": "Sid Meier's Civilization V",
+      "by": "claude-draft"
+    },
+    "spec-ops-the-line": {
+      "grade": 0,
+      "name": "Spec Ops: The Line",
+      "by": "claude-draft"
+    },
+    "star-wars-knights-of-the-old-republic": {
+      "grade": 0,
+      "name": "Star Wars: Knights of the Old Republic",
+      "by": "claude-draft"
+    },
+    "tales-from-the-borderlands": {
+      "grade": 0,
+      "name": "Tales from the Borderlands",
+      "by": "claude-draft"
+    },
+    "the-banner-saga-2": {
+      "grade": 2,
+      "name": "The Banner Saga 2",
+      "by": "claude-draft"
+    },
+    "triangle-strategy": {
+      "grade": 1,
+      "name": "Triangle Strategy",
+      "by": "claude-draft"
+    },
+    "ufo-afterlight": {
+      "grade": 3,
+      "name": "UFO: Afterlight",
+      "by": "claude-draft"
+    },
+    "ufo-aftermath": {
+      "grade": 3,
+      "name": "UFO: Aftermath",
+      "by": "claude-draft"
+    },
+    "valkyria-chronicles": {
+      "grade": 2,
+      "name": "Valkyria Chronicles",
+      "by": "claude-draft"
+    },
+    "valkyria-chronicles-4": {
+      "grade": 2,
+      "name": "Valkyria Chronicles 4",
+      "by": "claude-draft"
+    },
+    "valkyria-chronicles-remastered": {
+      "grade": 2,
+      "name": "Valkyria Chronicles Remastered",
+      "by": "claude-draft"
+    },
+    "warhammer-40-000-battlesector": {
+      "grade": 2,
+      "name": "Warhammer 40,000: Battlesector",
+      "by": "claude-draft"
+    },
+    "warp": {
+      "grade": 0,
+      "name": "Warp",
+      "by": "claude-draft"
+    },
+    "wasteland-3": {
+      "grade": 2,
+      "name": "Wasteland 3",
+      "by": "claude-draft"
+    },
+    "x-com-ufo-defense": {
+      "grade": 3,
+      "name": "X-COM: UFO Defense",
+      "by": "claude-draft"
+    },
+    "xcom-chimera-squad": {
+      "grade": 3,
+      "name": "XCOM: Chimera Squad",
+      "by": "claude-draft"
+    },
+    "xcom-enemy-unknown": {
+      "grade": 3,
+      "name": "XCOM: Enemy Unknown",
+      "by": "claude-draft"
+    },
+    "xenonauts": {
+      "grade": 3,
+      "name": "Xenonauts",
+      "by": "claude-draft"
+    }
+  },
+  "sid-meiers-civilization-vi": {
+    "age-of-wonders-4": {
+      "grade": 2,
+      "name": "Age of Wonders 4",
+      "by": "claude-draft"
+    },
+    "buckshot-roulette": {
+      "grade": 0,
+      "name": "Buckshot Roulette",
+      "by": "claude-draft"
+    },
+    "chroma-squad": {
+      "grade": 0,
+      "name": "Chroma Squad",
+      "by": "claude-draft"
+    },
+    "endless-legend": {
+      "grade": 3,
+      "name": "Endless Legend",
+      "by": "claude-draft"
+    },
+    "europa-universalis-iii": {
+      "grade": 2,
+      "name": "Europa Universalis III",
+      "by": "claude-draft"
+    },
+    "europa-universalis-iv": {
+      "grade": 2,
+      "name": "Europa Universalis IV",
+      "by": "claude-draft"
+    },
+    "final-fantasy-tactics-the-war-of-the-lions": {
+      "grade": 0,
+      "name": "Final Fantasy Tactics: The War of the Lions",
+      "by": "claude-draft"
+    },
+    "galactic-civilizations-ii-ultimate-edition": {
+      "grade": 2,
+      "name": "Galactic Civilizations II: Ultimate Edition",
+      "by": "claude-draft"
+    },
+    "galactic-civilizations-iii": {
+      "grade": 2,
+      "name": "Galactic Civilizations III",
+      "by": "claude-draft"
+    },
+    "humankind": {
+      "grade": 3,
+      "name": "Humankind",
+      "by": "claude-draft"
+    },
+    "i-was-a-teenage-exocolonist": {
+      "grade": 0,
+      "name": "I Was a Teenage Exocolonist",
+      "by": "claude-draft"
+    },
+    "into-the-breach": {
+      "grade": 0,
+      "name": "Into the Breach",
+      "by": "claude-draft"
+    },
+    "kings-bounty-the-legend": {
+      "grade": 1,
+      "name": "King's Bounty: The Legend",
+      "by": "claude-draft"
+    },
+    "library-of-ruina": {
+      "grade": 0,
+      "name": "Library Of Ruina",
+      "by": "claude-draft"
+    },
+    "mewgenics": {
+      "grade": 0,
+      "name": "Mewgenics",
+      "by": "claude-draft"
+    },
+    "might-magic-heroes-vii": {
+      "grade": 1,
+      "name": "Might & Magic: Heroes VII",
+      "by": "claude-draft"
+    },
+    "omerta-city-of-gangsters": {
+      "grade": 0,
+      "name": "Omerta: City of Gangsters",
+      "by": "claude-draft"
+    },
+    "sid-meiers-civilization-beyond-earth": {
+      "grade": 3,
+      "name": "Sid Meier's Civilization: Beyond Earth",
+      "by": "claude-draft"
+    },
+    "sid-meiers-civilization-iii": {
+      "grade": 3,
+      "name": "Sid Meier's Civilization III",
+      "by": "claude-draft"
+    },
+    "sid-meiers-civilization-iv-colonization": {
+      "grade": 3,
+      "name": "Sid Meier's Civilization IV: Colonization",
+      "by": "claude-draft"
+    },
+    "sid-meiers-civilization-v": {
+      "grade": 3,
+      "name": "Sid Meier's Civilization V",
+      "by": "claude-draft"
+    },
+    "slay-the-spire": {
+      "grade": 0,
+      "name": "Slay the Spire",
+      "by": "claude-draft"
+    },
+    "the-battle-of-polytopia": {
+      "grade": 2,
+      "name": "The Battle of Polytopia",
+      "by": "claude-draft"
+    },
+    "total-war-saga-thrones-of-britannia": {
+      "grade": 1,
+      "name": "Total War Saga: Thrones of Britannia",
+      "by": "claude-draft"
+    },
+    "total-war-saga-troy": {
+      "grade": 1,
+      "name": "Total War Saga: TROY",
+      "by": "claude-draft"
+    },
+    "total-war-shogun-2": {
+      "grade": 1,
+      "name": "Total War: Shogun 2",
+      "by": "claude-draft"
+    },
+    "turmoil-2016": {
+      "grade": 0,
+      "name": "Turmoil (2016)",
+      "by": "claude-draft"
+    },
+    "victoria-3": {
+      "grade": 2,
+      "name": "Victoria 3",
+      "by": "claude-draft"
+    },
+    "warhammer-40-000-gladius-relics-of-war": {
+      "grade": 2,
+      "name": "Warhammer 40,000: Gladius - Relics of War",
+      "by": "claude-draft"
+    },
+    "yu-gi-oh-master-duel": {
+      "grade": 0,
+      "name": "Yu-Gi-Oh! Master Duel",
+      "by": "claude-draft"
+    }
+  },
+  "portal-2": {
+    "antichamber": {
+      "grade": 3,
+      "name": "Antichamber",
+      "by": "claude-draft"
+    },
+    "battleblock-theater": {
+      "grade": 1,
+      "name": "BattleBlock Theater",
+      "by": "claude-draft"
+    },
+    "chromagun": {
+      "grade": 3,
+      "name": "ChromaGun",
+      "by": "claude-draft"
+    },
+    "crash-of-the-titans": {
+      "grade": 0,
+      "name": "Crash of the Titans",
+      "by": "claude-draft"
+    },
+    "de-blob": {
+      "grade": 0,
+      "name": "de Blob",
+      "by": "claude-draft"
+    },
+    "gateways": {
+      "grade": 2,
+      "name": "Gateways",
+      "by": "claude-draft"
+    },
+    "hamiltons-great-adventure": {
+      "grade": 1,
+      "name": "Hamilton's Great Adventure",
+      "by": "claude-draft"
+    },
+    "human-fall-flat": {
+      "grade": 1,
+      "name": "Human: Fall Flat",
+      "by": "claude-draft"
+    },
+    "iconoclasts": {
+      "grade": 0,
+      "name": "Iconoclasts",
+      "by": "claude-draft"
+    },
+    "inside": {
+      "grade": 1,
+      "name": "Inside",
+      "by": "claude-draft"
+    },
+    "lara-croft-and-the-temple-of-osiris": {
+      "grade": 1,
+      "name": "Lara Croft and the Temple of Osiris",
+      "by": "claude-draft"
+    },
+    "lego-batman-3-beyond-gotham": {
+      "grade": 0,
+      "name": "LEGO Batman 3: Beyond Gotham",
+      "by": "claude-draft"
+    },
+    "lightmatter": {
+      "grade": 3,
+      "name": "Lightmatter",
+      "by": "claude-draft"
+    },
+    "mirrors-edge": {
+      "grade": 1,
+      "name": "Mirror's Edge",
+      "by": "claude-draft"
+    },
+    "phogs": {
+      "grade": 1,
+      "name": "Phogs!",
+      "by": "claude-draft"
+    },
+    "pid": {
+      "grade": 1,
+      "name": "Pid",
+      "by": "claude-draft"
+    },
+    "pikuniku": {
+      "grade": 1,
+      "name": "Pikuniku",
+      "by": "claude-draft"
+    },
+    "polarity": {
+      "grade": 3,
+      "name": "Polarity",
+      "by": "claude-draft"
+    },
+    "portal": {
+      "grade": 3,
+      "name": "Portal",
+      "by": "claude-draft"
+    },
+    "portal-stories-vr": {
+      "grade": 2,
+      "name": "Portal Stories: VR",
+      "by": "claude-draft"
+    },
+    "primordia": {
+      "grade": 0,
+      "name": "Primordia",
+      "by": "claude-draft"
+    },
+    "prince-of-persia-the-two-thrones": {
+      "grade": 0,
+      "name": "Prince of Persia: The Two Thrones",
+      "by": "claude-draft"
+    },
+    "prince-of-persia-warrior-within": {
+      "grade": 0,
+      "name": "Prince of Persia: Warrior Within",
+      "by": "claude-draft"
+    },
+    "professor-layton-and-the-curious-village": {
+      "grade": 1,
+      "name": "Professor Layton and the Curious Village",
+      "by": "claude-draft"
+    },
+    "professor-layton-and-the-diabolical-box": {
+      "grade": 1,
+      "name": "Professor Layton and the Diabolical Box",
+      "by": "claude-draft"
+    },
+    "professor-layton-and-the-miracle-mask": {
+      "grade": 1,
+      "name": "Professor Layton and the Miracle Mask",
+      "by": "claude-draft"
+    },
+    "professor-layton-and-the-unwound-future": {
+      "grade": 1,
+      "name": "Professor Layton and the Unwound Future",
+      "by": "claude-draft"
+    },
+    "project-gotham-racing-2": {
+      "grade": 0,
+      "name": "Project Gotham Racing 2",
+      "by": "claude-draft"
+    },
+    "project-gotham-racing-3": {
+      "grade": 0,
+      "name": "Project Gotham Racing 3",
+      "by": "claude-draft"
+    },
+    "psychonauts": {
+      "grade": 1,
+      "name": "Psychonauts",
+      "by": "claude-draft"
+    },
+    "quantum-conundrum": {
+      "grade": 3,
+      "name": "Quantum Conundrum",
+      "by": "claude-draft"
+    },
+    "rochard": {
+      "grade": 1,
+      "name": "Rochard",
+      "by": "claude-draft"
+    },
+    "superliminal": {
+      "grade": 3,
+      "name": "Superliminal",
+      "by": "claude-draft"
+    },
+    "supraland": {
+      "grade": 2,
+      "name": "Supraland",
+      "by": "claude-draft"
+    },
+    "tales-from-space-mutant-blobs-attack": {
+      "grade": 1,
+      "name": "Tales from Space: Mutant Blobs Attack",
+      "by": "claude-draft"
+    },
+    "the-talos-principle-ii": {
+      "grade": 3,
+      "name": "The Talos Principle II",
+      "by": "claude-draft"
+    },
+    "the-turing-test": {
+      "grade": 3,
+      "name": "The Turing Test",
+      "by": "claude-draft"
+    },
+    "trine-2": {
+      "grade": 1,
+      "name": "Trine 2",
+      "by": "claude-draft"
+    },
+    "trine-3-the-artifacts-of-power": {
+      "grade": 1,
+      "name": "Trine 3: The Artifacts of Power",
+      "by": "claude-draft"
+    },
+    "viewfinder": {
+      "grade": 3,
+      "name": "Viewfinder",
+      "by": "claude-draft"
+    }
+  },
+  "subnautica": {
+    "abiotic-factor": {
+      "grade": 2,
+      "name": "Abiotic Factor",
+      "by": "claude-draft"
+    },
+    "astroneer": {
+      "grade": 2,
+      "name": "Astroneer",
+      "by": "claude-draft"
+    },
+    "barotrauma": {
+      "grade": 2,
+      "name": "Barotrauma",
+      "by": "claude-draft"
+    },
+    "bendy-and-the-dark-revival": {
+      "grade": 0,
+      "name": "Bendy and the Dark Revival",
+      "by": "claude-draft"
+    },
+    "breathedge": {
+      "grade": 2,
+      "name": "Breathedge",
+      "by": "claude-draft"
+    },
+    "choo-choo-charles": {
+      "grade": 1,
+      "name": "Choo-Choo Charles",
+      "by": "claude-draft"
+    },
+    "chrono-ark": {
+      "grade": 0,
+      "name": "Chrono Ark",
+      "by": "claude-draft"
+    },
+    "clair-obscur-expedition-33": {
+      "grade": 0,
+      "name": "Clair Obscur: Expedition 33",
+      "by": "claude-draft"
+    },
+    "conan-exiles": {
+      "grade": 1,
+      "name": "Conan Exiles",
+      "by": "claude-draft"
+    },
+    "creativerse": {
+      "grade": 1,
+      "name": "Creativerse",
+      "by": "claude-draft"
+    },
+    "deponia-the-complete-journey": {
+      "grade": 0,
+      "name": "Deponia: The Complete Journey",
+      "by": "claude-draft"
+    },
+    "dont-starve": {
+      "grade": 1,
+      "name": "Don't Starve",
+      "by": "claude-draft"
+    },
+    "eastshade": {
+      "grade": 1,
+      "name": "Eastshade",
+      "by": "claude-draft"
+    },
+    "farsky": {
+      "grade": 3,
+      "name": "FarSky",
+      "by": "claude-draft"
+    },
+    "green-hell": {
+      "grade": 2,
+      "name": "Green Hell",
+      "by": "claude-draft"
+    },
+    "grounded": {
+      "grade": 2,
+      "name": "Grounded",
+      "by": "claude-draft"
+    },
+    "hades-ii": {
+      "grade": 0,
+      "name": "Hades II",
+      "by": "claude-draft"
+    },
+    "hollow-knight-silksong": {
+      "grade": 0,
+      "name": "Hollow Knight: Silksong",
+      "by": "claude-draft"
+    },
+    "how-to-survive-2": {
+      "grade": 1,
+      "name": "How to Survive 2",
+      "by": "claude-draft"
+    },
+    "miasmata": {
+      "grade": 2,
+      "name": "Miasmata",
+      "by": "claude-draft"
+    },
+    "narcosis": {
+      "grade": 1,
+      "name": "Narcosis",
+      "by": "claude-draft"
+    },
+    "necesse": {
+      "grade": 1,
+      "name": "Necesse",
+      "by": "claude-draft"
+    },
+    "observer": {
+      "grade": 0,
+      "name": "Observer",
+      "by": "claude-draft"
+    },
+    "outer-wilds": {
+      "grade": 2,
+      "name": "Outer Wilds",
+      "by": "claude-draft"
+    },
+    "path-of-exile": {
+      "grade": 0,
+      "name": "Path of Exile",
+      "by": "claude-draft"
+    },
+    "pathologic-2": {
+      "grade": 1,
+      "name": "Pathologic 2",
+      "by": "claude-draft"
+    },
+    "quern-undying-thoughts": {
+      "grade": 0,
+      "name": "Quern: Undying Thoughts",
+      "by": "claude-draft"
+    },
+    "rogue-legacy-2": {
+      "grade": 0,
+      "name": "Rogue Legacy 2",
+      "by": "claude-draft"
+    },
+    "sea-of-stars": {
+      "grade": 0,
+      "name": "Sea of Stars",
+      "by": "claude-draft"
+    },
+    "serious-sam-4": {
+      "grade": 0,
+      "name": "Serious Sam 4",
+      "by": "claude-draft"
+    },
+    "sons-of-the-forest": {
+      "grade": 2,
+      "name": "Sons of The Forest",
+      "by": "claude-draft"
+    },
+    "stranded-deep": {
+      "grade": 2,
+      "name": "Stranded Deep",
+      "by": "claude-draft"
+    },
+    "subnautica-2": {
+      "grade": 3,
+      "name": "Subnautica 2",
+      "by": "claude-draft"
+    },
+    "the-house-in-fata-morgana": {
+      "grade": 0,
+      "name": "The House in Fata Morgana",
+      "by": "claude-draft"
+    },
+    "the-planet-crafter": {
+      "grade": 3,
+      "name": "The Planet Crafter",
+      "by": "claude-draft"
+    },
+    "the-solus-project": {
+      "grade": 2,
+      "name": "The Solus Project",
+      "by": "claude-draft"
+    },
+    "the-suicide-of-rachel-foster": {
+      "grade": 0,
+      "name": "The Suicide of Rachel Foster",
+      "by": "claude-draft"
+    },
+    "theblu": {
+      "grade": 1,
+      "name": "Theblu",
+      "by": "claude-draft"
+    },
+    "under-the-waves": {
+      "grade": 2,
+      "name": "Under The Waves",
+      "by": "claude-draft"
+    },
+    "voidtrain": {
+      "grade": 2,
+      "name": "Voidtrain",
+      "by": "claude-draft"
+    },
+    "volcanoids": {
+      "grade": 1,
+      "name": "Volcanoids",
+      "by": "claude-draft"
+    }
+  },
+  "resident-evil-4": {
+    "blood-and-bacon": {
+      "grade": 0,
+      "name": "Blood and Bacon",
+      "by": "claude-draft"
+    },
+    "control": {
+      "grade": 1,
+      "name": "Control",
+      "by": "claude-draft"
+    },
+    "daymare-1998": {
+      "grade": 2,
+      "name": "Daymare: 1998",
+      "by": "claude-draft"
+    },
+    "days-gone": {
+      "grade": 1,
+      "name": "Days Gone",
+      "by": "claude-draft"
+    },
+    "dead-island-2": {
+      "grade": 1,
+      "name": "Dead Island 2",
+      "by": "claude-draft"
+    },
+    "dead-space-2": {
+      "grade": 3,
+      "name": "Dead Space 2",
+      "by": "claude-draft"
+    },
+    "devil-may-cry": {
+      "grade": 1,
+      "name": "Devil May Cry",
+      "by": "claude-draft"
+    },
+    "gears-of-war": {
+      "grade": 1,
+      "name": "Gears of War",
+      "by": "claude-draft"
+    },
+    "half-life-2": {
+      "grade": 1,
+      "name": "Half-Life 2",
+      "by": "claude-draft"
+    },
+    "left-4-dead-2": {
+      "grade": 1,
+      "name": "Left 4 Dead 2",
+      "by": "claude-draft"
+    },
+    "natural-selection-2": {
+      "grade": 0,
+      "name": "Natural Selection 2",
+      "by": "claude-draft"
+    },
+    "propagation-vr": {
+      "grade": 0,
+      "name": "Propagation VR",
+      "by": "claude-draft"
+    },
+    "quantum-break": {
+      "grade": 1,
+      "name": "Quantum Break",
+      "by": "claude-draft"
+    },
+    "resident-evil-2-1998": {
+      "grade": 2,
+      "name": "Resident Evil 2 (1998)",
+      "by": "claude-draft"
+    },
+    "resident-evil-3-nemesis": {
+      "grade": 2,
+      "name": "Resident Evil 3: Nemesis",
+      "by": "claude-draft"
+    },
+    "resident-evil-5": {
+      "grade": 3,
+      "name": "Resident Evil 5",
+      "by": "claude-draft"
+    },
+    "resident-evil-revelations-2": {
+      "grade": 3,
+      "name": "Resident Evil: Revelations 2",
+      "by": "claude-draft"
+    },
+    "resident-evil-zero-hd-remaster": {
+      "grade": 2,
+      "name": "Resident Evil Zero: HD Remaster",
+      "by": "claude-draft"
+    },
+    "resistance-3": {
+      "grade": 1,
+      "name": "Resistance 3",
+      "by": "claude-draft"
+    },
+    "return-to-castle-wolfenstein": {
+      "grade": 0,
+      "name": "Return to Castle Wolfenstein",
+      "by": "claude-draft"
+    },
+    "rez": {
+      "grade": 0,
+      "name": "Rez",
+      "by": "claude-draft"
+    },
+    "rhythm-thief-the-emperors-treasure": {
+      "grade": 0,
+      "name": "Rhythm Thief & the Emperor's Treasure",
+      "by": "claude-draft"
+    },
+    "rock-band-3": {
+      "grade": 0,
+      "name": "Rock Band 3",
+      "by": "claude-draft"
+    },
+    "rune-factory-frontier": {
+      "grade": 0,
+      "name": "Rune Factory Frontier",
+      "by": "claude-draft"
+    },
+    "sam-max-101-culture-shock": {
+      "grade": 0,
+      "name": "Sam & Max 101: Culture Shock",
+      "by": "claude-draft"
+    },
+    "sam-max-102-situation-comedy": {
+      "grade": 0,
+      "name": "Sam & Max 102: Situation: Comedy",
+      "by": "claude-draft"
+    },
+    "sam-max-103-the-mole-the-mob-and-the-meatball": {
+      "grade": 0,
+      "name": "Sam & Max 103: The Mole, the Mob, and the Meatball",
+      "by": "claude-draft"
+    },
+    "stalker-shadow-of-chernobyl": {
+      "grade": 1,
+      "name": "S.T.A.L.K.E.R.: Shadow of Chernobyl",
+      "by": "claude-draft"
+    },
+    "the-callisto-protocol": {
+      "grade": 3,
+      "name": "The Callisto Protocol",
+      "by": "claude-draft"
+    },
+    "the-evil-within": {
+      "grade": 3,
+      "name": "The Evil Within",
+      "by": "claude-draft"
+    },
+    "the-evil-within-2": {
+      "grade": 3,
+      "name": "The Evil Within 2",
+      "by": "claude-draft"
+    },
+    "the-last-of-us": {
+      "grade": 2,
+      "name": "The Last of Us",
+      "by": "claude-draft"
+    },
+    "tomb-raider-the-angel-of-darkness": {
+      "grade": 0,
+      "name": "Tomb Raider: The Angel of Darkness",
+      "by": "claude-draft"
+    },
+    "tormented-souls": {
+      "grade": 2,
+      "name": "Tormented Souls",
+      "by": "claude-draft"
+    },
+    "world-war-z-2019": {
+      "grade": 1,
+      "name": "World War Z (2019)",
+      "by": "claude-draft"
+    }
+  },
+  "forza-horizon-4": {
+    "assetto-corsa": {
+      "grade": 1,
+      "name": "Assetto Corsa",
+      "by": "claude-draft"
+    },
+    "avowed": {
+      "grade": 0,
+      "name": "Avowed",
+      "by": "claude-draft"
+    },
+    "blair-witch": {
+      "grade": 0,
+      "name": "Blair Witch",
+      "by": "claude-draft"
+    },
+    "burnout-3-takedown": {
+      "grade": 1,
+      "name": "Burnout 3: Takedown",
+      "by": "claude-draft"
+    },
+    "burnout-paradise": {
+      "grade": 2,
+      "name": "Burnout Paradise",
+      "by": "claude-draft"
+    },
+    "crash-team-racing-nitro-fueled": {
+      "grade": 0,
+      "name": "Crash Team Racing Nitro-Fueled",
+      "by": "claude-draft"
+    },
+    "deep-rock-galactic": {
+      "grade": 0,
+      "name": "Deep Rock Galactic",
+      "by": "claude-draft"
+    },
+    "dirt-3": {
+      "grade": 1,
+      "name": "Dirt 3",
+      "by": "claude-draft"
+    },
+    "dirt-rally": {
+      "grade": 1,
+      "name": "Dirt Rally",
+      "by": "claude-draft"
+    },
+    "dirt-rally-20": {
+      "grade": 1,
+      "name": "Dirt Rally 2.0",
+      "by": "claude-draft"
+    },
+    "f1-2016": {
+      "grade": 1,
+      "name": "F1 2016",
+      "by": "claude-draft"
+    },
+    "flatout-2": {
+      "grade": 1,
+      "name": "FlatOut 2",
+      "by": "claude-draft"
+    },
+    "fortix": {
+      "grade": 0,
+      "name": "Fortix",
+      "by": "claude-draft"
+    },
+    "forza-horizon-3": {
+      "grade": 3,
+      "name": "Forza Horizon 3",
+      "by": "claude-draft"
+    },
+    "forza-horizon-5": {
+      "grade": 3,
+      "name": "Forza Horizon 5",
+      "by": "claude-draft"
+    },
+    "forza-motorsport-2023": {
+      "grade": 2,
+      "name": "Forza Motorsport (2023)",
+      "by": "claude-draft"
+    },
+    "gran-turismo-7": {
+      "grade": 2,
+      "name": "Gran Turismo 7",
+      "by": "claude-draft"
+    },
+    "grid-autosport": {
+      "grade": 1,
+      "name": "Grid Autosport",
+      "by": "claude-draft"
+    },
+    "halo-infinite": {
+      "grade": 0,
+      "name": "Halo Infinite",
+      "by": "claude-draft"
+    },
+    "horizon-chase-turbo": {
+      "grade": 1,
+      "name": "Horizon Chase Turbo",
+      "by": "claude-draft"
+    },
+    "medieval-dynasty": {
+      "grade": 0,
+      "name": "Medieval Dynasty",
+      "by": "claude-draft"
+    },
+    "my-summer-car": {
+      "grade": 0,
+      "name": "My Summer Car",
+      "by": "claude-draft"
+    },
+    "need-for-speed-carbon": {
+      "grade": 2,
+      "name": "Need for Speed: Carbon",
+      "by": "claude-draft"
+    },
+    "need-for-speed-heat": {
+      "grade": 3,
+      "name": "Need For Speed Heat",
+      "by": "claude-draft"
+    },
+    "need-for-speed-ii": {
+      "grade": 1,
+      "name": "Need for Speed II",
+      "by": "claude-draft"
+    },
+    "need-for-speed-underground": {
+      "grade": 2,
+      "name": "Need for Speed: Underground",
+      "by": "claude-draft"
+    },
+    "pacific-drive": {
+      "grade": 0,
+      "name": "Pacific Drive",
+      "by": "claude-draft"
+    },
+    "project-cars": {
+      "grade": 1,
+      "name": "Project CARS",
+      "by": "claude-draft"
+    },
+    "project-cars-2": {
+      "grade": 1,
+      "name": "Project Cars 2",
+      "by": "claude-draft"
+    },
+    "sleeping-dogs-definitive-edition": {
+      "grade": 0,
+      "name": "Sleeping Dogs: Definitive Edition",
+      "by": "claude-draft"
+    },
+    "snowrunner": {
+      "grade": 0,
+      "name": "SnowRunner",
+      "by": "claude-draft"
+    },
+    "street-racing-syndicate": {
+      "grade": 1,
+      "name": "Street Racing Syndicate",
+      "by": "claude-draft"
+    },
+    "super-mario-kart": {
+      "grade": 0,
+      "name": "Super Mario Kart",
+      "by": "claude-draft"
+    },
+    "the-crew": {
+      "grade": 3,
+      "name": "The Crew",
+      "by": "claude-draft"
+    },
+    "the-crew-2": {
+      "grade": 3,
+      "name": "The Crew 2",
+      "by": "claude-draft"
+    },
+    "voidtrain": {
+      "grade": 0,
+      "name": "Voidtrain",
+      "by": "claude-draft"
+    },
+    "wrc-7-world-rally-championship": {
+      "grade": 1,
+      "name": "WRC 7: World Rally Championship",
+      "by": "claude-draft"
+    }
+  },
+  "it-takes-two": {
+    "a-boy-and-his-blob": {
+      "grade": 1,
+      "name": "A Boy and His Blob",
+      "by": "claude-draft"
+    },
+    "a-way-out": {
+      "grade": 3,
+      "name": "A Way Out",
+      "by": "claude-draft"
+    },
+    "arise-a-simple-story": {
+      "grade": 1,
+      "name": "Arise: A Simple Story",
+      "by": "claude-draft"
+    },
+    "atri-my-dear-moments": {
+      "grade": 0,
+      "name": "ATRI - My Dear Moments",
+      "by": "claude-draft"
+    },
+    "balan-wonderworld": {
+      "grade": 0,
+      "name": "Balan Wonderworld",
+      "by": "claude-draft"
+    },
+    "bloody-trapland": {
+      "grade": 1,
+      "name": "Bloody Trapland",
+      "by": "claude-draft"
+    },
+    "bokura": {
+      "grade": 2,
+      "name": "Bokura",
+      "by": "claude-draft"
+    },
+    "bomb-rush-cyberfunk": {
+      "grade": 0,
+      "name": "Bomb Rush Cyberfunk",
+      "by": "claude-draft"
+    },
+    "carto": {
+      "grade": 0,
+      "name": "Carto",
+      "by": "claude-draft"
+    },
+    "crash-bandicoot-4-its-about-time": {
+      "grade": 1,
+      "name": "Crash Bandicoot 4: It's About Time",
+      "by": "claude-draft"
+    },
+    "degrees-of-separation": {
+      "grade": 2,
+      "name": "Degrees of Separation",
+      "by": "claude-draft"
+    },
+    "grounded": {
+      "grade": 1,
+      "name": "Grounded",
+      "by": "claude-draft"
+    },
+    "hamiltons-great-adventure": {
+      "grade": 1,
+      "name": "Hamilton's Great Adventure",
+      "by": "claude-draft"
+    },
+    "ibb-and-obb": {
+      "grade": 2,
+      "name": "Ibb and Obb",
+      "by": "claude-draft"
+    },
+    "into-the-radius-vr": {
+      "grade": 0,
+      "name": "Into the Radius VR",
+      "by": "claude-draft"
+    },
+    "keywe": {
+      "grade": 1,
+      "name": "KeyWe",
+      "by": "claude-draft"
+    },
+    "lego-dc-super-villains": {
+      "grade": 1,
+      "name": "LEGO DC Super-Villains",
+      "by": "claude-draft"
+    },
+    "library-of-ruina": {
+      "grade": 0,
+      "name": "Library Of Ruina",
+      "by": "claude-draft"
+    },
+    "minute-of-islands": {
+      "grade": 0,
+      "name": "Minute of Islands",
+      "by": "claude-draft"
+    },
+    "one-piece-pirate-warriors-4": {
+      "grade": 0,
+      "name": "One Piece: Pirate Warriors 4",
+      "by": "claude-draft"
+    },
+    "phogs": {
+      "grade": 2,
+      "name": "Phogs!",
+      "by": "claude-draft"
+    },
+    "pikmin-3-deluxe": {
+      "grade": 0,
+      "name": "Pikmin 3 Deluxe",
+      "by": "claude-draft"
+    },
+    "planet-of-lana": {
+      "grade": 1,
+      "name": "Planet of Lana",
+      "by": "claude-draft"
+    },
+    "rogue-legacy-2": {
+      "grade": 0,
+      "name": "Rogue Legacy 2",
+      "by": "claude-draft"
+    },
+    "shift-happens": {
+      "grade": 2,
+      "name": "Shift Happens",
+      "by": "claude-draft"
+    },
+    "split-fiction": {
+      "grade": 3,
+      "name": "Split Fiction",
+      "by": "claude-draft"
+    },
+    "the-artful-escape": {
+      "grade": 0,
+      "name": "The Artful Escape",
+      "by": "claude-draft"
+    },
+    "the-henry-stickmin-collection": {
+      "grade": 0,
+      "name": "The Henry Stickmin Collection",
+      "by": "claude-draft"
+    },
+    "the-spirit-and-the-mouse": {
+      "grade": 0,
+      "name": "The Spirit and The Mouse",
+      "by": "claude-draft"
+    },
+    "there-is-no-game-wrong-dimension": {
+      "grade": 0,
+      "name": "There Is No Game: Wrong Dimension",
+      "by": "claude-draft"
+    },
+    "toodee-and-topdee": {
+      "grade": 1,
+      "name": "Toodee and Topdee",
+      "by": "claude-draft"
+    },
+    "trine-2": {
+      "grade": 2,
+      "name": "Trine 2",
+      "by": "claude-draft"
+    },
+    "trine-3-the-artifacts-of-power": {
+      "grade": 2,
+      "name": "Trine 3: The Artifacts of Power",
+      "by": "claude-draft"
+    },
+    "unravel-2": {
+      "grade": 3,
+      "name": "Unravel 2",
+      "by": "claude-draft"
+    }
+  }
+}

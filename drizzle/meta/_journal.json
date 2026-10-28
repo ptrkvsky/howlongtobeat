@@ -64,6 +64,20 @@
       "when": 1793023605381,
       "tag": "0008_spooky_stature",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793101506601,
+      "tag": "0009_pgvector",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1793101508021,
+      "tag": "0010_recommendations",
+      "breakpoints": true
     }
   ]
 }

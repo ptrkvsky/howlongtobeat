@@ -12,8 +12,10 @@ import {
   pgTable,
   primaryKey,
   serial,
+  real,
   text,
   timestamp,
+  vector,
 } from 'drizzle-orm/pg-core';
 import { AUTHOR_SLUGS } from '../config/authors';
 import { NEWS_CATEGORIES, type NewsImage } from '../config/news';
@@ -145,8 +147,70 @@ export const igdbInfo = pgTable(`igdb_info`, {
   summaryEn: text(`summary_en`),
   // IGDB cover image id: the URL is built with the size each use needs
   coverImageId: text(`cover_image_id`),
+  // Gameplay fields, for the recommendations (src/features/jeu/recommendations).
+  // Null until the next IGDB sync fetches them
+  genres: text(`genres`).array(),
+  themes: text(`themes`).array(),
+  keywords: text(`keywords`).array(),
+  gameModes: text(`game_modes`).array(),
+  perspectives: text(`perspectives`).array(),
+  // IGDB ids, to leave out the editions and cap a series
+  franchiseIds: integer(`franchise_ids`).array(),
+  collectionIds: integer(`collection_ids`).array(),
+  parentIgdbId: integer(`parent_igdb_id`),
+  similarIgdbIds: integer(`similar_igdb_ids`).array(),
   fetchedAt: fetchedAt(),
 });
+
+// SteamSpy user tags, by number of votes ("Colony Sim": 4108)
+export const steamTags = pgTable(`steam_tags`, {
+  gameId: gameId(),
+  appId: integer(`app_id`).notNull(),
+  tags: jsonb(`tags`).$type<{ name: string; votes: number }[]>().notNull(),
+  fetchedAt: fetchedAt(),
+});
+
+// ── Recommendations (scripts/embed-games.ts, scripts/recommend.ts) ─────────
+
+export const EMBEDDING_DIMENSIONS = 512;
+
+// Embedding of the gameplay profile; recomputed when its hash changes
+export const gameEmbedding = pgTable(`game_embedding`, {
+  gameId: gameId(),
+  model: text(`model`).notNull(),
+  // Hash of the profile, the model and the dimensions
+  docHash: text(`doc_hash`).notNull(),
+  // The embedded profile, kept to inspect a recommendation
+  document: text(`document`).notNull(),
+  embedding: vector(`embedding`, {
+    dimensions: EMBEDDING_DIMENSIONS,
+  }).notNull(),
+  updatedAt: timestamp(`updated_at`, { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+// "D'autres jeux à terminer", computed offline: the build only reads it
+export const gameRecommendation = pgTable(
+  `game_recommendation`,
+  {
+    gameId: integer(`game_id`)
+      .notNull()
+      .references(() => game.id, { onDelete: `cascade` }),
+    rank: integer(`rank`).notNull(),
+    relatedGameId: integer(`related_game_id`)
+      .notNull()
+      .references(() => game.id, { onDelete: `cascade` }),
+    score: real(`score`).notNull(),
+    // Score of each signal, to explain and evaluate a recommendation
+    components: jsonb(`components`).$type<Record<string, number>>().notNull(),
+    algoVersion: text(`algo_version`).notNull(),
+    computedAt: timestamp(`computed_at`, { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [primaryKey({ columns: [table.gameId, table.rank] })],
+);
 
 // `validated` and `rejected` are set by hand and never rewritten; only `auto`
 // and `validated` completion rates are published

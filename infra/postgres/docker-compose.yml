@@ -9,7 +9,9 @@ name: gameover
 
 services:
   postgres:
-    image: postgres:17.6
+    # postgres:17 with pgvector (game_embedding, docs/recommandations.md).
+    # Debian trixie like postgres:17.6: same glibc, so the same collations
+    image: pgvector/pgvector:0.8.7-pg17-trixie
     container_name: gameover-postgres
     restart: unless-stopped
     environment:

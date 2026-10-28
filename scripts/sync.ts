@@ -8,6 +8,7 @@
  *   pnpm tsx scripts/sync.ts igdb    [--max-age 30]  identity (F1)
  *   pnpm tsx scripts/sync.ts steam   [--max-age 7]   reviews, achievements
  *   pnpm tsx scripts/sync.ts prices  [--max-age 6]   IsThereAnyDeal prices (F7)
+ *   pnpm tsx scripts/sync.ts tags    [--max-age 90]  SteamSpy user tags
  *   pnpm tsx scripts/sync.ts summary                 coverage
  *
  * Options: --limit n, --hltb <id,id…> (only these games), --dry-run (print
@@ -44,6 +45,7 @@ import {
   igdbInfo,
   itadPrice,
   steamStats,
+  steamTags,
 } from '../src/db/schema';
 import { errorMessage, requestCounts } from './enrich/http';
 import { resolveIds } from './enrich/ids';
@@ -56,13 +58,14 @@ import {
 } from './enrich/igdb';
 import { getPrices } from './enrich/itad';
 import { getSteamAchievements, getSteamReviews } from './enrich/steam';
+import { getSteamTags } from './enrich/steamspy';
 import { getWikidataIds } from './enrich/wikidata';
 
 for (const file of [`.env.local`, `.env`]) {
   if (existsSync(file)) process.loadEnvFile(file);
 }
 
-const COMMANDS = [`ids`, `igdb`, `steam`, `prices`, `summary`] as const;
+const COMMANDS = [`ids`, `igdb`, `steam`, `prices`, `tags`, `summary`] as const;
 type Command = (typeof COMMANDS)[number];
 const DEFAULT_MAX_AGE: Record<Command, number> = {
   ids: 90,
@@ -70,6 +73,8 @@ const DEFAULT_MAX_AGE: Record<Command, number> = {
   steam: 7,
   // Under a week: refreshed by every weekly build (scripts/update-catalog.sh)
   prices: 6,
+  // Tags barely move once a game is out
+  tags: 90,
   summary: 0,
 };
 
@@ -306,6 +311,15 @@ async function syncIgdb() {
           isMature: detail.isMature,
           summaryEn: detail.summary,
           coverImageId: detail.coverImageId,
+          genres: detail.genres,
+          themes: detail.themes,
+          keywords: detail.keywords,
+          gameModes: detail.gameModes,
+          perspectives: detail.perspectives,
+          franchiseIds: detail.franchiseIds,
+          collectionIds: detail.collectionIds,
+          parentIgdbId: detail.parentIgdbId,
+          similarIgdbIds: detail.similarIgdbIds,
           fetchedAt: new Date(),
         },
       ];
@@ -328,6 +342,15 @@ async function syncIgdb() {
               isMature: sql`excluded.is_mature`,
               summaryEn: sql`excluded.summary_en`,
               coverImageId: sql`excluded.cover_image_id`,
+              genres: sql`excluded.genres`,
+              themes: sql`excluded.themes`,
+              keywords: sql`excluded.keywords`,
+              gameModes: sql`excluded.game_modes`,
+              perspectives: sql`excluded.perspectives`,
+              franchiseIds: sql`excluded.franchise_ids`,
+              collectionIds: sql`excluded.collection_ids`,
+              parentIgdbId: sql`excluded.parent_igdb_id`,
+              similarIgdbIds: sql`excluded.similar_igdb_ids`,
               fetchedAt: sql`excluded.fetched_at`,
             },
           }),
@@ -574,6 +597,86 @@ async function syncPrices() {
   }
 }
 
+// ── tags ───────────────────────────────────────────────────────────────────
+
+async function syncTags() {
+  const games = await db
+    .select({
+      id: game.id,
+      name: game.name,
+      appId: gameExternalId.steamAppId,
+    })
+    .from(game)
+    .innerJoin(gameExternalId, eq(gameExternalId.gameId, game.id))
+    .leftJoin(steamTags, eq(steamTags.gameId, game.id))
+    .where(
+      and(
+        gameFilter(),
+        inArray(gameExternalId.status, [...STEAM_TRUSTED]),
+        isNotNull(gameExternalId.steamAppId),
+        or(
+          isNull(steamTags.gameId),
+          lt(steamTags.fetchedAt, staleBefore),
+          ne(steamTags.appId, gameExternalId.steamAppId),
+        ),
+      ),
+    )
+    .orderBy(sql`${steamTags.fetchedAt} asc nulls first`, game.id)
+    .limit(limit ?? 1_000_000);
+  console.info(`tags: ${games.length} games to fetch`);
+
+  let done = 0;
+  let failures = 0;
+  for (const row of games) {
+    if (failures >= MAX_STEAM_FAILURES) break;
+    let tags: Awaited<ReturnType<typeof getSteamTags>>;
+    try {
+      tags = await getSteamTags(row.appId!);
+      failures = 0;
+    } catch (error) {
+      // Not written: retried by the next run
+      console.warn(`⚠ ${row.name}: ${errorMessage(error)}`);
+      failures++;
+      continue;
+    }
+    done++;
+    // Unknown to SteamSpy: an empty list, so that it is not fetched again
+    // before --max-age
+    const value = {
+      gameId: row.id,
+      appId: row.appId!,
+      tags: tags ?? [],
+      fetchedAt: new Date(),
+    };
+    await write(`steam_tags ${row.name}`, () =>
+      db
+        .insert(steamTags)
+        .values(value)
+        .onConflictDoUpdate({
+          target: steamTags.gameId,
+          set: {
+            appId: value.appId,
+            tags: value.tags,
+            fetchedAt: value.fetchedAt,
+          },
+        }),
+    );
+    if (done % 100 === 0 || dryRun) {
+      console.info(
+        `… ${done}/${games.length} ${row.name}: ${value.tags
+          .slice(0, 5)
+          .map((tag) => tag.name)
+          .join(`, `)}`,
+      );
+    }
+  }
+  if (failures >= MAX_STEAM_FAILURES) {
+    console.warn(
+      `⚠ tags: stopped after ${failures} failures in a row, ${games.length - done} games left for the next run`,
+    );
+  }
+}
+
 // ── summary ────────────────────────────────────────────────────────────────
 
 async function summary() {
@@ -591,7 +694,8 @@ async function summary() {
     .where(eq(game.isPublished, true))
     .groupBy(gameExternalId.status);
   const count = async (
-    table: typeof igdbInfo | typeof steamStats | typeof itadPrice,
+    table:
+      typeof igdbInfo | typeof steamStats | typeof itadPrice | typeof steamTags,
     where?: ReturnType<typeof and>,
   ) => {
     const [row] = await db
@@ -619,6 +723,9 @@ async function summary() {
     `Completion rate published (auto / validated): ${pct(await count(steamStats, and(inArray(steamStats.completionStatus, [`auto`, `validated`]))))}, pending: ${await count(steamStats, and(eq(steamStats.completionStatus, `pending`)))}`,
   );
   console.info(`Prices (ITAD): ${pct(await count(itadPrice))}`);
+  console.info(
+    `Steam tags: ${pct(await count(steamTags, and(sql`jsonb_array_length(${steamTags.tags}) > 0`)))}`,
+  );
 }
 
 const startedAt = Date.now();
@@ -627,6 +734,7 @@ const startedAt = Date.now();
   igdb: syncIgdb,
   steam: syncSteam,
   prices: syncPrices,
+  tags: syncTags,
   summary,
 })
   [command]()

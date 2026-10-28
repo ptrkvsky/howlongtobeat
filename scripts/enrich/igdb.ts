@@ -179,6 +179,16 @@ export interface IgdbDetails {
   coverImageId: string | null;
   // Same names as the site genres (the catalog was built from IGDB genres)
   genres: string[];
+  // Gameplay fields, for the recommendations
+  themes: string[];
+  keywords: string[];
+  gameModes: string[];
+  perspectives: string[];
+  franchiseIds: number[];
+  collectionIds: number[];
+  // The base game of an edition, a remaster or an expansion
+  parentIgdbId: number | null;
+  similarIgdbIds: number[];
 }
 
 interface IgdbDetailsRow {
@@ -187,6 +197,16 @@ interface IgdbDetailsRow {
   summary?: string;
   cover?: { image_id: string };
   genres?: { name: string }[];
+  themes?: { name: string }[];
+  keywords?: { name: string }[];
+  game_modes?: { name: string }[];
+  player_perspectives?: { name: string }[];
+  franchise?: number;
+  franchises?: number[];
+  collections?: number[];
+  version_parent?: number;
+  parent_game?: number;
+  similar_games?: number[];
   platforms?: { slug: string }[];
   involved_companies?: {
     company?: { name: string };
@@ -221,18 +241,23 @@ const isMatureRating = (
   );
 };
 
-const unique = (values: string[]) => [...new Set(values)];
+const unique = <T>(values: T[]) => [...new Set(values)];
+const names = (values?: { name: string }[]) =>
+  unique((values ?? []).map(({ name }) => name));
+
+// IGDB keywords are free and many: the first ones are kept
+const MAX_KEYWORDS = 30;
 
 export async function getIgdbDetails(ids: number[]) {
   const details = new Map<number, IgdbDetails>();
   for (let i = 0; i < ids.length; i += 500) {
     const chunk = ids.slice(i, i + 500);
     const rows = await igdbQuery<IgdbDetailsRow[]>(
-      `fields first_release_date, summary, cover.image_id, genres.name, platforms.slug, involved_companies.company.name, involved_companies.developer, involved_companies.publisher, age_ratings.organization.name, age_ratings.rating_category.rating, age_ratings.category, age_ratings.rating; where id = (${chunk.join(`,`)}); limit 500;`,
+      `fields first_release_date, summary, cover.image_id, genres.name, platforms.slug, involved_companies.company.name, involved_companies.developer, involved_companies.publisher, age_ratings.organization.name, age_ratings.rating_category.rating, age_ratings.category, age_ratings.rating, themes.name, keywords.name, game_modes.name, player_perspectives.name, franchise, franchises, collections, version_parent, parent_game, similar_games; where id = (${chunk.join(`,`)}); limit 500;`,
     );
     for (const row of rows) {
       const companies = row.involved_companies ?? [];
-      const names = (role: `developer` | `publisher`) =>
+      const companyNames = (role: `developer` | `publisher`) =>
         unique(
           companies.flatMap((involved) =>
             involved[role] && involved.company ? [involved.company.name] : [],
@@ -243,13 +268,24 @@ export async function getIgdbDetails(ids: number[]) {
         firstReleaseDate: row.first_release_date
           ? new Date(row.first_release_date * 1000).toISOString().slice(0, 10)
           : null,
-        developers: names(`developer`),
-        publishers: names(`publisher`),
+        developers: companyNames(`developer`),
+        publishers: companyNames(`publisher`),
         platformSlugs: unique((row.platforms ?? []).map(({ slug }) => slug)),
         isMature: (row.age_ratings ?? []).some(isMatureRating),
         summary: row.summary?.trim() || null,
         coverImageId: row.cover?.image_id ?? null,
-        genres: unique((row.genres ?? []).map(({ name }) => name)),
+        genres: names(row.genres),
+        themes: names(row.themes),
+        keywords: names(row.keywords).slice(0, MAX_KEYWORDS),
+        gameModes: names(row.game_modes),
+        perspectives: names(row.player_perspectives),
+        franchiseIds: unique([
+          ...(row.franchise ? [row.franchise] : []),
+          ...(row.franchises ?? []),
+        ]),
+        collectionIds: unique(row.collections ?? []),
+        parentIgdbId: row.version_parent ?? row.parent_game ?? null,
+        similarIgdbIds: row.similar_games ?? [],
       });
     }
   }

@@ -15,6 +15,7 @@ const INTERVALS: Record<string, number> = {
   'api.steampowered.com': 300,
   'api.isthereanydeal.com': 500,
   'howlongtobeat.com': 2000,
+  'steamspy.com': 1000, // appdetails: 1 request / s
 };
 
 const lastCall = new Map<string, number>();

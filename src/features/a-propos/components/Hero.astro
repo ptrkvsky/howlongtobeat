@@ -1,0 +1,86 @@
+---
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
+import Flag from '@/features/home/components/Flag.astro';
+import home from '@/features/home/components/home.module.css';
+import type { BreadcrumbItem } from '@/utils/structuredData';
+import { formatCount } from '@/utils/format';
+import type { AboutData } from '../data';
+import styles from './hero.module.css';
+
+// The page title over the ruler of the site: the median times of the whole
+// catalog, from the main story to 100 %, the flag planted at the end
+interface Props {
+  data: AboutData;
+  breadcrumb: BreadcrumbItem[];
+}
+
+const { data, breadcrumb } = Astro.props;
+const marks = [
+  { label: `Histoire`, hours: data.medians.main },
+  { label: `Histoire + extras`, hours: data.medians.plus },
+  { label: `100 %`, hours: data.medians.full },
+].filter((mark) => mark.hours > 0);
+const step = 10;
+const axisMax =
+  Math.ceil((Math.max(...marks.map((m) => m.hours)) + 1) / step) * step;
+const ticks = Array.from({ length: axisMax / step + 1 }, (_, i) => i * step);
+const at = (hours: number) => `${(hours / axisMax) * 100}%`;
+---
+
+<section
+  class:list={[home.section, home.paper, styles.hero]}
+  aria-labelledby="a-propos"
+>
+  <div class={home.frame}>
+    <div class={styles.crumbs}>
+      <Breadcrumb items={breadcrumb} />
+    </div>
+    <p class={home.kicker}>À propos</p>
+    <h1 id="a-propos" class={styles.title}>
+      Game Over, le temps de jeu au cœur de votre prochaine aventure
+    </h1>
+    <p class:list={[home.lede, styles.lede]}>
+      Combien d'heures pour voir la fin d'un jeu, pour faire les quêtes annexes,
+      pour tout finir à 100 % ? Game Over répond pour{` `}
+      <strong>{data.games.toLocaleString(`fr-FR`)} jeux</strong>, en français,
+      et transforme ces heures en une date de fin à votre rythme.
+    </p>
+
+    {marks.length > 0 && (
+      <figure class={styles.ruler}>
+        <div class={styles.track} aria-hidden="true">
+          {ticks.map((tick) => (
+            <span class={styles.tick} style={`--at: ${at(tick)}`}>
+              <span class={styles.tickLabel}>{tick} h</span>
+            </span>
+          ))}
+          {marks.map((mark, index) => (
+            <span
+              class:list={[
+                styles.mark,
+                index === marks.length - 1 && styles.end,
+              ]}
+              style={`--at: ${at(mark.hours)}; --delay: ${index * 120}ms`}
+            >
+              <span class={styles.markLabel}>{mark.hours} h</span>
+              {index === marks.length - 1 && <Flag class={styles.flag} />}
+            </span>
+          ))}
+        </div>
+        <dl class={styles.legend}>
+          {marks.map((mark, index) => (
+            <div class:list={[index === marks.length - 1 && styles.pink]}>
+              <dt>{mark.label}</dt>
+              <dd>{mark.hours} h</dd>
+            </div>
+          ))}
+        </dl>
+        <figcaption class={styles.caption}>
+          Durées médianes du catalogue, sur{` `}
+          {formatCount(data.timed.main)} jeux pour l'histoire : la moitié des
+          jeux sont plus courts, l'autre moitié plus longs.
+        </figcaption>
+      </figure>
+    )}
+  </div>
+</section>

@@ -1,0 +1,95 @@
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--space-12);
+  align-items: start;
+}
+
+.columnTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* A filled mark for what is done, an empty one for what is not yet */
+.columnTitle::before {
+  content: '';
+  width: 0.6rem;
+  height: 0.6rem;
+  background: var(--pink);
+}
+
+.next {
+  color: var(--muted);
+}
+
+.next::before {
+  border: 1px solid var(--muted);
+  background: none;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--cream);
+  list-style: none;
+}
+
+.limits {
+  border-top-style: dashed;
+  border-top-color: var(--line);
+}
+
+.list li {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: var(--space-2) var(--space-5);
+  padding-block: var(--space-5);
+  border-bottom: 1px solid var(--faint);
+}
+
+.limits li {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.itemTitle {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  line-height: 1.3;
+}
+
+.itemText {
+  color: var(--muted);
+  font-family: var(--font-body-slim);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.email {
+  border-bottom: 1px solid var(--pink);
+  color: var(--cream);
+  overflow-wrap: anywhere;
+}
+
+.email:hover {
+  color: var(--pink);
+}
+
+@media screen and (max-width: 1100px) {
+  .list li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media screen and (max-width: 766px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

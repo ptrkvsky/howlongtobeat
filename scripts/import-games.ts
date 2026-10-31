@@ -14,6 +14,8 @@
  * Weekly refresh of hltb_stats for the whole catalog (times of the imported
  * games too):
  *      pnpm tsx scripts/import-games.ts --refresh [--max-age 30]
+ * Catch-up of the published games with a time at 0 (the other times stay):
+ *      pnpm tsx scripts/import-games.ts --refresh --missing-times [--limit 200]
  *
  * Every HLTB page read is kept in .import/pages.jsonl: a run resumes where
  * the previous one stopped, and a --dry-run pass is not read again. --dry-run
@@ -31,6 +33,7 @@ import {
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { and, eq, gt, inArray, isNull, lt, or, sql } from 'drizzle-orm';
+import type { AnyPgColumn } from 'drizzle-orm/pg-core';
 import { closeDb, getDb } from '../src/db/client';
 import { game, gameExternalId, hltbStats, igdbInfo } from '../src/db/schema';
 import { slugify } from '../src/utils/slugify';
@@ -55,6 +58,7 @@ const { values: args } = parseArgs({
     'dry-run': { type: `boolean`, default: false },
     publish: { type: `boolean`, default: false },
     refresh: { type: `boolean`, default: false },
+    'missing-times': { type: `boolean`, default: false },
     'max-age': { type: `string`, default: `30` },
   },
 });
@@ -372,7 +376,15 @@ async function refresh() {
     })
     .from(game)
     .leftJoin(hltbStats, eq(hltbStats.gameId, game.id))
-    .where(or(isNull(hltbStats.gameId), lt(hltbStats.fetchedAt, staleBefore)))
+    .where(
+      args[`missing-times`]
+        ? and(
+            eq(game.isPublished, true),
+            or(eq(game.timeMainStory, 0), eq(game.timeCompletionists, 0)),
+            or(isNull(hltbStats.gameId), lt(hltbStats.fetchedAt, staleBefore)),
+          )
+        : or(isNull(hltbStats.gameId), lt(hltbStats.fetchedAt, staleBefore)),
+    )
     // Never read first, then the oldest
     .orderBy(sql`${hltbStats.fetchedAt} asc nulls first`)
     .limit(Number.isFinite(limit) ? limit : 1_000_000);
@@ -408,6 +420,19 @@ async function refresh() {
           timeMainStory: hours(hltb.compMain),
           timeMainExtras: hours(hltb.compPlus),
           timeCompletionists: hours(hltb.comp100),
+          updatedAt: new Date(),
+        })
+        .where(eq(game.id, row.id));
+    } else if (args[`missing-times`]) {
+      // Only the times at 0: the others were checked by hand or by a former import
+      const fill = (column: AnyPgColumn, seconds: number) =>
+        sql`case when ${column} = 0 then ${hours(seconds)} else ${column} end`;
+      await db
+        .update(game)
+        .set({
+          timeMainStory: fill(game.timeMainStory, hltb.compMain),
+          timeMainExtras: fill(game.timeMainExtras, hltb.compPlus),
+          timeCompletionists: fill(game.timeCompletionists, hltb.comp100),
           updatedAt: new Date(),
         })
         .where(eq(game.id, row.id));

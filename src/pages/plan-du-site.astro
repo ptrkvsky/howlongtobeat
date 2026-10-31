@@ -5,6 +5,7 @@ import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
 import HomeTitle from '@/styles/components/titles/HomeTitle.astro';
 import List from '@/styles/components/titles/List.astro';
 import { authorPageUrl, authors } from '@/config/authors';
+import urls from '@/config/urls';
 import { getAllGenres } from '@/functions/getAllGenres';
 import { breadcrumbNode, webPageNode } from '@/utils/structuredData';
 import titles from '@/styles/components/titles/titles.module.css';
@@ -32,6 +33,15 @@ const jsonLd = [
           <a href={`/genre/${genre.slug}`}>{genre.name}</a>
         </li>
       ))}
+    </List>
+    <h2 class={titles.sectionTitle}>Game Over</h2>
+    <List>
+      <li>
+        <a href={urls.apropos}>À propos</a>
+      </li>
+      <li>
+        <a href={urls.methodologie}>Méthodologie</a>
+      </li>
     </List>
     <h2 class={titles.sectionTitle}>Auteurs</h2>
     <List>

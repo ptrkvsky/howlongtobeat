@@ -1,0 +1,85 @@
+/* Big rows, each a whole link: the title in the heading face, the pink
+   appears under the pointer */
+.links {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--cream);
+  list-style: none;
+}
+
+.links li {
+  border-bottom: 1px solid var(--faint);
+}
+
+.link {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 6fr) minmax(0, 5fr) 2.5rem;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-5);
+  padding-block: clamp(1.25rem, 2.5vw, 2rem);
+  transition: color 0.2s;
+}
+
+.index {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.4rem, 3.2vw, 2.8rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.text {
+  color: var(--muted);
+  font-family: var(--font-body-slim);
+  font-size: 1.05rem;
+  line-height: 1.45;
+}
+
+.arrow {
+  justify-self: end;
+  font-size: 1.5rem;
+  transition: transform 0.2s;
+}
+
+.flag {
+  width: 1.75rem;
+  height: auto;
+  color: var(--pink);
+}
+
+.link:hover .title,
+.link:focus-visible .title {
+  color: var(--pink);
+}
+
+.link:hover .arrow {
+  transform: translateX(0.35rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link,
+  .arrow {
+    transition: none;
+  }
+}
+
+@media screen and (max-width: 766px) {
+  .link {
+    grid-template-columns: 2rem minmax(0, 1fr) auto;
+  }
+
+  .text {
+    grid-column: 2 / 3;
+  }
+
+  .arrow {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}

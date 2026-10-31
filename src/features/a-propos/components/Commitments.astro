@@ -1,0 +1,90 @@
+---
+import EmailLink from '@/components/EmailLink.astro';
+import home from '@/features/home/components/home.module.css';
+import styles from './commitments.module.css';
+
+// What the site already does, then what it does not do yet: the second list
+// states limits, it promises nothing
+const inPlace = [
+  {
+    title: `Trois durées, jamais mélangées`,
+    text: `L'histoire, l'histoire avec les extras et le 100 % sont toujours données à part : un jeu de 10 heures peut en demander 60 pour tout finir.`,
+  },
+  {
+    title: `Des sources nommées`,
+    text: `Durées de HowLongToBeat, avis et succès Steam, prix IsThereAnyDeal, jaquettes et studios IGDB : chaque source est citée en bas de chaque page.`,
+  },
+  {
+    title: `Pas de chiffre trop fragile`,
+    text: `Une donnée n'apparaît que si le jeu a été reconnu avec certitude dans sa source. Sans donnée, pas de bloc vide pour faire nombre.`,
+  },
+  {
+    title: `Un catalogue relevé chaque semaine`,
+    text: `Chaque lundi, les nouveaux jeux entrent au catalogue et les prix sont relevés.`,
+  },
+];
+const limits = [
+  {
+    title: `Les durées des fiches existantes`,
+    text: `Une fiche garde la durée relevée à son entrée au catalogue : avec le temps, elle peut s'écarter des derniers temps envoyés sur HowLongToBeat.`,
+  },
+  {
+    title: `Le signalement depuis les fiches`,
+    text: `Une erreur se signale par e-mail : les fiches n'ont pas encore de bouton pour le faire.`,
+  },
+];
+---
+
+<section class:list={[home.section, home.paper]} aria-labelledby="engagements">
+  <div class={home.frame}>
+    <div class={home.head}>
+      <p class={home.kicker}>Nos engagements</p>
+      <h2 id="engagements" class={home.title}>
+        Des durées utiles, et honnêtes
+      </h2>
+      <p class={home.lede}>
+        Une estimation n'est utile que si l'on sait d'où elle vient. Voici ce
+        que Game Over fait déjà, et <strong>ce qu'il ne fait pas encore</strong>
+        .
+      </p>
+    </div>
+
+    <div class={styles.columns}>
+      <div>
+        <h3 class={styles.columnTitle}>Déjà en place</h3>
+        <ul class={styles.list}>
+          {inPlace.map((item) => (
+            <li>
+              <span class={styles.itemTitle}>{item.title}</span>
+              <span class={styles.itemText}>{item.text}</span>
+            </li>
+          ))}
+          <li>
+            <span class={styles.itemTitle}>Les erreurs corrigées</span>
+            <span class={styles.itemText}>
+              Une durée fausse se corrige à la main, et la correction survit aux
+              mises à jour. Signalez-la à{` `}
+              <EmailLink
+                class={styles.email}
+                subject="Erreur sur une fiche Game Over"
+              />
+              , avec le nom du jeu.
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class:list={[styles.columnTitle, styles.next]}>Pas encore</h3>
+        <ul class:list={[styles.list, styles.limits]}>
+          {limits.map((item) => (
+            <li>
+              <span class={styles.itemTitle}>{item.title}</span>
+              <span class={styles.itemText}>{item.text}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

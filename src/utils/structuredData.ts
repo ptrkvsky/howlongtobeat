@@ -98,7 +98,7 @@ export const organizationNode = (): JsonLdNode => ({
 });
 
 interface WebPageOptions {
-  type?: `WebPage` | `CollectionPage` | `ProfilePage`;
+  type?: `WebPage` | `CollectionPage` | `ProfilePage` | `AboutPage`;
   path: string;
   name: string;
   description?: string;

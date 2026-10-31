@@ -1,0 +1,83 @@
+---
+import home from '@/features/home/components/home.module.css';
+import urls from '@/config/urls';
+import type { AboutData } from '../data';
+import styles from './ledger.module.css';
+
+// The catalog in figures, all counted at build time: a ledger of hairline
+// rows, the figure in the margin of its sentence. A figure at 0 is left out
+interface Props {
+  data: AboutData;
+}
+
+const { data } = Astro.props;
+const n = (value: number) => value.toLocaleString(`fr-FR`);
+const timedTotal = data.timed.main + data.timed.plus + data.timed.full;
+const rows = [
+  {
+    label: `Jeux`,
+    value: data.games,
+    text: `jeux ont leur fiche, avec leurs durées de vie et leur date de fin à votre rythme.`,
+  },
+  {
+    label: `Durées`,
+    value: timedTotal,
+    text: `durées renseignées : ${n(data.timed.main)} pour l'histoire, ${n(data.timed.plus)} avec les extras, ${n(data.timed.full)} pour le 100 %.`,
+  },
+  {
+    label: `Temps de joueurs`,
+    value: data.submissions,
+    text: `temps envoyés par les joueurs de HowLongToBeat pour ces jeux, au dernier relevé de chaque fiche.`,
+  },
+  {
+    label: `Genres`,
+    value: data.genres,
+    text: `genres pour chercher par type de jeu, avec la durée médiane de chacun.`,
+    link: { url: urls.genres, label: `Voir les genres` },
+  },
+  {
+    label: `Plateformes`,
+    value: data.platforms,
+    text: `plateformes citées dans les fiches, d'après IGDB.`,
+  },
+  {
+    label: `Actus`,
+    value: data.news,
+    text: `actus publiées sur les sorties, les mises à jour et le matériel.`,
+    link: { url: urls.actus, label: `Lire les actus` },
+  },
+].filter((row) => row.value > 0);
+---
+
+<section class={home.section} aria-labelledby="chiffres">
+  <div class={home.frame}>
+    <div class={home.head}>
+      <p class={home.kicker}>Le catalogue</p>
+      <h2 id="chiffres" class={home.title}>
+        Ce que contient Game Over
+      </h2>
+      <p class={home.lede}>
+        Ces chiffres sont comptés à chaque mise en ligne du site, à partir des
+        fiches publiées. <strong>Aucun n'est arrondi à la main.</strong>
+      </p>
+    </div>
+
+    <ul class={styles.ledger}>
+      {rows.map((row) => (
+        <li class={styles.row}>
+          <p class={styles.label}>{row.label}</p>
+          <p class={styles.value}>{n(row.value)}</p>
+          <p class={styles.text}>
+            {row.text}
+            {row.link && (
+              <>
+                {` `}
+                <a href={row.link.url}>{row.link.label}</a>
+              </>
+            )}
+          </p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

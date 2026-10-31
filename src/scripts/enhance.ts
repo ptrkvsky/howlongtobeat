@@ -5,6 +5,12 @@ const email = [`johan`, `developpeur-web.tech`].join(`@`);
 for (const element of document.querySelectorAll(`[data-email]`)) {
   element.textContent = email;
 }
+for (const link of document.querySelectorAll<HTMLAnchorElement>(
+  `[data-email-link]`,
+)) {
+  const subject = link.dataset.subject;
+  link.href = `mailto:${email}${subject ? `?subject=${encodeURIComponent(subject)}` : ``}`;
+}
 
 console.info(
   `%c%s`,

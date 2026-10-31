@@ -1,0 +1,72 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import LayoutFront from '@/layouts/LayoutFront.astro';
+import Commitments from '@/features/a-propos/components/Commitments.astro';
+import Explore from '@/features/a-propos/components/Explore.astro';
+import Hero from '@/features/a-propos/components/Hero.astro';
+import Ledger from '@/features/a-propos/components/Ledger.astro';
+import Masthead from '@/features/a-propos/components/Masthead.astro';
+import Method from '@/features/a-propos/components/Method.astro';
+import Story from '@/features/a-propos/components/Story.astro';
+import { getAboutData } from '@/features/a-propos/data';
+import home from '@/features/home/components/home.module.css';
+import urls from '@/config/urls';
+import {
+  breadcrumbNode,
+  organizationNode,
+  ref,
+  siteIds,
+  webPageNode,
+  websiteNode,
+} from '@/utils/structuredData';
+
+const data = await getAboutData();
+const path = urls.apropos;
+const title = `À propos de Game Over : la durée de vie des jeux vidéo, en clair`;
+const description = `Le temps pour finir ${data.games.toLocaleString(`fr-FR`)} jeux vidéo (histoire, extras, 100 %), d'où viennent ces durées et qui les publie : découvrez Game Over.`;
+const breadcrumb = [
+  { name: `Accueil`, path: urls.home },
+  { name: `À propos`, path },
+];
+const jsonLd = [
+  websiteNode(),
+  {
+    ...organizationNode(),
+    publishingPrinciples: new URL(urls.methodologie, Astro.site).href,
+  },
+  webPageNode({
+    type: `AboutPage`,
+    path,
+    name: title,
+    description,
+    extra: {
+      about: ref(siteIds.organization),
+      mainEntity: ref(siteIds.organization),
+    },
+  }),
+  breadcrumbNode(path, breadcrumb),
+];
+---
+
+<BaseLayout
+  absoluteTitle={title}
+  description={description}
+  canonical={path}
+  jsonLd={jsonLd}
+  preloadFonts={[
+    `/fonts/MonumentExtended-Black.woff2`,
+    `/fonts/PolySans-Slim.woff2`,
+  ]}
+>
+  <LayoutFront>
+    <div class={home.page}>
+      <Hero data={data} breadcrumb={breadcrumb} />
+      <Story />
+      <Ledger data={data} />
+      <Masthead authors={data.authors} />
+      <Method submissions={data.submissions} />
+      <Commitments />
+      <Explore />
+    </div>
+  </LayoutFront>
+</BaseLayout>

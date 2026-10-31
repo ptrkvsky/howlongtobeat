@@ -9,6 +9,7 @@
  *   pnpm tsx scripts/sync.ts steam   [--max-age 7]   reviews, achievements
  *   pnpm tsx scripts/sync.ts prices  [--max-age 6]   IsThereAnyDeal prices (F7)
  *   pnpm tsx scripts/sync.ts tags    [--max-age 90]  SteamSpy user tags
+ *   pnpm tsx scripts/sync.ts genres                  IGDB genres of the games without any
  *   pnpm tsx scripts/sync.ts summary                 coverage
  *
  * Options: --limit n, --hltb <id,id…> (only these games), --dry-run (print
@@ -65,7 +66,15 @@ for (const file of [`.env.local`, `.env`]) {
   if (existsSync(file)) process.loadEnvFile(file);
 }
 
-const COMMANDS = [`ids`, `igdb`, `steam`, `prices`, `tags`, `summary`] as const;
+const COMMANDS = [
+  `ids`,
+  `igdb`,
+  `steam`,
+  `prices`,
+  `tags`,
+  `genres`,
+  `summary`,
+] as const;
 type Command = (typeof COMMANDS)[number];
 const DEFAULT_MAX_AGE: Record<Command, number> = {
   ids: 90,
@@ -75,6 +84,7 @@ const DEFAULT_MAX_AGE: Record<Command, number> = {
   prices: 6,
   // Tags barely move once a game is out
   tags: 90,
+  genres: 0,
   summary: 0,
 };
 
@@ -677,6 +687,52 @@ async function syncTags() {
   }
 }
 
+// ── genres ─────────────────────────────────────────────────────────────────
+
+// The legacy genres come from Sanity: the games that have none take the IGDB
+// ones already fetched by `igdb`, matched by name like the imported games
+async function syncGenres() {
+  const genreIds = new Map(
+    (await db.select({ id: genre.id, name: genre.name }).from(genre)).map(
+      (row) => [row.name, row.id],
+    ),
+  );
+  const games = await db
+    .select({ id: game.id, genres: igdbInfo.genres })
+    .from(game)
+    .innerJoin(igdbInfo, eq(igdbInfo.gameId, game.id))
+    .where(
+      and(
+        gameFilter(),
+        sql`cardinality(${igdbInfo.genres}) > 0`,
+        sql`not exists (select 1 from ${gameGenre} where ${gameGenre.gameId} = ${game.id})`,
+      ),
+    )
+    .limit(limit ?? 1_000_000);
+  const unknown = new Map<string, number>();
+  const links = games.flatMap((row) =>
+    row.genres!.flatMap((name) => {
+      const genreId = genreIds.get(name);
+      if (!genreId) unknown.set(name, (unknown.get(name) ?? 0) + 1);
+      return genreId ? [{ gameId: row.id, genreId }] : [];
+    }),
+  );
+  console.info(`genres: ${games.length} games, ${links.length} links`);
+  if (unknown.size) {
+    console.info(`Genres not on the site:`, Object.fromEntries(unknown));
+  }
+  for (let i = 0; i < links.length; i += 500) {
+    await write(
+      `${Math.min(i + 500, links.length)}/${links.length} links`,
+      () =>
+        db
+          .insert(gameGenre)
+          .values(links.slice(i, i + 500))
+          .onConflictDoNothing(),
+    );
+  }
+}
+
 // ── summary ────────────────────────────────────────────────────────────────
 
 async function summary() {
@@ -735,6 +791,7 @@ const startedAt = Date.now();
   steam: syncSteam,
   prices: syncPrices,
   tags: syncTags,
+  genres: syncGenres,
   summary,
 })
   [command]()

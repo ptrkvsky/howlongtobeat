@@ -1,0 +1,16 @@
+---
+import ObfuscatedEmail from './ObfuscatedEmail.astro';
+
+// Mail link with a subject. No href in the HTML: src/scripts/enhance.ts sets
+// it with the real address, never the decoy one
+interface Props {
+  subject: string;
+  class?: string;
+}
+
+const { subject, class: className } = Astro.props;
+---
+
+<a class={className} data-email-link data-subject={subject}>
+  <ObfuscatedEmail />
+</a>

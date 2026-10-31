@@ -1,0 +1,183 @@
+.hero {
+  padding-block: clamp(2rem, 5vh, 3.5rem) clamp(3rem, 7vh, 5rem);
+  border-bottom: 1px solid var(--faint);
+}
+
+/* The site breadcrumb, in the mono of the graduations */
+.crumbs :global(ol) {
+  margin-bottom: var(--space-8);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.crumbs :global(a):hover {
+  color: var(--pink);
+}
+
+.title {
+  max-width: 18ch;
+  font-family: var(--font-heading);
+  font-size: clamp(2.3rem, 6.4vw, 6rem);
+  line-height: 0.9;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.lede {
+  max-width: 40rem;
+  margin-top: var(--space-5);
+}
+
+/* The ruler of the catalog: hours on the axis, the three median times
+   planted on it, the flag at the end */
+.ruler {
+  margin: clamp(3rem, 7vw, 5.5rem) 0 0;
+}
+
+.track {
+  position: relative;
+  height: 4.5rem;
+  border-bottom: 1px solid var(--cream);
+}
+
+.tick {
+  position: absolute;
+  bottom: 0;
+  left: var(--at);
+  width: 1px;
+  height: 0.6rem;
+  background: var(--line);
+}
+
+.tickLabel {
+  position: absolute;
+  top: calc(100% + 1rem);
+  left: 0;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.mark {
+  position: absolute;
+  bottom: 0;
+  left: var(--at);
+  width: 2px;
+  height: 100%;
+  background: var(--cream);
+  transform-origin: bottom;
+}
+
+.end {
+  background: var(--pink);
+}
+
+/* The hours over each mark, the flag of the last one beside them */
+.markLabel {
+  position: absolute;
+  bottom: calc(100% + 0.4rem);
+  left: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.end .markLabel {
+  color: var(--pink);
+}
+
+.flag {
+  position: absolute;
+  top: 0;
+  left: 2px;
+  width: 1.75rem;
+  height: auto;
+  color: var(--pink);
+}
+
+/* The marks are planted when the ruler comes into view */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .mark {
+      animation: plant linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 40%;
+    }
+  }
+}
+
+@keyframes plant {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+.legend {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: var(--space-12);
+  border-top: 1px solid var(--faint);
+}
+
+.legend > div {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5) 0 0;
+}
+
+.legend > div + div {
+  padding-left: var(--space-5);
+  border-left: 1px solid var(--faint);
+}
+
+.legend dt {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.legend dd {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 3.6vw, 3.25rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.pink dd {
+  color: var(--pink);
+}
+
+.caption {
+  max-width: 40rem;
+  margin-top: var(--space-5);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+@media screen and (max-width: 766px) {
+  /* Every other label: they would overlap */
+  .tick:nth-child(even) .tickLabel {
+    display: none;
+  }
+
+  .legend {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .legend > div,
+  .legend > div + div {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--faint);
+    border-left: 0;
+  }
+}

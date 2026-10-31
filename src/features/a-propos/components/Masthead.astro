@@ -1,0 +1,73 @@
+---
+import { AUTHOR_IMAGE_SIZE, authorPageUrl } from '@/config/authors';
+import { newsCategoryLabels } from '@/config/news';
+import home from '@/features/home/components/home.module.css';
+import type { AboutData } from '../data';
+import styles from './masthead.module.css';
+
+// Who signs the news, as the masthead of a magazine: what each author
+// covers and how many articles they signed. Only what their pages show
+interface Props {
+  authors: AboutData['authors'];
+}
+
+const { authors } = Astro.props;
+---
+
+<section class={home.section} aria-labelledby="signatures">
+  <div class={home.frame}>
+    <div class={home.head}>
+      <p class={home.kicker}>Les signatures</p>
+      <h2 id="signatures" class={home.title}>
+        Qui écrit sur Game Over
+      </h2>
+      <p class={home.lede}>
+        Les actus sont signées par <strong>{authors.length} auteurs</strong>,
+        chacun sur ses rubriques. Quand le jeu dont parle une actu est au
+        catalogue, elle donne son temps de jeu.
+      </p>
+    </div>
+
+    <ul class={styles.masthead}>
+      {authors.map((author) => (
+        <li class={styles.author}>
+          <img
+            class={styles.avatar}
+            src={author.image}
+            alt={`Avatar illustré de ${author.name}`}
+            width={AUTHOR_IMAGE_SIZE}
+            height={AUTHOR_IMAGE_SIZE}
+            loading="lazy"
+            decoding="async"
+          />
+          <h3 class={styles.name}>
+            <a href={authorPageUrl(author.slug)}>{author.name}</a>
+          </h3>
+          <p class={styles.job}>{author.jobTitle}</p>
+          <dl class={styles.facts}>
+            <div>
+              <dt>Rubriques</dt>
+              <dd>
+                {author.categories
+                  .map((category) => newsCategoryLabels[category])
+                  .join(` · `)}
+              </dd>
+            </div>
+            <div>
+              <dt>Sujets</dt>
+              <dd>{author.knowsAbout.join(` · `)}</dd>
+            </div>
+            {author.articles > 0 && (
+              <div>
+                <dt>Actus signées</dt>
+                <dd class={styles.count}>
+                  {author.articles.toLocaleString(`fr-FR`)}
+                </dd>
+              </div>
+            )}
+          </dl>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

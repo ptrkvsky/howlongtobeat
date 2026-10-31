@@ -1,0 +1,70 @@
+---
+import home from '@/features/home/components/home.module.css';
+import urls from '@/config/urls';
+import styles from './story.module.css';
+
+// Why the site exists, for whom, and what it adds to the raw times
+const readers = [
+  {
+    who: `Peu de temps pour jouer`,
+    what: `Trouver un jeu qui tient dans ses soirées, et savoir quand on en verra la fin.`,
+  },
+  {
+    who: `Une pile de jeux en attente`,
+    what: `Choisir par lequel commencer, en comparant ce que chacun demande.`,
+  },
+  {
+    who: `Tout finir à 100 %`,
+    what: `Savoir ce que coûte la complétion avant de s'y engager.`,
+  },
+];
+---
+
+<section class={home.section} aria-labelledby="pourquoi">
+  <div class={home.frame}>
+    <div class={home.head}>
+      <p class={home.kicker}>Pourquoi Game Over</p>
+      <h2 id="pourquoi" class={home.title}>
+        Savoir avant de se lancer
+      </h2>
+      <p class={home.lede}>
+        Un jeu, c'est un prix, mais surtout des soirées. Avant de commencer, la
+        vraie question est souvent :{' '}
+        <strong>aurai-je le temps de le finir ?</strong>
+      </p>
+    </div>
+
+    <div class={styles.columns}>
+      <div class={styles.text}>
+        <p>
+          Les fiches de jeux parlent de genre, de note et de prix, rarement du
+          temps qu'il faut. Game Over part de là : chaque fiche commence par la
+          durée de vie du jeu, en trois temps, puis donne ce qui aide à décider.
+        </p>
+        <p>
+          Les temps de jeu viennent des joueurs de HowLongToBeat, un site
+          anglophone. Game Over les présente en français, les compare au reste
+          du catalogue, les complète d'avis Steam, de prix et de jeux proches,
+          et surtout <strong>les traduit en date</strong> : à votre rythme, quel
+          jour verrez-vous la fin ?
+        </p>
+        <p class={styles.publisher}>
+          Game Over est un site indépendant, édité par Johan Petrikovsky.{` `}
+          <a href={urls.mentions}>Mentions légales</a>
+        </p>
+      </div>
+
+      <div>
+        <h3 class={styles.listTitle}>Pour qui</h3>
+        <ul class={styles.readers}>
+          {readers.map(({ who, what }) => (
+            <li>
+              <span class={styles.who}>{who}</span>
+              <span class={styles.what}>{what}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

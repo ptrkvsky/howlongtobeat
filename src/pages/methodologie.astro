@@ -1,0 +1,274 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import LayoutFront from '@/layouts/LayoutFront.astro';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.astro';
+import EmailLink from '@/components/EmailLink.astro';
+import { getAboutData } from '@/features/a-propos/data';
+import home from '@/features/home/components/home.module.css';
+import urls from '@/config/urls';
+import {
+  breadcrumbNode,
+  organizationNode,
+  webPageNode,
+  websiteNode,
+} from '@/utils/structuredData';
+import styles from '@/features/a-propos/components/methodology.module.css';
+
+// How the times are gathered, chosen and shown. Every rule written here is
+// in the code: scripts/enrich/threshold.ts, scripts/import-games.ts,
+// scripts/update-catalog.sh, the game_override table
+const data = await getAboutData();
+const n = (value: number) => value.toLocaleString(`fr-FR`);
+const path = urls.methodologie;
+const title = `Méthodologie : comment Game Over calcule la durée de vie des jeux`;
+const description = `D'où viennent les durées de ${n(data.games)} jeux vidéo, quels jeux entrent au catalogue, comment les temps sont arrondis, corrigés et mis à jour, et leurs limites.`;
+const breadcrumb = [
+  { name: `Accueil`, path: urls.home },
+  { name: `À propos`, path: urls.apropos },
+  { name: `Méthodologie`, path },
+];
+const jsonLd = [
+  websiteNode(),
+  organizationNode(),
+  webPageNode({ path, name: title, description }),
+  breadcrumbNode(path, breadcrumb),
+];
+const toc = [
+  { id: `source`, label: `La source des durées` },
+  { id: `selection`, label: `Les jeux du catalogue` },
+  { id: `affichage`, label: `L'affichage` },
+  { id: `corrections`, label: `Les corrections` },
+  { id: `autres-donnees`, label: `Les autres données` },
+  { id: `mises-a-jour`, label: `Les mises à jour` },
+  { id: `limites`, label: `Les limites` },
+  { id: `signaler`, label: `Signaler une erreur` },
+];
+---
+
+<BaseLayout
+  absoluteTitle={title}
+  description={description}
+  canonical={path}
+  jsonLd={jsonLd}
+  preloadFonts={[
+    `/fonts/MonumentExtended-Black.woff2`,
+    `/fonts/PolySans-Slim.woff2`,
+  ]}
+>
+  <LayoutFront>
+    <div class={home.page}>
+      <section
+        class:list={[home.section, home.paper, styles.hero]}
+        aria-labelledby="methodologie"
+      >
+        <div class={home.frame}>
+          <div class={styles.crumbs}>
+            <Breadcrumb items={breadcrumb} />
+          </div>
+          <p class={home.kicker}>Méthodologie</p>
+          <h1 id="methodologie" class={styles.title}>
+            Comment Game Over mesure la durée de vie des jeux
+          </h1>
+          <p class:list={[home.lede, styles.lede]}>
+            Les durées de Game Over sont des temps{' '}
+            <strong>déclarés par des joueurs</strong>, pas des chronos de la
+            rédaction. Voici d'où ils viennent, comment ils sont choisis et ce
+            qu'ils ne disent pas.
+          </p>
+        </div>
+      </section>
+
+      <div class:list={[home.frame, styles.layout]}>
+        <nav class={styles.toc} aria-label="Sommaire">
+          <p class={styles.tocTitle}>Sommaire</p>
+          <ol>
+            {toc.map((item, index) => (
+              <li>
+                <a href={`#${item.id}`}>
+                  <span class={home.mono}>
+                    {String(index + 1).padStart(2, `0`)}
+                  </span>
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+
+        <div class={styles.prose}>
+          <section aria-labelledby="source">
+            <h2 id="source">La source des durées</h2>
+            <p>
+              Les temps de jeu viennent de{` `}
+              <strong>HowLongToBeat</strong>, un site où les joueurs notent le
+              temps qu'ils ont mis à finir un jeu. Game Over reprend les temps
+              publiés par HowLongToBeat pour trois façons de jouer :
+            </p>
+            <dl class={styles.times}>
+              <div>
+                <dt>Histoire</dt>
+                <dd>finir l'aventure principale, sans s'attarder.</dd>
+              </div>
+              <div>
+                <dt>Histoire + extras</dt>
+                <dd>finir l'aventure et une bonne part des quêtes annexes.</dd>
+              </div>
+              <div>
+                <dt>100 %</dt>
+                <dd>tout terminer : quêtes, objets à collectionner, succès.</dd>
+              </div>
+            </dl>
+            <p>
+              Aujourd'hui, {n(data.timed.main)} jeux ont un temps pour
+              l'histoire, {n(data.timed.plus)} pour l'histoire et les extras et
+              {` `}
+              {n(data.timed.full)} pour le 100 %.
+              {data.submissions > 0 && (
+                <>
+                  {` `}Derrière ces chiffres, {n(data.submissions)} temps
+                  envoyés par les joueurs de HowLongToBeat, au dernier relevé de
+                  chaque fiche.
+                </>
+              )}
+            </p>
+          </section>
+
+          <section aria-labelledby="selection">
+            <h2 id="selection">Les jeux du catalogue</h2>
+            <p>
+              Un jeu n'a de durée fiable que si assez de joueurs l'ont fini.
+              Pour entrer au catalogue, un nouveau jeu doit avoir{` `}
+              <strong>au moins 10 temps pour l'histoire</strong> sur
+              HowLongToBeat, et l'un de ces signaux de popularité :
+            </p>
+            <ul>
+              <li>
+                au moins 1 000 joueurs qui l'ont ajouté sur HowLongToBeat ;
+              </li>
+              <li>
+                au moins 300 joueurs et une page sur au moins 8 sites Wikimedia,
+                comme les éditions de Wikipédia ;
+              </li>
+              <li>au moins 10 000 avis sur Steam.</li>
+            </ul>
+            <p>
+              Seuls les jeux complets sont retenus : ni extensions, ni mods, ni
+              compilations. Une fiche n'est publiée qu'avec une jaquette, une
+              description en français et un jeu identifié avec certitude dans
+              IGDB. Les jeux du premier catalogue de Game Over ont été réunis
+              avant ces règles.
+            </p>
+          </section>
+
+          <section aria-labelledby="affichage">
+            <h2 id="affichage">L'affichage</h2>
+            <p>
+              Les durées sont <strong>arrondies à l'heure</strong>, avec un
+              minimum d'une heure dès qu'un temps existe. Un temps absent n'est
+              pas affiché, ni remplacé par une estimation.
+            </p>
+            <p>
+              Chaque fiche situe le jeu dans le catalogue (plus court ou plus
+              long que les autres) et traduit ses heures en date de fin, selon
+              le nombre d'heures que vous jouez par semaine. Cette date suppose
+              un rythme régulier à partir d'aujourd'hui : c'est un ordre d'idée,
+              pas une promesse.
+            </p>
+          </section>
+
+          <section aria-labelledby="corrections">
+            <h2 id="corrections">Les corrections</h2>
+            <p>
+              Une durée manifestement fausse peut être corrigée à la main. La
+              correction est enregistrée à part et appliquée par-dessus les
+              données importées : elle n'est pas écrasée par la mise à jour
+              suivante.
+            </p>
+          </section>
+
+          <section aria-labelledby="autres-donnees">
+            <h2 id="autres-donnees">Les autres données</h2>
+            <dl class={styles.sources}>
+              <div>
+                <dt>Steam</dt>
+                <dd>
+                  les avis des joueurs et la part de joueurs qui ont débloqué le
+                  succès de fin.
+                </dd>
+              </div>
+              <div>
+                <dt>IsThereAnyDeal</dt>
+                <dd>
+                  le meilleur prix du moment en France et le plus bas connu.
+                </dd>
+              </div>
+              <div>
+                <dt>IGDB</dt>
+                <dd>
+                  les jaquettes, les dates de sortie, les studios, les éditeurs
+                  et les plateformes.
+                </dd>
+              </div>
+            </dl>
+            <p>
+              Une donnée n'est affichée que si le jeu a été identifié avec
+              certitude dans la source : sans correspondance sûre, le bloc reste
+              masqué.
+            </p>
+          </section>
+
+          <section aria-labelledby="mises-a-jour">
+            <h2 id="mises-a-jour">Les mises à jour</h2>
+            <p>
+              Le catalogue est mis à jour <strong>chaque lundi</strong> : les
+              nouveaux jeux qui passent les seuils sont ajoutés et les prix sont
+              relevés. Les durées d'un jeu sont celles relevées à son entrée au
+              catalogue : elles ne suivent pas en continu les nouveaux temps
+              envoyés sur HowLongToBeat.
+            </p>
+          </section>
+
+          <section aria-labelledby="limites">
+            <h2 id="limites">Les limites</h2>
+            <ul>
+              <li>
+                Ce sont des temps déclarés : chacun joue à sa vitesse, dans la
+                difficulté de son choix.
+              </li>
+              <li>
+                Pour un jeu multijoueur ou sans fin, la durée dit peu de chose :
+                elle mesure surtout le temps passé par ceux qui l'ont noté.
+              </li>
+              <li>
+                Un jeu ancien ou peu joué a moins de temps derrière ses durées,
+                donc des durées moins sûres.
+              </li>
+              <li>
+                Une mise à jour ou une extension peut changer la durée d'un jeu
+                après son entrée au catalogue.
+              </li>
+            </ul>
+          </section>
+
+          <section aria-labelledby="signaler">
+            <h2 id="signaler">Signaler une erreur</h2>
+            <p>
+              Une durée vous paraît fausse ? Écrivez à{` `}
+              <EmailLink
+                class={styles.email}
+                subject="Erreur sur une fiche Game Over"
+              />
+              {` `}
+              avec le nom du jeu et ce qui vous semble faux.
+            </p>
+            <p>
+              <a class={home.more} href={urls.apropos}>
+                <span aria-hidden="true">←</span> En savoir plus sur Game Over
+              </a>
+            </p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </LayoutFront>
+</BaseLayout>

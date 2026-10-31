@@ -1,0 +1,62 @@
+---
+import urls from '@/config/urls';
+import Flag from '@/features/home/components/Flag.astro';
+import home from '@/features/home/components/home.module.css';
+import styles from './explore.module.css';
+
+// End of the page: where to go next, as the finish line of the ruler
+const links = [
+  {
+    url: `${urls.home}#calcul`,
+    title: `Calculer ma date de fin`,
+    text: `Un jeu, votre rythme par semaine : le jour où vous verrez la fin.`,
+  },
+  {
+    url: urls.genres,
+    title: `Explorer par genre`,
+    text: `Les genres classés par durée de vie, du plus court au plus long.`,
+  },
+  {
+    url: urls.actus,
+    title: `Lire les actus`,
+    text: `Sorties, mises à jour, matériel et bons plans du jeu vidéo.`,
+  },
+  {
+    url: urls.methodologie,
+    title: `Comprendre les durées`,
+    text: `Sources, sélection des jeux et limites des estimations.`,
+  },
+];
+---
+
+<section class={home.section} aria-labelledby="explorer">
+  <div class={home.frame}>
+    <div class={home.head}>
+      <p class={home.kicker}>À vous de jouer</p>
+      <h2 id="explorer" class={home.title}>
+        Votre prochaine fin de partie
+      </h2>
+      <p class={home.lede}>
+        Le meilleur moyen de comprendre Game Over, c'est de chercher un jeu qui
+        vous attend.
+      </p>
+    </div>
+
+    <ul class={styles.links}>
+      {links.map((link, index) => (
+        <li>
+          <a class={styles.link} href={link.url}>
+            <span class={styles.index} aria-hidden="true">
+              {String(index + 1).padStart(2, `0`)}
+            </span>
+            <span class={styles.title}>{link.title}</span>
+            <span class={styles.text}>{link.text}</span>
+            <span class={styles.arrow} aria-hidden="true">
+              {index === 0 ? <Flag class={styles.flag} /> : `→`}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

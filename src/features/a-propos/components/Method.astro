@@ -1,0 +1,61 @@
+---
+import urls from '@/config/urls';
+import home from '@/features/home/components/home.module.css';
+import steps from '@/features/home/components/milestones.module.css';
+
+// The method in three steps, on the graduated line of the home's, then the
+// way to the full methodology
+interface Props {
+  submissions: number;
+}
+
+const { submissions } = Astro.props;
+const behind =
+  submissions > 0
+    ? ` : ${submissions.toLocaleString(`fr-FR`)} temps derrière ce catalogue`
+    : ``;
+---
+
+<section class={home.section} aria-labelledby="methode">
+  <div class={home.frame}>
+    <div class={home.head}>
+      <p class={home.kicker}>La méthode</p>
+      <h2 id="methode" class={home.title}>
+        D'où viennent les durées
+      </h2>
+      <p class={home.lede}>
+        Les durées ne sont pas des estimations maison : ce sont les temps
+        déclarés par <strong>des joueurs qui ont fini le jeu</strong>.
+      </p>
+    </div>
+    <ol class={steps.steps}>
+      <li class={steps.step}>
+        <h3 class={steps.index}>01 · Source</h3>
+        <span class={steps.value}>Les joueurs</span>
+        <span class={steps.text}>
+          Les temps viennent de HowLongToBeat, où les joueurs notent le temps
+          qu'ils ont mis{behind}.
+        </span>
+      </li>
+      <li class={steps.step}>
+        <h3 class={steps.index}>02 · Sélection</h3>
+        <span class={steps.value}>10 temps</span>
+        <span class={steps.text}>
+          au moins pour l'histoire, et assez de joueurs, pour qu'un nouveau jeu
+          entre au catalogue.
+        </span>
+      </li>
+      <li class={steps.step}>
+        <h3 class={steps.index}>03 · Lecture</h3>
+        <span class:list={[steps.value, steps.pink]}>À l'heure près</span>
+        <span class={steps.text}>
+          Les durées sont arrondies à l'heure, comparées au catalogue et
+          traduites en date de fin à votre rythme.
+        </span>
+      </li>
+    </ol>
+    <a class={home.more} href={urls.methodologie}>
+      Lire la méthodologie complète <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</section>

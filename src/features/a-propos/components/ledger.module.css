@@ -1,0 +1,63 @@
+/* As the ledger of the game pages (evidence.module.css): one hairline row
+   per figure, its label in the margin */
+.ledger {
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--faint);
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(9rem, 2fr) minmax(0, 4fr) minmax(0, 5fr);
+  align-items: baseline;
+  gap: var(--space-3) clamp(1.5rem, 3vw, 3rem);
+  padding-block: clamp(1.25rem, 2.5vw, 2rem);
+  border-top: 1px solid var(--faint);
+}
+
+.label {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.value {
+  font-family: var(--font-heading);
+  font-size: clamp(2.2rem, 5.5vw, 4.75rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+
+.row:first-child .value {
+  color: var(--pink);
+}
+
+.text {
+  max-width: 30rem;
+  color: var(--muted);
+  font-family: var(--font-body-slim);
+  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.text a {
+  border-bottom: 1px solid var(--pink);
+  color: var(--cream);
+  white-space: nowrap;
+}
+
+.text a:hover {
+  color: var(--pink);
+}
+
+@media screen and (max-width: 766px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+}

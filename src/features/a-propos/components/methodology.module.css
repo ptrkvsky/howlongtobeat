@@ -1,0 +1,205 @@
+.hero {
+  padding-block: clamp(2rem, 5vh, 3.5rem) clamp(3rem, 6vh, 4.5rem);
+  border-bottom: 1px solid var(--faint);
+}
+
+/* The site breadcrumb, in the mono of the graduations */
+.crumbs :global(ol) {
+  margin-bottom: var(--space-8);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.crumbs :global(a):hover {
+  color: var(--pink);
+}
+
+.title {
+  max-width: 20ch;
+  font-family: var(--font-heading);
+  font-size: clamp(2.1rem, 5.4vw, 5rem);
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.lede {
+  max-width: 40rem;
+  margin-top: var(--space-5);
+}
+
+/* The summary in the margin, the text in a reading column */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(12rem, 3fr) minmax(0, 7fr);
+  gap: var(--space-16);
+  align-items: start;
+  padding-block: var(--section-space);
+}
+
+.toc {
+  position: sticky;
+  top: calc(var(--header-height) + var(--space-8));
+}
+
+.tocTitle {
+  margin-bottom: var(--space-3);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.toc ol {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--cream);
+  list-style: none;
+}
+
+.toc li {
+  border-bottom: 1px solid var(--faint);
+}
+
+.toc a {
+  display: flex;
+  gap: var(--space-3);
+  padding-block: var(--space-3);
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+
+.toc a span {
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.toc a:hover {
+  color: var(--pink);
+}
+
+.prose {
+  display: grid;
+  gap: clamp(3rem, 6vw, 4.5rem);
+  max-width: 44rem;
+}
+
+.prose section {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.prose h2 {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--cream);
+  font-size: clamp(1.4rem, 2.6vw, 2.1rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.prose p,
+.prose li,
+.prose dd {
+  color: var(--muted);
+  font-family: var(--font-body-slim);
+  font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.prose strong {
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-weight: normal;
+}
+
+.prose ul {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A graduation before each item */
+.prose ul li {
+  position: relative;
+  padding-left: var(--space-5);
+}
+
+.prose ul li::before {
+  content: '';
+  position: absolute;
+  top: 0.8em;
+  left: 0;
+  width: 0.9rem;
+  height: 1px;
+  background: var(--pink);
+}
+
+/* The three times and the sources: a term, its definition, one hairline
+   per row */
+.times,
+.sources {
+  margin: 0;
+  border-top: 1px solid var(--faint);
+}
+
+.times > div,
+.sources > div {
+  display: grid;
+  grid-template-columns: minmax(12rem, 2fr) minmax(0, 5fr);
+  gap: var(--space-2) var(--space-5);
+  align-items: baseline;
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--faint);
+}
+
+.times dt,
+.sources dt {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.times > div:last-child dt {
+  color: var(--pink);
+}
+
+.email {
+  border-bottom: 1px solid var(--pink);
+  color: var(--cream);
+  overflow-wrap: anywhere;
+}
+
+.email:hover {
+  color: var(--pink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toc a {
+    transition: none;
+  }
+}
+
+@media screen and (max-width: 766px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-12);
+  }
+
+  .toc {
+    position: static;
+  }
+
+  .times > div,
+  .sources > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

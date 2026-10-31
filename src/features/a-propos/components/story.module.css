@@ -1,0 +1,82 @@
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--space-12);
+  align-items: start;
+}
+
+.text {
+  display: grid;
+  gap: var(--space-5);
+  max-width: 40rem;
+  font-family: var(--font-body-slim);
+  font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.text strong {
+  font-family: var(--font-body);
+  font-weight: normal;
+}
+
+.publisher {
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--faint);
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.publisher a {
+  border-bottom: 1px solid var(--pink);
+  color: var(--cream);
+}
+
+.publisher a:hover {
+  color: var(--pink);
+}
+
+.listTitle {
+  margin-bottom: var(--space-4);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* One hairline per reader, the profile in the heading face */
+.readers {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--cream);
+  list-style: none;
+}
+
+.readers li {
+  display: grid;
+  gap: var(--space-2);
+  padding-block: var(--space-5);
+  border-bottom: 1px solid var(--faint);
+}
+
+.who {
+  font-family: var(--font-heading);
+  font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.what {
+  color: var(--muted);
+  font-family: var(--font-body-slim);
+  font-size: 1.05rem;
+  line-height: 1.45;
+}
+
+@media screen and (max-width: 766px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

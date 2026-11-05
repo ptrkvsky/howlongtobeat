@@ -85,6 +85,54 @@ export interface WikidataHltbItem {
   igdb: string | null;
 }
 
+export interface WikidataRecentGame {
+  qid: string;
+  label: string | null;
+  // Earliest release date in the window, YYYY-MM-DD
+  date: string;
+  sitelinks: number;
+  steam: number | null;
+  igdb: string | null;
+}
+
+// Recent games that have no HowLongToBeat id (yet): Wikidata editors add
+// P2816 weeks after a release, so these never reach getAllHltbItems().
+// Names come with fallback languages: new items often have no English label
+export async function getRecentGamesWithoutHltb({
+  days = 120,
+  minSitelinks = 5,
+  now = new Date(),
+}: { days?: number; minSitelinks?: number; now?: Date } = {}) {
+  const day = (date: Date) => date.toISOString().slice(0, 10);
+  const from = day(new Date(now.getTime() - days * 86_400_000));
+  const rows = await sparql(
+    `SELECT ?item ?itemLabel ?sitelinks (MIN(?date) AS ?firstDate)
+    (SAMPLE(?steam) AS ?steamId) (SAMPLE(?igdb) AS ?igdbId) WHERE {
+      ?item wdt:P31/wdt:P279* wd:Q7889 ; wdt:P577 ?date ; wikibase:sitelinks ?sitelinks .
+      FILTER(?date >= "${from}T00:00:00Z"^^xsd:dateTime && ?date <= "${day(now)}T23:59:59Z"^^xsd:dateTime)
+      FILTER(?sitelinks >= ${Math.floor(minSitelinks)})
+      FILTER NOT EXISTS { ?item wdt:P2816 [] }
+      OPTIONAL { ?item wdt:P1733 ?steam }
+      OPTIONAL { ?item wdt:P5794 ?igdb }
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "en,fr,mul,es,de,ja". }
+    } GROUP BY ?item ?itemLabel ?sitelinks ORDER BY DESC(?sitelinks)`,
+    120_000,
+  );
+  return rows.map((row): WikidataRecentGame => {
+    const qid = row.item!.value.split(`/`).pop()!;
+    const label = row.itemLabel?.value;
+    return {
+      qid,
+      // The label service answers with the Q id when no language matches
+      label: label && label !== qid ? label : null,
+      date: row.firstDate!.value.slice(0, 10),
+      sitelinks: Number(row.sitelinks!.value),
+      steam: Number(row.steamId?.value) || null,
+      igdb: row.igdbId?.value ?? null,
+    };
+  });
+}
+
 // Every item with a HowLongToBeat id, in one query (~50,000 rows, ~40 s:
 // above the default timeout, below the 60 s limit of the query service)
 export async function getAllHltbItems() {

@@ -324,3 +324,18 @@ L'ancien filtre (« plus de 30 Beat ») aurait donné environ 12 000 jeux, mais 
 - 22 % du catalogue n'est pas dans Wikidata : des jeux connus peuvent échapper à cette liste de candidats. Pour être exhaustif, il faudrait aussi parcourir les IDs HLTB.
 - La valeur `totalPoll` stockée dans Sanity est périmée (scraping de 2021) et parfois fausse : par exemple, « 146K » a été lu 146 000 au lieu de 26 510 pour BioShock. Elle ne doit plus servir au tri.
 - Décision à prendre : retirer les jeux du catalogue actuel qui sont sous le seuil, ou les garder en `noindex`.
+
+### Sorties récentes sans ID HLTB
+
+L'import du lundi ne lit que les éléments Wikidata qui ont un ID HLTB (P2816). Or les éditeurs de Wikidata ajoutent cet ID plusieurs semaines après une sortie : Castlevania: Belmont's Curse (HLTB 181987, 52 fins, 1 140 joueurs) passait déjà le seuil mais n'était jamais candidat. Un POC du 5 novembre 2026 liste 18 jeux sortis depuis 120 jours, avec au moins 5 pages Wikipédia et sans P2816 (Happy Wheels, Call of Duty: Modern Warfare 4, Assassin's Creed Black Flag Resynced…).
+
+`scripts/import-recent.ts`, lancé tous les deux jours par `scripts/recent.sh` :
+
+1. **Parcours des pages HLTB** au-dessus du dernier ID lu (`scripts/enrich/hltb-scan.ts`). HLTB numérote ses jeux dans l'ordre de création, donc ce parcours trouve les fiches créées récemment.
+2. **Candidats Wikidata** : `getRecentGamesWithoutHltb()` dans `scripts/enrich/wikidata.ts`.
+3. **Rapprochement** (`scripts/lib/match-recent.ts`) : même ID Steam, ou même nom et même mois de sortie. Un rapprochement moins sûr (nom seul, date différente, plusieurs pages) n'est jamais inséré : il va dans `.import/review-recent.csv`.
+4. **Seuil inchangé** (`scripts/enrich/threshold.ts`), puis insertion en `source = import`, non publié. Les étapes habituelles enrichissent, traduisent et publient (jaquette IGDB fiable obligatoire).
+
+**Limite connue.** HLTB crée la fiche à l'annonce d'un jeu, pas à sa sortie : seules 17 % des sorties récentes (23 sur 135 dans le cache) ont un ID supérieur à 173 000. Le parcours ne retrouve donc pas les jeux annoncés de longue date ; ils restent dans `review-recent.csv` avec la raison « no HLTB page found », et s'ajoutent avec `--hltb-id <id>` (l'ID est dans l'URL `howlongtobeat.com/game/<id>`). Couvrir toute la plage (76 000 à 192 000) demanderait environ 64 h de lecture à 2 s par page. La recherche par nom de HLTB n'est pas utilisée : son endpoint a changé (`/api/search/init` répond 404) et le projet ne lit que `/game/<id>`.
+
+Un jeu publié ici a les recommandations de repli jusqu'au run du lundi, qui calcule les tags, les embeddings et les recommandations.

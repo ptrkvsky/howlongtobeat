@@ -1,0 +1,11 @@
+[Unit]
+Description=Every-two-days run of game-over.io for the recent games
+
+[Timer]
+# Two days after the end of the previous run, and an hour after a boot: the
+# script itself skips a run within 40 h of the last one
+OnBootSec=1h
+OnUnitInactiveSec=2d
+
+[Install]
+WantedBy=timers.target

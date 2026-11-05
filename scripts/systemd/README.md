@@ -55,6 +55,27 @@ Prérequis sur le VPS : Node 24, pnpm, le CLI Vercel (`npm i -g vercel`), git, c
 | Restaurer la base                                         | `docker exec -i gameover-postgres pg_restore -U gameover -d gameover --clean < ~/backups/gameover/<fichier>.dump` |
 | Corriger des données à la main, depuis ton poste          | `ssh -N -L 5433:127.0.0.1:5433 ubuntu@51.38.191.183`, puis `pnpm db:studio`                                       |
 
+## Sorties récentes
+
+Tous les deux jours, `scripts/recent.sh` ajoute les jeux sortis depuis moins de 120 jours qui ont au moins 5 pages Wikipédia mais **pas encore d'ID HowLongToBeat sur Wikidata** (l'import du lundi ne les voit pas). Il importe ceux qui passent le seuil habituel, les enrichit, les traduit, publie les prêts, puis lance `scripts/deploy.sh --recent` : build et déploiement du code déjà présent, seulement si le nombre de jeux publiés a changé. Détails : [docs/enrichissement-fiches-jeux.md](../../docs/enrichissement-fiches-jeux.md), section « Sorties récentes sans ID HLTB ».
+
+```bash
+cp scripts/systemd/game-over-recent.{service,timer} ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now game-over-recent.timer
+```
+
+| Besoin                                     | Commande                                                                                               |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| Prochain passage                           | `systemctl --user list-timers game-over-recent.timer`                                                  |
+| Lancer un passage maintenant               | `FORCE=1 systemctl --user start game-over-recent.service` (sinon ignoré si le dernier a moins de 40 h) |
+| Logs du dernier passage                    | `journalctl --user -u game-over-recent.service -e`                                                     |
+| Voir ce qui passerait, sans rien écrire    | `pnpm tsx scripts/import-recent.ts --dry-run`                                                          |
+| Jeux à rapprocher à la main                | `~/howlongtobeat/.import/review-recent.csv`, puis `pnpm tsx scripts/import-recent.ts --hltb-id <id>`   |
+| Ajouter un jeu sans sortie encore (GTA VI) | `pnpm tsx scripts/import-recent.ts --hltb-id <id> --force`                                             |
+
+Premier passage : le parcours des pages HLTB part de l'ID 172 959 (environ 19 000 pages à 2 s, soit 10 h). Chaque passage en lit 3 000 (`RECENT_SCAN_LIMIT`) ; pour finir plus vite, lancer une fois `pnpm tsx scripts/import-recent.ts --scan-limit 20000 --dry-run` dans `tmux` : le cache `.import/scan.jsonl` est repris par les passages suivants.
+
 ## Actus
 
 Toutes les heures (à la 17e minute), `scripts/news.sh` rédige les actus manquantes dans la table `news_article`, puis lance `scripts/deploy.sh --news` : build et déploiement du code déjà présent, seulement si les actus publiées ont changé. Détails : [docs/actus.md](../../docs/actus.md).

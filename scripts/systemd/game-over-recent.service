@@ -1,0 +1,18 @@
+# Every-two-days run of game-over.io: recent games without an HLTB id on
+# Wikidata (user unit, see README.md here)
+[Unit]
+Description=Add the recent games of game-over.io and deploy them
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/howlongtobeat
+# VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID, RECENT_HEALTHCHECK_URL
+EnvironmentFile=%h/.config/game-over/deploy.env
+# Login shell so node, pnpm and vercel are on the PATH (nvm, corepack...).
+# The scripts read .env.local: DATABASE_URL, IGDB, Steam, OPENAI_API_KEY
+ExecStart=/bin/bash -lc 'scripts/recent.sh'
+# The first runs walk thousands of HLTB pages (2 s each)
+TimeoutStartSec=6h
+Nice=10

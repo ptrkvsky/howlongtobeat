@@ -20,14 +20,25 @@ describe(`newGames`, () => {
     );
   });
 
-  it(`keeps the order of the list, up to ${NEW_GAMES_COUNT} games`, () => {
+  it(`keeps the order of the list within a day, up to ${NEW_GAMES_COUNT} games`, () => {
     const games = Array.from({ length: 12 }, (_, index) => ({
       slug: `game-${index}`,
-      publishedAt: daysAgo(index),
+      publishedAt: daysAgo(0),
     }));
     assert.deepEqual(
       newGames(games, builtAt).map((game) => game.slug),
       games.slice(0, NEW_GAMES_COUNT).map((game) => game.slug),
     );
+  });
+
+  it(`puts the latest publication day first, ahead of an older big batch`, () => {
+    const batch = Array.from({ length: 20 }, (_, index) => ({
+      slug: `batch-${index}`,
+      publishedAt: daysAgo(14),
+    }));
+    const games = [...batch, { slug: `recent`, publishedAt: daysAgo(1) }];
+    const slugs = newGames(games, builtAt).map((game) => game.slug);
+    assert.equal(slugs[0], `recent`);
+    assert.equal(slugs.length, NEW_GAMES_COUNT);
   });
 });
